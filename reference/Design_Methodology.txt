@@ -1,0 +1,861 @@
+DESIGN METHODOLOGY
+RatedPower
+
+DESIGN METHODOLOGY
+Index
+1. Glossary....................................................................................................................... 5 2. Purpose........................................................................................................................ 6 3. Account Preferences.................................................................................................... 7 4. Projects ........................................................................................................................ 8 5. Design Process .......................................................................................................... 12
+5.1. Preview of the design........................................................................................... 12 5.2. Location ............................................................................................................... 18
+5.2.1. Site ................................................................................................................ 18 5.2.2. Topography ................................................................................................... 24 5.2.3. Meteo data..................................................................................................... 26 5.3. Equipment............................................................................................................ 29 5.3.1. PV Module ..................................................................................................... 30 5.3.2. Inverter .......................................................................................................... 31 5.3.3. Structure ........................................................................................................ 35
+5.3.3.1. Type of Structure..................................................................................... 35 5.3.3.2. Create a new Structure ........................................................................... 36 5.3.3.3. Layout Configuration ............................................................................... 37 5.3.3.4. Mounting System..................................................................................... 40
+5.3.3.4.1. Trackers ............................................................................................ 41 5.3.3.4.2. Fixed structures ................................................................................ 42 5.3.3.4.3. E-W Structure ................................................................................... 44 5.3.4. Power Station ................................................................................................ 45 5.3.4.1. Transformer configuration ....................................................................... 48 5.3.4.2. Transformer losses.................................................................................. 50 5.4. Layout Tab........................................................................................................... 51 5.4.1. LV grouping ................................................................................................... 51 5.4.2. Power Requirements ..................................................................................... 52 5.4.3. Distances....................................................................................................... 54 5.4.4. Layout configuration ...................................................................................... 57
+1
+
+DESIGN METHODOLOGY
+5.4.4.1. Roads Layout .......................................................................................... 57 5.4.4.2. Structure alignment ................................................................................. 59 5.4.4.3. Rotation ................................................................................................... 59 5.4.5. Power station location ................................................................................... 60 5.4.6. Setbacks........................................................................................................ 61 5.5. Topography.......................................................................................................... 66 5.5.1. Topography limitation tool.............................................................................. 66 5.5.2. Earthworks..................................................................................................... 72 5.5.3. Preview.......................................................................................................... 73 5.6. Grid Point............................................................................................................. 74 5.6.1. Electrical standards ....................................................................................... 74 5.6.2. Connection Type ........................................................................................... 74 5.6.3. Overhead Line ............................................................................................... 77 5.6.4. Losses ........................................................................................................... 79 5.6.5. Grid requirements .......................................................................................... 80 5.7. Electrical .............................................................................................................. 84 5.7.1. Solar field....................................................................................................... 84 5.7.1.1. String positioning within a structure......................................................... 84 5.7.1.2. Configuration Type .................................................................................. 84 5.7.1.3. Harness................................................................................................... 87 5.7.2. Cable Sizing .................................................................................................. 87 5.7.2.1. Electrical Standard .................................................................................. 87 5.7.2.2. Maximum voltage drops .......................................................................... 88 5.7.2.3. Cables ..................................................................................................... 89 5.7.2.4. Cable sizing parameter ........................................................................... 90 5.8. BESS ................................................................................................................... 91 5.8.1. AC coupled BESS ......................................................................................... 91 5.8.1.1. Power Conversion System ...................................................................... 91 5.8.1.2 Battery container ...................................................................................... 92 5.8.1.3. BESS requirements................................................................................. 93
+2
+
+DESIGN METHODOLOGY
+5.8.1.4. BESS layout ............................................................................................ 94 5.8.2. DC coupled BESS ......................................................................................... 95
+5.8.2.1. Power Conversion System ...................................................................... 96 5.8.2.2 Battery container ...................................................................................... 96 5.8.2.3. BESS requirements................................................................................. 96 5.8.2.4. BESS layout ............................................................................................ 97 5.9. Energy ................................................................................................................. 99
+5.9.1. Simulation...................................................................................................... 99 5.9.2. Horizon .......................................................................................................... 99
+5.9.3. Surface Albedo .............................................................................................. 99
+5.9.4. PV Module Losses....................................................................................... 101 5.9.5. PV Plant Losses .......................................................................................... 103 5.9.6. Advanced Configuration (Energy Tab) ........................................................ 103 5.10. Financial Tab ................................................................................................... 105 5.11. Settings tab...................................................................................................... 113 6. Simulation procedure ............................................................................................... 114 6.1. Batch design tool ............................................................................................... 114 7. Simulation results..................................................................................................... 118 8. Documentation ......................................................................................................... 120 8.1. Documents......................................................................................................... 121 8.1.1. Design Report.............................................................................................. 121 8.1.2. Energy Yield Report .................................................................................... 122 8.1.3. Interconnection Facility Report .................................................................... 123 8.1.4. BESS Design Report ................................................................................... 124 8.1.5. Overhead Line Report ................................................................................. 125 8.2. Spreadsheets..................................................................................................... 126 8.2.1. Project Sheet ............................................................................................... 126 8.2.2. Bill of Quantities........................................................................................... 127 8.2.3. Financial Analysis ........................................................................................ 128 8.2.4. Energy Yield Results ................................................................................... 129
+3
+
+DESIGN METHODOLOGY
+8.2.5. Listing of Cables .......................................................................................... 130 8.2.6. Listing of Posts ............................................................................................ 131 8.2.7. Terrain XYZ ................................................................................................. 132 8.2.8. Power flow model ........................................................................................ 133 8.3. Drawings............................................................................................................ 134 8.3.1. General Layout ............................................................................................ 134 8.3.2. Layout 3D .................................................................................................... 135 8.3.3. 3D scene (PVC)........................................................................................... 135 8.3.4. MV Single Line Diagram .............................................................................. 136 8.3.5. LV Single Line Diagram ............................................................................... 137 8.3.6. MV-LV Single Line Diagrams....................................................................... 140 8.3.7. Topography Analysis (terrain slopes) .......................................................... 141 8.3.8. Structure Profiles ......................................................................................... 142 8.3.9. Interconnection Facility SLD ........................................................................ 143 8.3.10. Interconnection Facility Layout .................................................................. 144 8.3.11. BESS General Layout ............................................................................... 145 8.3.12. BESS MV-LV Single Line Diagram............................................................ 146 8.3.13. Overhead line layout.................................................................................. 147
+4
+
+DESIGN METHODOLOGY
+1. Glossary
+AC: Alternating Current. DC: Direct Current. BOQ: Bill of Quantities. GCR: Ground Cover Ratio. LV: Low Voltage. MV: Medium Voltage. HV: High Voltage. PV: Photovoltaic. TMY: Typical Meteorological Year. PS: Power Station. L2: Second Level MPPT: Maximum Power Point Tracking. KML: Keyhole Markup Language KMZ: Keyhole Markup Language Zipped
+5
+
+DESIGN METHODOLOGY
+2. Purpose
+The purpose of the RatedPower platform is to help in the design and development of utility-scale photovoltaic solar projects during the phases of feasibility, conceptual design, basic design, and request for proposal. The main advantages of RatedPower are the optimization of the design, the short time it takes, and the easy generation of the documents and drawings needed for requesting the proposal. This can be done following these steps:
+ Step 1 - Create a project in which the user will create different designs.  Step 2 - Create a design in which the user will upload or create their site and
+choose a configuration. o Create or upload the site: define the plot areas of the plant using Google Earth (KML or KMZ file) and upload them into RatedPower or create a site directly inside RatedPower's interactive map. o Check the topography and meteorological data of the plot area. o Customize the design: Select the equipment, layout configuration, perform topography analysis, choose the grid connection, add a battery energy storage system, and customize energy and costs criteria. For more information, please refer to chapter 5- Design Process
+ Step 3 - Check the energy results and layout corresponding to the civil, electrical, and energy configuration. If the user has generated more than one design, they can also use the comparison tool to analyze the different results.
+ Step 4 - Download the documents, spreadsheets, and drawings of the project proposal. For more information, please refer to chapter 8.
+6
+
+DESIGN METHODOLOGY
+3. Account Preferences
+RatedPower allows users to change the preferred language, unit system, and temperature units of the program's interface. Users can choose between the international metric system and the imperial system. As for temperature, two options are available: degrees Celsius (ºC) and degrees Fahrenheit (ºF). These options can be changed by accessing the account preferences on the bottom left corner of the software as shown in Figure 3.1.
+Figure 3.1. Account information. And then selecting the preferred option for each as shown in Figure 3.2.
+Figure 3.2. Language, unit system and temperature units.
+7
+
+DESIGN METHODOLOGY
+4. Projects
+In RatedPower, every time the user logs in, he will see the project's tab, where he will be able to see all the projects he or his team have created.
+Figure 4.1. Projects tab. A project is understood as a location in which infinite designs can be simulated. Different sites can be added to the same project as long as their center point is within a radius of 5 km from the project origin. The project origin is set through the first site ever uploaded.
+Figure 4.2. Valid area definitions inside the project radius. 8
+
+DESIGN METHODOLOGY
+Once the user has one or more projects created, he can use the different organizational aspects of the software. For example, he can select to view his projects in three ways. The user can select the list, list/map or simply map view, as shown inside the red box in Figure 4.3. For the list view, he can organize his projects by name or date. Besides that, he can also use other features such as selecting his favorite projects, archiving them, or filtering them based on different parameters such as the number of designs, country and creator.
+Figure 4.3. Project organization aspects. Once the user opens any project, he'll be able to see the existing designs if there are any created. He can enable design details to see information such as the power, the energy, the meteorological data and so on. The filter option allows the user to filter by meteo source, type of design (single or multiple), creator and score.
+Figure 4.4. Design organization aspects. 9
+
+DESIGN METHODOLOGY
+Users can select 2 to 24 designs to compare them, as shown in Figure 4.5.
+Figure 4.5. RatedPower's comparison tool. Once inside the comparison tool, the user can select the parameters that he wants to compare through the `Filters' menu. The user can add other designs to the comparison (`+' button) or remove them (clicking on the `x' above each column). The comparison can be seen in data tables or charts.
+10
+
+DESIGN METHODOLOGY
+Figure 4.6. Inside RatedPower's comparison tool. If further comparisons are needed, the user has the option to export the data tables and charts in xlsx.
+Figure 4.7. Export option inside the comparison tool
+11
+
+DESIGN METHODOLOGY
+5. Design Process
+5.1. Preview of the design
+The map in the middle of the screen allows for a preliminary visualization of the layout before generating the design. This map allows users to see how their modifications for different parameters affect the layout and the achieved power of the PV plant. The Design Process is divided into different sections: In the middle of the top bar is the 'Run Design' button (shown in purple in Figure 5.1.1), which allows the user to apply his changes to his design and update all the other information displayed on the page. In blue he will also find the different views of the design. In the same banner the user can download the documentation (green in Figure 5.1.1) and save his design (Folders) (pink in Figure 5.1.1).
+Figure 5.1.1. Layout preview map
+12
+
+DESIGN METHODOLOGY
+The available maps in the Design Process are: 1) Preview map As shown in figure 5.1.1, the first view that the user can select is the Preview map. In this view, the structures are shown following a color code legend:
+ Light blue: Installed structures.  Dark red: Uninstalled structures due to electrical configuration.  Orange: Installed structures with earthworks.  Light brown: Earthworks platforms.  Light blue: Uninstalled structures due to the lack of topography coverage.
+Figure 5.1.2. Layers of the preview Map 13
+
+DESIGN METHODOLOGY
+2) Overview The second view is the overview (Figure 5.1.3), which shows the structures in different shades of blue. Structures connected to the same power station are in the same shade of blue. This view also allows the user to see the main civil and electrical parts of the plant. These parts are detailed in the layers.
+Figure 5.1.3. RatedPower's layout overview
+14
+
+DESIGN METHODOLOGY
+3) 3D map
+Figure 5.1.4. 3D map Using the 3D map, the user will be able to see his PV plant in a 3D view. The structure will follow this color code legend:
+ In different shades of blue: Structures that are connected to the same power station will be in the same shade of blue.
+ With a brown background: Installed structures with earth works.
+15
+
+DESIGN METHODOLOGY
+The main results are displayed on the top right side of the screen. Here, the user will find power, energy, financial, substation, and if a BESS or an OHL is included, BESS and OHL results.
+Figure 5.1.5. Design results. 16
+
+DESIGN METHODOLOGY
+On the bottom right side, the user can view the history of designs created in the last 24 hours. Designs that are not saved within 24 hours will be deleted.
+Figure 5.1.6. History of designs. In the right corner, the user can always access our resources by clicking on the question mark button. Direct links to our Methodologies, knowledge base articles and more are available in the following list.
+Figure 5.1.7 Support resources 17
+
+DESIGN METHODOLOGY
+5.2. Location
+5.2.1. Site To start defining a project, it is necessary to define the site where the PV plant will be built. For this purpose, the input information needed to develop the project is the following:
+ Available areas: Area(s) to develop the PV project.  Access points: Each available area must have a main street access point. Adding
+a secondary access point is also possible.  Substation area: The area to carry out the substation.  MV-Switchgear: is the point of the substation (ST) at which the medium voltage
+will arrive from the available areas.  Medium Voltage Delivery Point [optional]: is within the Available Area (AA); it is
+the point to deliver energy from this specific area to the Substation (ST).  Restricted areas [optional]: Area(s) where PV panels are not allowed to be
+installed. These area(s) could be restricted due to slopes, water bodies, rivers, electrical overhead lines, buildings, etc.  MV route [optional]: path(s) that connects (via electrical cable) different available areas together, or from each available area to the substation.  Shortcuts [optional]: user defined roads that connect with the automated roads. It's helpful if there's an existing road that the user would like to keep in the layout, even though the software automates them.  OHL/Gen-Tie [optional]: overhead line; it's the path defined by the user that connects the plant substation via MV or HV cable, to the utility or other interconnection point.  Batteries area [optional]: it's the area to develop AC-coupled battery energy storage system. It also requires an MV point to mark the delivery energy from this specific area to the Substation (ST). RatedPower calculates the meteorological data, the elevation, and the slopes of the site.
+18
+
+DESIGN METHODOLOGY
+Figure 5.2.1.1 Example of a site definition in Google Earth In Figure 5.2.1, a project site is defined with the following elements:
+ 2 AVAILABLE AREAS in dark blue o ACCESS POINTS: Each area has only one primary access AC. In Figure 5.2.1, the area on the right has a secondary access ACb.
+ 1 RESTRICTED AREAS in red  BATTERY AREA in yellow  SUBSTATION AREA in purple
+o MV SWITCHGEARS: Point at which all the medium voltage cables coming from the available areas and battery, connect with the substation (in purple).
+ MV ROUTE  SHORTCUTS (ROAD ROUTE)  OHL/Gen-Tie ROUTE To define the project correctly, it is necessary to generate all the previous information in a Google Earth file and to upload it in Location->Site (both KML and KMZ formats are accepted). For more information on how to define a project site using Google Earth, check the following knowledge base article. It is also possible to create or modify a site directly in RatedPower using the interactive site creation tool. This tool can be accessed by clicking the 'Create New Site' button.
+19
+
+DESIGN METHODOLOGY
+Figure 5.2.1.2 Site definition options These following requirements must be defined in every site:
+ At least one available area (AA).  A road access point (AC) inside each available area.  A substation area (ST) or switching and breaking station (SBS).  A medium voltage switchgear point (MV) inside the substation or SBS area.
+Figure 5.2.1.3 Interactive site creation tool. At the top left of Figure 5.1.1.3. A search bar is available for the user, where the location coordinates can be inserted. In order to draw his site, the user can use the following tools: the polygon tool, the placemark tool and the path tool. By using the polygon tool, users can define the following areas: available areas (AA), the substation (ST), switching and breaking station (SBS), restricted areas (RA), and the battery area (BA).
+20
+
+DESIGN METHODOLOGY
+The user has the option of defining these areas using the free-shape tool, the rectangular, or circular tool.
+Figure 5.2.1.4 Polygon tool. By using the placemark tool, the user can define the following points: the road access points (AC), the secondary road access points (ACb), and the medium voltage points (MV).
+Figure 5.2.1.5 Placemark tool. By using the path tool, he can define the following elements: the MV routes, the shortcuts, and overhead lines (OHL).
+Figure 5.2.1.6 Path tool. 21
+
+DESIGN METHODOLOGY
+On the sidebar, the user can view all the defined elements. He can also select any element and delete it by clicking on the trashcan icon.
+Figure 5.2.1.7 Side Bar. Users can change the type of element within the same bracket. For instance, if an AA area is created, it can be switched into any other type of polygon (ST, RA, or BA in this case).
+22
+
+DESIGN METHODOLOGY
+Figure 5.2.1.7 Elements type modifications. Warnings will be displayed in the same section, if requirements are not met. Once the site is completed, the user can either save it as a draft (default option when not all required elements are created) or as a new site that would allow him to start simulating. When saved as a draft, the user can continue working on the site at a later moment. He can also download the site in kml format by clicking on the "Download .kml" button.
+Figure 5.2.1.8 Site saving's options. If changes are required for the site, the user can always "Clone" the site.
+23
+
+DESIGN METHODOLOGY
+Figure 5.2.1.9 Selected site options. For more information on how to define a project site inside RatedPower, check the following knowledge base article. 5.2.2. Topography The topography of the PV plant is defined by Google Earth or uploaded by the user. RatedPower generates a colored slopes map that can be accessed by pressing on the "See details" button as shown in Figure 5.2.2.1.
+Figure 5.2.2.1. Topography box. The slopes have been colored by default for the range of:
+24
+
+DESIGN METHODOLOGY
+ Slopes less than 5%: green arrows.  Slopes from 5% to 10%: orange arrows.  Slopes from 10% to 15%: red arrows.  Slopes above 15%: purple arrows. However, it can be modified by using the slider on the right as shown in Figure 5.2.2.2. Google Earth files of the site and of the custom slopes of the terrain can be downloaded. These files allow users to define more accurately their restricted areas. To do so, click on the "Download" button marked inside a blue box in Figure 5.2.2.2 and select the file to download and the format.
+Figure 5.2.2.2. Slopes of the terrain. NOTE: The topography is taken into account only for structure placement, not energy analysis. RatedPower considers the terrain to be flat when creating the final layout, which means that shading due to the terrain slopes is not taken into account. RatedPower utilizes SRTM30 to get the topography details. SRTM30 is a near-global digital elevation model. It combines data from both the Shuttle Radar Topography Mission and the U.S. Geological Survey's GTOPo30 data set. It has a resolution of 30x30 meters.
+25
+
+DESIGN METHODOLOGY
+Users can also opt to upload their own topography. This can be done by uploading a CSV file with the custom elevation data of the site. This data needs to be in XYZ format where "X" is the easting coordinate placed in the first column, "Y" is the northing coordinate placed in the second column, and "Z" is the elevation value in meters placed in the third column. The coordinates should belong to the same UTM zone as the project and should roughly cover the same area as that of the site. Maximum file size of 500 MB is permitted.
+A similar excel sheet with the elevation data provided by Google Earth can be downloaded by pressing "CSV" as shown inside the blue box in Figure 5.2.2.2. This excel sheet also includes the exact UTM zone of the uploaded site.
+5.2.3. Meteo data
+Once the site is defined, in addition to the topography data, RatedPower also generates a Typical Meteorological Year based on the historical data of the NASA-SSE database, the NASA-Power database, and the PVGIS 5.2 database.
+The NASA SSE solar resource website, sponsored by NASA's Applied Science Program, supports the investigation of climatological phenomena by providing publicly available climate data for the globe. This data includes long-term estimations of different meteorological variables.
+The main features of the NASA SSE data source are:
+ Source: Satellite  Spatial Coverage: Global  Spatial resolution: 1° x 1°, approximately (100 km x 100 km)  Temporal resolution: Long-term, monthly, and daily  Uncertainty: 6 % to 12 %
+NASA POWER database has the same features as NASA SSE. Both have the same irradiation information but a different temperature curve.
+The main features of the NASA POWER data source are:
+ Source: Satellite  Spatial Coverage: Global  Spatial resolution: 1/2º x 2/3º  Temporal resolution: 3-hourly, daily, monthly, and long-term
+PVGIS has been in continuous development for more than 10 years at the European Commission Joint Research Center. The focus of PVGIS is research in solar resource
+26
+
+DESIGN METHODOLOGY
+assessment, photovoltaic (PV) performance studies, and the dissemination of knowledge and data about solar radiation and PV performance. The latest version of PVGIS (PVGIS-5.2) has extended the capabilities of the system and improved the coverage of the meteorological database. PVGIS-5.2 uses PVGIS-SARAH2, PVGIS-SARAH-1, PVGIS-ERA5 and PVGIS-NSRDB databases. The main features of the PVGIS-5.2 database are:
+ Source: Satellite  Spatial coverage: Worldwide  Spatial resolution: site-dependent, with an average value of 4 km x 4 km  Temporal resolution: hourly  Uncertainty: site-dependent, ± 3% to 10% on average
+The solar irradiance data of PVGIS have been calculated using satellite data. There are four satellite databases available:
+ PVGIS-SARAH-2 is a database based on data provided by the EUMETSAT CM SAF. It uses the images of the METEOSAT geostationary satellites covering Europe, Africa and Asia. The temporal period is 2005 to 2020.
+ PVGIS-NSRDB is a collaboration between PVGIS and the NREL (National Renewable Energy Laboratory), and it consists of the implementation of the NSRDB in PVGIS. The temporal period is from 2005 to 2015.
+ PVGIS-ERA5 is a reanalysis product from ECMWF, combining historical observations into global estimates using advanced modelling and data assimilation systems. It provides coverage in areas where there is no satellite data, such as some parts of South America, Australia, and Japan. The temporal period is 2005 to 2020.
+ PVGIS-SARAH-1 is a database based on a new algorithm developed by CM SAF. It provides coverage in Asia. The temporal is from 2005 to 2016.
+Additionally, if the user has an API key for SolarAnywhere, Solcast or Solargis they can add it to use this meteo source in the designs. The key can be added in the "My company" page inside RatedPower, in the "Integrations" section.
+27
+
+DESIGN METHODOLOGY
+Figure 5.2.3.1. API Integrations. If the checkbox of "Load SolarAnywhere (or Solcast) data automatically for every new project" is selected, the meteorological data will be automatically generated in all projects. The data will be generated only once per project when there is at least one site uploaded. If the checkbox is not selected, the data can be generated during the design process. The monthly data from both NASA sources is automatically converted to hourly data by the software to calculate the energy production. The Typical Meteorological Year (TMY) consists of a representative set of monthly average values of global solar radiation and temperature for a 1-year period. TMY is the most common data for describing the local solar climate. The resulting TMY is for user information and is used to get the minimum and maximum temperature values of the site in order to define the range of modules per string estimated. It also allows the software to compute accurately the energy production for each hour for the whole lifetime of the PV plant. In addition, it is possible to import a TMY in monthly, hourly and sub-hourly (15 min, 5 min and 1 min) values data in CSV format. This option allows the user to import their own meteorological data from databases like SolarGIS, Meteonorm, NREL TMY3, Vaisala, meteorological stations on-site, etc. Monthly data is automatically converted into hourly data by our software.
+Figure 5.2.3.2 The minimum historical temperature of the site.
+28
+
+DESIGN METHODOLOGY
+Additionally, RatedPower allows users to modify the minimum historical temperature of the site as shown in Figure 5.2.3.2. This value affects the range of the number of modules of strings.
+5.3. Equipment
+RatedPower has an extensive database of electrical equipment (PV modules, central and string inverters, and structures). However, we also give users the possibility to upload their own equipment to their own private database. Users can choose to upload their own PV modules or inverters, and create their own custom structures (trackers, fixed structures and East-West structures). A .pan file is needed for the PV modules, and a .ond file for the central and string inverters. For structures, users simply need to fill in the information regarding the dimensions and the configuration. To do so, a user should go to the "Equipment" tab on the left-hand side as shown in the red box of Figure 5.3, choose if he is looking to upload a module or an inverter and upload his equipment using the upload button on the right-hand side as shown in the orange box of Figure 5.3.1.
+Figure 5.3.1 The Equipment tab.
+29
+
+DESIGN METHODOLOGY
+In the "Settings" tab, the user can set default equipment per company and/or per project.
+Figure 5.3.2 The settings part of the equipment tab. For more information on how to upload private equipment and to set up the default ones, check the following knowledge base articles:
+ How to upload your own equipment - Modules and Inverters  How to upload your own equipment - Structures  How to set up your own default equipment? 5.3.1. PV Module RatedPower has a database of PV modules that are widely used in utility-scale PV plants.  Technology: Silicon Mono, Silicon poly, multi-crystalline, HIT and thin film. Bifacial
+modules are also permitted.  PV cells: 60 and 72 cells.  Voltage systems: 600V, 1000V, and 1500V.
+30
+
+DESIGN METHODOLOGY
+Figure 5.3.1.1. Modules public database. 5.3.2. Inverter RatedPower has a database of central inverters and string inverters.
+ Type: Central & string inverters.  Voltage systems: up to 1500V.
+31
+
+DESIGN METHODOLOGY
+Figure 5.3.2.1. Inverters public database. To switch between central and string inverters, click on the respective type of inverter as shown in Figure 5.3.2.2.
+32
+
+DESIGN METHODOLOGY
+Figure 5.3.2.2. Changing the inverter's rated power. As shown in Figure 5.3.2.2, inside the red box, RatedPower allows users to modify the inverter rated power. The rated power value at 30ºC is the one shown by default. A secondary inverter can be used as well by clicking on the blue box shown in Figure 5.3.2.2. This opens the list of central inverters for the user to choose from. This option could help optimize smaller plants (increase the filling) by choosing a smaller secondary inverter to make use of any spaces that were left empty. In the case of East-West structures, the user can also define the Maximum Power Point Tracking (MPPT) configuration at the inverter. Available options are:
+33
+
+DESIGN METHODOLOGY
+ Single MPPT inverter: Strings from east and west tables are connected to the same MPPT.
+ Multiple MPPT inverter: Strings from east tables are connected to a different MPPT than strings from west tables.
+ Separate inverters: Strings from east tables are connected to a different inverter than strings from west tables.
+Figure 5.3.2.3. MPPT configuration at the inverter. NOTE: Our inverters database is continuously updated with new commercial equipment. The client can also upload his own equipment to his private database using a .ond file of the inverter.
+34
+
+DESIGN METHODOLOGY
+5.3.3. Structure 5.3.3.1. Type of Structure RatedPower allows choosing between three different types of structure from our database:
+ Fixed structures: Generic fixed structures of different configurations varying from 1V to 6V (portrait) and from 1H to 12H (landscape).
+ Single-axis trackers: Monofacial and bifacial trackers from the main manufacturers and some generic ones as well. These come in different configuration options.
+ East-West structures: Generic east-west structures of different configurations varying from 1V to 6V (portrait) and from 1H to 12H (landscape).
+In the Design Process, to switch between fixed structures, single-axis trackers and EastWest structures, click on the respective type of structure as shown in Figure 5.3.3.1.
+Figure 5.3.3.1. Structure database in the software. NOTE: The equipment database is continuously updated. Clients can also send us the datasheet of a tracker, or a fixed/E-W structure and we can add it to our database.
+35
+
+DESIGN METHODOLOGY
+5.3.3.2. Create a new Structure To create one and use it in RatedPower, the user will need to go to the equipment tab, select structures, and then click on the "Create new structure" button. After that he will be prompted to add some information regarding the structure, including the name, maximum number of modules, configuration, number of posts, etc. In this example, the images shown below are regarding a single axis tracker, but the procedure will be similar for fixed and E-W structures, but with less information added.
+36
+
+DESIGN METHODOLOGY
+Figure 5.3.3.2. Creating a new structure. 5.3.3.3. Layout Configuration The PV modules connected in series per string are calculated based on:
+ The technical properties of the modules: voltage STC and voltage coefficient.  The technical properties of the inverters: minimum MPPT voltage and maximum
+voltage.  The minimum historic temperature of the site.  The maximum historic temperature of the site. RatedPower will recommend a range of modules per string by complying with the electrical characteristics and temperature values stated above. However, clients can select a number of modules per string outside of the recommended range. In addition, the application takes into account that the modules per string that are chosen must comply with the structural limitation of modules per row. To understand this point, consider the following example. Let's consider that a 1 V structure is limited to 60 modules per row (just an assumption) and the range of modules per string is from 13 to 25.
+37
+
+DESIGN METHODOLOGY
+ If the user chooses 18 modules, and 3 Strings per structure the structure will be configured with 18x3 = 54 modules per row (maximum value of modules per row for this example). This results in a structure length of 62.3 meters approximately.
+Figure 5.3.3.3.1. Layout configuration example. 18 modules per string.  If the user chooses 21 modules, the maximum value of strings per structure will
+be reduced to 2 instead of 3 because with 3 strings per structure we would exceed the upper limit: 21x3 = 63 modules per row > 60 modules per row = Structure limit.
+Figure 5.3.3.3.2. Layout configuration example. 21 modules per string.  If the user chooses smaller string/structure values, the user will have shorter
+structures. Shorter structures designs could help to be adapted according to the land plot shape. Here we can see an example with 15 modules per string and choosing for one case 4 strings per structure (maximum) and in the other 1 string per structure (minimum).
+38
+
+DESIGN METHODOLOGY
+Figure 5.3.3.3.3. Layout configuration examples. 15 modules per string. Users can choose the desired number of strings per structure. But RatedPower will always give a default recommended value. This recommended value will be the maximum one for trackers. However, in the case of fixed structures, the recommended strings per structure will be the one that makes the structure length as close as possible to 25m and the maximum number of strings per fixed structure is the one that makes the structure length 80m. For all kinds of structures, the minimum value will be 1 string per structure. When choosing linked-row trackers, the user can also define the number of rows per linked-row. The minimum value is 2 and the maximum is the one given by the linked-row tracker manufacturer.
+Figure 5.3.3.3.4. Number of structures per linked-row. There's also a feature in RatedPower named partial structures, and it allows the user to have structures of different lengths (partial or broken structures). This will be available only if the general strings per structure is above 1. If the system only allows 1 string per structure, then partial structures will be disabled.
+39
+
+DESIGN METHODOLOGY
+
+Figure 5.3.3.3.5. Partial structures.
+It is important to understand this point in order to design the PV plant adequately. Additional information can be found in the Electrical Methodology.
+
+5.3.3.4. Mounting System
+Users can modify the minimum ground clearance which is the minimum distance between the ground and the lower part of the structure. In the case of trackers, it is calculated at the maximum tracking angle of the chosen tracker. Apart from this parameter, the user can define the minimum pile length for all structures.
+In the case of fixed structures or East-West structures, users can opt between a monopole or a bi-pole mounting system (and a tri-pole for East-West structures only). The tilt angle is another parameter exclusive to these structures. The software recommends a certain value based on the site latitude as follows:
+We recommend these values for the tilt regarding the latitude:
+
+Latitude <5º
+5º-10º 10º-20º
+>20º
+
+Recommended tilt 5º
+latitude latitude*0.9 latitude*0.85
+
+40
+
+DESIGN METHODOLOGY
+In the case of East-West structures, the Ridge Distance can also be defined. This is the distance between the two opposite tables of the structure. 5.3.3.4.1. Trackers
+Figure 5.3.3.4.1.1. Structure mounting system for trackers. The pile length for trackers is calculated as shown in Figure 5.3.3.4.1.2.
+Figure 5.3.3.4.1.2. Pile length for trackers. 41
+
+DESIGN METHODOLOGY
+5.3.3.4.2. Fixed structures
+Figure 5.3.3.4.2.1. Structure mounting system for fixed structures. The pile length for fixed structures is calculated as shown in Figure 5.3.3.4.2.(2 & 3).
+42
+
+DESIGN METHODOLOGY
+Figure 5.3.3.4.2.2. Pile length for mono-pole fixed structures.
+Figure 5.3.3.4.2.3. Pile length for bi-pole fixed structures.
+43
+
+DESIGN METHODOLOGY
+5.3.3.4.3. E-W Structure
+Figure 5.3.3.4.3.1. Structure mounting system for East-West structures. 44
+
+DESIGN METHODOLOGY
+Figure 5.3.3.4.3.2. Pile length for East-West structures. 5.3.4. Power Station Inverters can be placed either inside the power stations (PSs) or outside of them, in the PV field. Depending on which type of inverter is used, different parameters can be modified. In the case of central inverters, the user can choose how many inverters to have per Power Station, as shown in Figure 5.3.4.1. The software starts placing the PSs with the selected number of inverters. If no more PSs can be placed, the software will try to place the next power station with one less inverter. This will continue until no more power stations can be installed. RatedPower reduces the number of inverters per PS by one until the whole plant is filled with power stations. The user can choose the options he wants for the power stations by selecting the desired options.
+45
+
+DESIGN METHODOLOGY
+Figure 5.3.4.1. Central inverters per power station. When the secondary inverter option is enabled, the user can also select the number of secondary central inverters per PS as shown in Figure 5.3.4.2. When this option is enabled, the default value for the number of secondary inverters per PS is zero. This means that the software will only place power stations equipped with primary inverters following the previous criterion. And when no more power stations of those can fit, it starts trying to place power stations with secondary inverters. If, however, the number of secondary inverters per PS is modified to another value, the criterion that is followed is similar to the first one. For instance, let's consider that we want the PS to have 2 primary and 2 secondary central inverters. The software starts by placing power stations of this configuration. Once no more power stations can fit, it places PSs with 2 primary and 1 secondary inverter. After that it's 2 primary inverters only, then 1 by 1. And finally, the software checks whether it can fit a PS with 1 secondary inverter. As with the previous option, the user can select the different configurations of power stations that they want the software to use.
+46
+
+DESIGN METHODOLOGY
+Figure 5.3.4.2. Central inverters per power station with secondary inverters enabled. On the other hand, for string inverters, two parameters can be modified: the number of string inverters which the user wants to have per power station and the minimum allowable number. If no inverters can be placed based on the values selected, no more power stations will be placed.
+47
+
+DESIGN METHODOLOGY
+Figure 5.3.4.2. String inverters per power station. 5.3.4.1. Transformer configuration For every power station, the user can select the transformer configuration. By selecting the number of transformers inside the power stations, the type of each transformer (2Winding or 3-Winding) and their capacity. These options are shown in figure 5.3.4.1.1.
+48
+
+DESIGN METHODOLOGY
+Figure 5.3.4.1.1. Transformers. For the capacity, the software will give the user a range of values. The minimum is calculated by multiplying the number of inverters by the Pmax of one inverter. In the figure above, the selected inverters have a Pmax = 2310 kVa and the minimum capacity is equal to 5 * 2310 = 11 550 kVa = 11.55 MVa. The maximum value is equal to the minimum capacity plus 30%. Users also have the possibility to set the short-circuit impedance of the power station.
+49
+
+DESIGN METHODOLOGY
+5.3.4.2. Transformer losses Users can also modify the power station transformer losses and define the iron and copper losses as shown in Figure 5.3.4.2.1.
+Figure 5.3.4.2.1. Power station transformer losses.
+50
+
+DESIGN METHODOLOGY 5.4. Layout Tab
+In the case of having several available areas, RatedPower offers the possibility of applying a different configuration for each area or group of areas, using the switch shown in picture 5.4.1. A group of areas is created when the user uses the "Group areas in LV" option.
+Figure 5.4.1. Multiple AA layout configuration options. 5.4.1. LV grouping At the top left of the screen, the 'Group areas in LV' option is displayed.
+Figure 5.4.1.1. Group area in LV (low voltage) option. 51
+
+DESIGN METHODOLOGY
+This feature allows low-voltage DC cables to be shared between areas in the case of a central inverter, and low-voltage AC cables to be shared between zones in the case of string inverters. In this way, a power station can be shared between several areas. After clicking on the 'Group areas in LV' button, the user can select the areas to be grouped. He can also select the polygon in which the structures will be placed first by clicking on 'Priority AA' and placing the zone in question first. For more information, read the following article: How to interconnect your available areas in LV . 5.4.2. Power Requirements RatedPower gives the possibility of choosing between installing the maximum capacity or a specific one. In the case of maximum capacity, the software tries to optimize the site by installing the maximum "Rated Power" using the target DC/AC Ratio defined. The user can also enable the "Install the maximum peak power" check box. By activating this option, all possible structures will be installed in the PV plant, reaching the maximum possible peak power by varying the DC/AC ratio inside the limits set below.
+Figure 5.4.2.1. Power requirements for specific capacity. In the case of specific capacity, however, the user can choose the number of inverters (for both the primary and the secondary inverter if any), as well as the DC/AC ratio. By modifying these parameters, the desired rated and peak powers can be achieved. An example of that with the secondary inverter present can be seen in Figure 5.4.2.2.
+52
+
+DESIGN METHODOLOGY
+In the case of "Specific Power", the layout will be developed near the MV Delivery Point / Substation to minimize cabling.
+Figure 5.4.2.2. Power requirements for specific capacity. The rated power is the installed AC capacity, and it depends on the chosen number of inverters and their technical properties. The peak power is the DC capacity, and it depends on the chosen DC/AC ratio. In the case of selecting the "Specific Power" option, the structures will be spread over the various areas of the site based on three different criteria. The first criterion tries to occupy the least number of areas possible (one area only if possible). The second criterion tends towards selecting the closest areas over the far ones. And the third criterion intends to occupy the least percentage possible out of each area (partially occupy areas rather than completely occupy them). The software gives more priority to the first criterion, then the second one and finally the third one. It then rates different scenarios and selects the best option out of them. The user can also define a power limitation at the delivery point as shown in Figure 5.4.2.3.
+53
+
+DESIGN METHODOLOGY
+Figure 5.4.2.3. Power limitation at delivery point. Users also have the possibility to select the type of layout they want as shown in figure 5.4.2.4. If they choose the regular block design option, the same power station shape will be repeated in the layout, using a shape that is as square as possible. If they choose the adaptative design option, the available area of the site will be covered using blocks of structures. The size of the block depends on the chosen DC/AC ratio.
+Figure 5.4.2.4. Type of Layout. 5.4.3. Distances The user can define some distances for the layout configuration as shown in Figure 5.4.3.1.
+54
+
+DESIGN METHODOLOGY
+Figure 5.4.3.1. Layout configuration. The pitch distance is defined in the application as the distance between the axis of two consecutive structures. Users can choose the desired pitch distance between structures. RatedPower, however, always gives a default recommended value. This recommended value ensures 40% of Ground Coverage Ratio (GCR) in the case of trackers. In the case of fixed structures, the recommended pitch distance makes sure that at least 4 hours of non-shaded production is achieved on the most unfavorable day of the year (the shortest day of the winter solstice). For E-W structures, the pitch distance is calculated as follows:
+ RatedPower calculates the minimum pitch distance: the one that makes the clearance distance 0.
+ It then adds an industry standard clearance distance value: For 1H or 1V: 0.3 m For 2V or 2H: 1 m For other configurations 2 m
+Users can also modify the clearance distance between the structures and the GCR. The clearance distance is the free space between the structures. The pitch distance, clearance distance and GCR are dependent on each other, thus changing one value also modifies the others.
+55
+
+DESIGN METHODOLOGY
+The user can also define the distance between structures as well as the distance between the structures and the perimeter. Figures 5.4.3.2. and 5.4.3.3. show the difference between the pitch distance and the distance between structures for both fixed structures and trackers.
+Figure 5.4.3.2. Pitch distance and distance between consecutive structures in fixed structures.
+Figure 5.4.3.3. Pitch distance and distance between consecutive structures in trackers 56
+
+DESIGN METHODOLOGY
+5.4.4. Layout configuration
+5.4.4.1. Roads Layout This consists of defining the configuration of the internal roads of the PV plant:
+ Only horizontal roads: The route of the roads will connect all the Power Stations following an East-West direction to the access points of the plots.
+ Horizontal and perimeter roads: The route of the roads will connect all the Power Stations following an East-West direction and the perimeter roads with access points of the plots.
+ Only vertical roads: The route of the roads will connect all the Power Stations following a North-South direction to the access points of the plots.
+ Vertical and perimeter roads: The route of the roads will connect all the Power Stations following a North-South direction and the perimeter roads with access points of the plots.
+ Full perimeter roads: This option surrounds all the structures of an area by a perimeter road where the power stations are placed. This configuration is only available for designs of no more than 5 power stations.
+ Minimal perimeter roads: This option places all the power stations in the perimeter of the site and connects the power stations to the available area access point minimizing the road length. This configuration is only available for designs of no more than 5 power stations.
+ No roads: This option places the power station close to the access point and no roads will be planned on site. This configuration is only available for designs with 1 power station or less than 5ha per available area (AA). User-defined "shortcuts" will not be considered for this option either.
+57
+
+DESIGN METHODOLOGY
+Figure 5.4.4.1. Example of the road configurations. The width of the roads can also be modified in this section.
+58
+
+DESIGN METHODOLOGY
+5.4.4.2. Structure alignment In this section, the user can select the structure alignment with respect to the border of the parcel. There are two options: uniform arrangement and border adaptation.
+Figure 5.4.4.2. Adaptation mode. 5.4.4.3. Rotation RatedPower allows the user to choose the structure position that he desires between the four available options that are shown in Figure 5.4.4.3.
+Figure 5.4.4.3. The four different structure positions. 59
+
+DESIGN METHODOLOGY
+The first two options, standard and rotated layout, are available for all types of trackers and fixed structures. Layout offset and layout turning angle axis, however, are only available for single-row trackers and fixed structures. By default, single-axis trackers will be installed following the N-S direction, and fixed structures following the E-W direction. The rotated layout, layout offset, and layout turning angle axis options allow modifying the turning angle shown inside the red box in Figure 5.4.4.3. The UTM convergence correction can be enabled or disabled. This option will apply a rotation in the structures to counteract the UTM convergence effect. If the UTM convergence correction is enabled, the structures will be aligned with the real North-South axis (or East-West for fixed structures) in the WGS 84 geographical coordinate system. A rotation may then appear in the Layout DXF coordinates, in the UTM coordinate system. 5.4.5. Power station location RatedPower gives the user the choice to select between placing the power station inside or outside the DC field. If the "Inside the DC field" option is chosen, structures are removed from the field to put the PSs in their place, thus reducing the margins left for the internal roads. This helps to increase the filling of the PV plant. The user can also modify the dimensions of these power stations as shown in Figure 5.4.5.
+Figure 5.4.5. Power station options. 60
+
+DESIGN METHODOLOGY
+5.4.6. Setbacks It is possible to customize the distance between certain elements of the PV plant, and those can be divided into two sections: AA setbacks, and RA setbacks. In the AA setbacks, prior to start defining the distances, the users have the option to choose the fence strategy they would like to use. It can either follow the AA perimeter, or to minimize the fence as much as possible close to the structures. It also includes distances such as from the area's perimeter to the fence, or from the power stations to the structures as shown in Figure 5.4.6.1. The minimum value for the Fence to structure is 2 m. For the Power Station (PS) to road setback and the structures to road setback, the minimum value is 1.5 m.
+Figure 5.4.6.1. AA Setbacks. Figure 5.4.6.2 allows the user to visualize what each setback refers to.
+61
+
+DESIGN METHODOLOGY
+Figure 5.4.6.2. Schematic diagram for AA setbacks. 62
+
+DESIGN METHODOLOGY
+The RA setbacks allow us to do a variety of configurations, especially when we are using different types of RAs, as shown in Figure 5.4.6.3. Those can be described as:
+ RA Name- Can choose a name that will be shown in the layout and documentation.  RA Color- Can either select a color or type in the color code.  Fence strategy- Choose from the 3 options the most suitable fence strategy for
+the layout. Not available for substation (ST) and SBS (Switching & Breaking Station).  Setbacks- Define the distances from the RA to structure, and from RA to fence.  Road strategy- Choose from the 2 options the most suitable road strategy for the layout. Not available for substation (ST) and SBS (Switching & Breaking Station).
+Figure 5.4.6.3. RA Setbacks. There are 3 strategies for the fences around the restricted areas, which can be described below:
+63
+
+DESIGN METHODOLOGY
+1. Prevent the fence from crossing the RA
+Figure 5.4.6.4. Schematic diagram for RA setbacks. 2. Keep RA inside the PV plant
+Figure 5.4.6.5. Schematic diagram for RA setbacks. 64
+
+DESIGN METHODOLOGY
+3. Let the fence cross RA
+Figure 5.4.6.6. Schematic diagram for RA setbacks.
+65
+
+DESIGN METHODOLOGY
+5.5. Topography
+5.5.1. Topography limitation tool RatedPower offers a topography limitation and earthworks tool. It allows users to set different criteria. These criteria are:
+ The maximum North-South slope limit (structure installation limit), with the possibility of setting a common limit for both slopes or to differentiate between each orientation.
+ North-South Earthworks between the structure installation limit and a maximum value (apply earthworks up to).
+ The maximum East-West slope limit (structure installation limit).  East-West Earthworks between the structure installation limit and a maximum
+value (apply earthworks up to).  The maximum post length limit (Undulation tolerance).  Terrain undulation Earthworks between the structure installation limit and a
+maximum value (apply earthworks up to).  The linked-row installation limit.
+Figure 5.5.1.1. RatedPower's topography analysis tool. 66
+
+DESIGN METHODOLOGY
+To apply the limitations defined with the tool, the option to remove the structures that exceed the limits needs to be enabled.
+Figure 5.5.1.2. Apply topography limitations. All criteria (except for the linked-row criterion) have two options, an installation or tolerance limit, and an earthworks mode. The linked-row structure limit option is only available when a linked-row tracker is selected.
+Figure 5.5.1.3. RatedPower's topography analysis tool for linked-row. This option allows the user to set a slope limit. For example, with slope limit at 5% as shown in the image above, RatedPower will remove any linked-row tracker which has a slope of 5% or above between its rows (not underneath them). Even if a linked-row tracker consists of 12 rows and the slope between only 2 of these rows is above the set limit, the whole linked-row tracker will be eliminated from the final design. To apply the North-South criterion, the first step is to activate the "Apply limits and earthworks" button. After that, two options will be available for the user to choose from:
+ Apply the same value for both slopes.  Differentiate between north and south slopes.
+67
+
+DESIGN METHODOLOGY
+Figure 5.5.1.4. RatedPower's topography analysis tool. Option 1: Same values for both slopes If the user chooses this option, the software will check the slope value below the structure (whether it's a tracker or a fixed structure) in the north-south direction. For example, using the example shown in the image below, any structure installed above a north-south slope of 7 % or more will be removed from the final design.
+Figure 5.5.1.5. RatedPower's topography analysis tool for North-South criteria 68
+
+DESIGN METHODOLOGY
+Option 2: Differentiate between north and south slopes This option allows the user to set an installation limit and choose whether or not to apply earthworks for North Slopes and South slopes. He can either choose to set limits for both slopes or only one by clicking on the checkboxes. The logic used by the software for the removal of structures and the application of earthworks is the same as in the case of option 1.
+Figure 5.5.1.6. Topography analysis tool with North-South differentiation. To apply the East-West criterion, the first step is to click on the "Apply Limits and Earthworks" button. For this criterion, the user can only apply the same limit for both East and West-facing slopes (similar to option 1 for North-South slopes).
+69
+
+DESIGN METHODOLOGY
+Figure 5.5.1.7. RatedPower's topography analysis tool for East-West criteria. The final criterion is the terrain undulation criterion. This parameter allows the user to set a maximum limit on the difference in pile length between the shortest and longest pile of the same structure.
+Figure 5.5.1.8. RatedPower's analysis tool for undulation tolerance criterion. The figure below provides a visual representation of what this refers to.
+70
+
+DESIGN METHODOLOGY
+Figure 5.5.1.9. Visual representation of how the undulation tolerance limit works. 71
+
+DESIGN METHODOLOGY
+5.5.2. Earthworks RatedPower also allows to apply earthworks to the terrain underneath a structure that exceeds the slope limits. The user will need to define a range of slope percentages. For the structure within this range, all the necessary cuts and fills to reduce the slope will be applied. However, if the slope is initially above the range, the structure will be removed from the final design. The slope limitation can be defined in the North-South direction or the East-West direction.
+Figure 5.5.2. RatedPower's earthwork tool example. In this example, the structures will be distinguished according to the slope underneath in the North-South direction:
+ <10%: the structure will be installed without earthworks.  between 10% and 25%: the structure will be installed but cut and fill will be applied
+to decrease the slope to 15%.  >25%: the structure will not be installed. Based on these results, RatedPower will calculate the total necessary cut and fill volume and include these values in the Design Report and the BOQ. It will also generate a Listing
+72
+
+DESIGN METHODOLOGY
+of Posts spreadsheet, a Topography Analysis DXF, and a Structure Profiles zip file that includes various CAD files. 5.5.3. Preview The status of the different structures can be seen in the map following the colors shown in the tools:
+ light blue : these structures will be installed.  dark blue: these structures will be installed but are outside certain limits. This
+will be the case if the slope limit is selected but the option to remove structures that exceed the limits is not enabled.  orange: these structures will be installed but will require earthworks.  light brown: these are earthworks platforms or boundaries, which include the different groups of structures where earthworks will be applied simultaneously.  green: these structures will not be installed because they exceed the slope limit and the option to remove structures that exceed the limits is enabled.  purple: these structures will not be installed because they exceed the undulation tolerance limit and the option to remove structures that exceed the limits is enabled.
+Figure 5.5.3. preview of the structures with topography limitations.
+73
+
+DESIGN METHODOLOGY 5.6. Grid Point
+5.6.1. Electrical standards RatedPower allows users to size their interconnection facility based on two electrical standards such as IEC or IEEE, as well as select the maximum current for the MV lines and the voltage level of the medium voltage system. The range of the MV system is between 5 and 45 kV, and it is connected in branches (lines), not in a ring connection.
+Figure 5.6.1. Electrical standards for sizing the interconnection facility. 5.6.2. Connection Type RatedPower offers the basic engineering of a substation. Users can opt for a switching and breaking station or a generic substation. The switching and breaking station is only enabled for PV plants of up to 100 MVA and a total current of no more than 2100 A. Its objective is to connect various medium voltage cables together and then to transmit them to the point of distribution or consumption. The
+74
+
+DESIGN METHODOLOGY
+step-up substation, on the other hand, elevates the voltage level from medium to high voltage. If the user selects the step-up substation, they can choose to get an automatic result based on the size of your PV plant which could be a line to transformer, a single busbar or a double busbar substation. However, they can also opt to manually choose any of the three options. If the substation option is selected, the user can also define the high voltage level from 46kV to 400kV, as shown in Figure 5.6.2.1.
+Figure 5.6.2.1. Connection type options. In both cases, the user can also choose to set an overhead line voltage drop.
+75
+
+DESIGN METHODOLOGY
+also allows the users to configure the power transformers. They can select two or three winding transformers, or size the transformer based on the capacity or the number of bays. There's also the option to specify the output number of bays.
+Figure 5.6.2.2. The substation's transformer configuration.
+76
+
+DESIGN METHODOLOGY
+5.6.3. Overhead Line Users can also provide inputs for the overhead line or gen-tie. In the first part, there's the capacity over estimation, number of circuits and number of conductors per phase.
+Figure 5.6.3.1. Overhead line configuration. Following that, the user can pick the phase conductor type. There are two options here, one is AAAC (All aluminum alloy conductor), and ACSR (Aluminum conductor steel reinforced).
+77
+
+DESIGN METHODOLOGY
+Figure 5.6.3.2. Phase conductor configuration. The two following tabs will let the user choose the earth wire and tower shape. RatedPower has 6 tower shapes available (3 per each number of circuits option).
+Figure 5.6.3.3. Earth wire configuration. 78
+
+DESIGN METHODOLOGY
+Figure 5.6.3.4. Tower shape configuration. At the end of the overhead line section, the user can set a maximum voltage drop. RatedPower then dimensions the OHL to respect this limit. The actual calculated voltage drop is displayed directly below.
+Figure 5.6.3.5. Overhead line voltage drop. 5.6.4. Losses In this tab, the users can choose the losses for the transformer, and the overhead line voltage drop. It can be disabled as well.
+Figure 5.6.4. The substation's transformer losses and overhead line voltage drop. 79
+
+DESIGN METHODOLOGY
+5.6.5. Grid requirements In RatedPower, users can select whether they want to enable sizing using the power factor requirements (cosine of phi) or not. If this option is not selected, the reactive power will not be considered during the calculation process. If, however, this option is selected, the AC capacity will be calculated accounting for reactive power. There are 2 available strategies for power factor sizing and thus reactive power compensation:
+a. Installing additional inverters in the field to compensate reactive power. b. Adding both inverters in the field and capacitor banks in the substation.
+Figure 5.6.5.1. Power factor requirements. Depending on the selected strategy, the user can also define where to measure the power factor and what value to measure there ('required power factor') by clicking on 'Define strategy settings'. As shown in Figure 5.6.5.2, for the inverter-only strategy, he can define this point either at the input or at the output of the substation.
+80
+
+DESIGN METHODOLOGY
+Figure 5.6.5.2. Reactive power compensation settings for the inverters-only strategy.
+For the inverter and capacitor bank strategy, the user can define the power factor compensation point at the input of the substation, at the output of the substation or at the end of the overhead line (OHL) as shown in Figure 5.6.5.3.
+81
+
+DESIGN METHODOLOGY
+Figure 5.6.5.3. Reactive power compensation settings for the inverter and capacitor bank strategy.
+When sizing while the power factor option is enabled, the DC field is clearly affected. No matter what power factor is selected, the power factor at the inverter output (estimated cosine of phi) will be lower than 1 (due to various reasons like cable losses, transformer losses, substation losses, etc...). The plant will inject less overall active power and will generate/consume reactive power. This information can be checked in the Energy Yield Report in the "Yields and losses for the first year" table. Applying a power factor has various effects on the electrical configuration and performance of the PV system. Assuming that no changes have been made to the PV module, the lower the power factor applied, the higher the DC/AC ratio will be (as the total active AC power decreases). However, to compensate for this effect, more capacitor banks and/or inverters are installed to achieve the same installed capacity. For example, if the inverter only strategy and power factor is enabled in RatedPower, more inverters will be installed to compensate for the reactive power. This is better
+82
+
+DESIGN METHODOLOGY
+illustrated by the example in Figure 5, where more inverters need to be installed to maintain the same total PV plant capacity at a lower power factor.
+Figure 5.6.5.4. PV plant with two different Power Factors (a. Only inverters strategy).
+This can be understood better by observing Equation 1. Equation 1: Where:
+ PDC is the peak DC power output of the PV plant.  PAC is the maximum AC power output of the PV plant. PAC = SAC * Power factor
+(where SAC is the total apparent AC power output of the plant). Thus, when the power factor is less than 1, PAC becomes smaller thus increasing the DC/AC ratio.
+83
+
+DESIGN METHODOLOGY
+5.7. Electrical
+5.7.1. Solar field 5.7.1.1. String positioning within a structure The string positioning within a structure could be chosen between:
+ Pitch grouping: Strings will be formed favoring the connection of the modules in the pitch direction.
+ Axial grouping: Strings will be formed favoring the connection of the modules in the axial direction.
+Figure 5.7.1.1. String grouping. This configuration will affect the length of string cables and the shading mismatch loss in energy production. 5.7.1.2. Configuration Type There are two types of configurations in the case of central inverters and two in the case of string inverters. In the case of central inverters:
+ String Box: The strings of modules are connected to a string box. And groups of string boxes are connected to central inverters.
+ DC Bus System: The strings are connected to a DC Bus collector connected to a string box. The connections then reach the inverters.
+84
+
+DESIGN METHODOLOGY
+Figure 5.7.1.2.1. Configuration available for central inverter In the case of string inverters:
+ String Inverter (Field): The strings are connected directly to the string inverters. The string inverters are located in the field (outside the power stations).
+ String Inverter (Station): The string inverters, in this case, are located in the power stations.
+Figure 5.7.1.2.2. Configuration available for string inverter The user can choose the number of strings connected. This section will not appear for string inverters. If the user had chosen central inverters in the Equipment tab the next options would be available in this section:
+ If the user chooses a String Box for the Low Voltage Electrical Configuration, the user will also be able to choose the maximum number of strings per box. To achieve an exact DC/AC ratio, other values of strings per box may also be used.
+Figure 5.7.1.2.3. Maximum strings per box for String Box Low Voltage Configuration. 85
+
+DESIGN METHODOLOGY
+ If the user chooses a DC bus type for the Low Voltage Electrical Configuration, the user will also be able to choose the maximum number of strings per DC bus. To achieve an exact DC/AC ratio, other values of strings per DC bus may also be used.
+Figure 5.7.1.2.4. Strings per DC Bus for DC Bus System Low Voltage Configuration. The strings per box and strings per DC Bus must be multiples of the number of strings per structure, defined in the Equipment tab. RatedPower always gives 12 (or the closest possible number to 12) as a default recommended value. The minimum value will be the number of strings per structure and the maximum value will be 32 (or the closest value less than 32). The chosen value by the user will be used as much as possible but other numbers of strings per box or strings per DC Bus can be used by RatedPower to achieve the global DC/AC ratio desired by the user. To do so, RatedPower will try with configurations between half of the selected value and the maximum value. To understand this better we can see the example:
+Figure 5.7.1.2.5. Strings per box configuration example. 86
+
+DESIGN METHODOLOGY
+Here, the default value will be 16 and will be used as much as possible. However, in order to achieve the target DC/AC ratio, boxes of 14, 12, 10 and 8 can also be used.
+There is no lower limit to the number of strings per box for designs that include partial structures, as it is possible to have structures that are smaller than the minimum size of a box.
+5.7.1.3. Harness
+It's possible to add DC harness cables to collect a certain number of strings into one before reaching the LV collector. The strings connected together need to be from the same structure. Thus, if the number of strings per structure is just 1, this option will not be available.
+If this option is enabled, the number of strings per harness and the number of harnesses per collector can be defined.
+
+5.7.2. Cable Sizing
+
+Figure 5.7.1.3. Harness configuration.
+
+5.7.2.1. Electrical Standard
+RatedPower gives users the option of choosing between four different electrical standards for sizing the cables. These different options are the IEC standard (International Electrotechnical Commission), the NEC (National Electrical Code), AUS (Australian standard) and CN (Chinese Standard).
+
+87
+
+DESIGN METHODOLOGY
+Figure 5.7.2.1. Electrical standards for cable sizing. Each standard calculates the cable and fuse sizes differently. The IEC, AUS and CN standards provide cable sections in mm2, while the NEC provides them in AWG (American Wire Gauge) and kcmil. Additional information regarding the different criteria behind these two electrical standards can be found in our Electrical Methodology. 5.7.2.2. Maximum voltage drops Users can also choose the maximum allowed voltage drop percentage for both the DC side as well as the medium voltage side. The smaller these values are, the bigger cable dimensions are. In the case of string inverters, users can also modify the AC side voltage drop limit.
+88
+
+DESIGN METHODOLOGY
+Figure 5.7.2.2. Maximum allowed voltage drops per subsystem. 5.7.2.3. Cables The user can also choose the cross-sections they want to allow the software to take into account for the string cables, the AC cables and the MV cable. The software will then automatically choose the best section for each cable among those available. The software will reduce the number of different cables by choosing only one or two different crosssections for each type of cable.
+Figure 5.7.2.3.1. Available sections for cable sizing. 89
+
+DESIGN METHODOLOGY
+The user can also define:  The maximum number of unified sections: 1-3  The maximum number of circuits per polarity: 1 or 2  The material: Aluminum of Copper  The insulator type: XLPE, EPR or PVC  The core: single DC or Multiple DC  If the cables are under direct sunlight (only available for string cables)
+Figure 5.7.2.3.2. Available options for cable. 5.7.2.4. Cable sizing parameter The user can also set the ground temperature and the soil thermal resistivity. These parameters will impact the cable sizing.
+90
+
+DESIGN METHODOLOGY 5.8. BESS
+In RatedPower, the user can design an AC-coupled battery energy storage system (BESS) or a DC-coupled BESS. DC-coupled BESS requires the use of a central inverter, while AC-coupled BESS requires the definition of an area for the BESS during site creation.
+Figure 5.8. BESS type options. 5.8.1. AC coupled BESS 5.8.1.1. Power Conversion System In this section within the BESS tab, the inverter type and the number of inverters per PCS are selected, thus establishing the power of the PCS or minimum unit of the system.
+91
+
+DESIGN METHODOLOGY
+Figure 5.8.1.1. AC-BESS Power Conversion System. 5.8.1.2 Battery container In RatedPower, we assume that the storage solution is modular. The user can set the capacity of a battery container. Alternatively, he can set the capacity of a single battery rack and the number of racks to include per container. And RatedPower will install the necessary number of containers according to the system requirements.
+Figure 5.8.1.2. Battery container. 92
+
+DESIGN METHODOLOGY
+5.8.1.3. BESS requirements This section establishes both the power requirements and the supply hours of the BESS. For the power requirements, maximum capacity or specific capacity can be chosen.
+ Maximum capacity: with this option, the maximum possible power will be installed in the area defined for the BESS.
+ Specific capacity: In this section, a specific size for the battery system can be configured by defining the number of PCS to install. The system power will be the multiple of the PCS power.
+Figure 5.8.1.3.1. AC-BESS requirements. Then, the supply cycle duration is calculated as capacity (MWh) divided by rated power (MW).
+Figure 5.8.1.3.2. AC-BESS Supply Cycle Duration. 93
+
+DESIGN METHODOLOGY
+5.8.1.4. BESS layout In the BESS layout section, the dimensions of both PCS and containers can be defined.
+Figure 5.8.1.4.1. AC-BESS Layout. In addition, both the distance between adjacent blocks and the distance between opposing blocks can be defined. According to the NFPA 855 standard, the minimum safety distances between containers or between containers and PCS are 0.9144 m (3 ft) and 1.524 m (5 ft) respectively.
+94
+
+DESIGN METHODOLOGY
+Figure 5.8.1.4.2. AC-BESS Distances. 5.8.2. DC coupled BESS In the case of the DC-coupled BESS, the BESS containers are placed next to the main power station inside the DC field as shown in Figure 5.8.2.
+Figure 5.8.2. DC-BESS containers in the layout. 95
+
+DESIGN METHODOLOGY
+5.8.2.1. Power Conversion System In this section, for DC-BESS, the user can set the parameters of the DC/DC converters (buck/boost converter). The first parameter to define is the DC/DC converter power. Once the maximum continuous power of each DC/DC converter has been set, the user can define the number of converters connected to one central inverter (this must be an integer number).
+Figure 5.8.2.1. DC-BESS Power Conversion System. 5.8.2.2 Battery container For the battery container part, the options are the same for both AC coupled BESS and DC coupled BESS. 5.8.2.3. BESS requirements This section establishes both the power requirements and the supply hours of the BESS. The power requirements can be selected as maximum power or specific power. It works in the same way for AC and DC coupled BESS. For the BESS supply duration, the final objective is to determine the number of battery containers required for each power station (PS). The user has the flexibility to select up to a maximum of 6 containers per PS. By default, the software pre-selects 1 container per PS. This is set by selecting the 'Minimum supply cycle duration' in hours from the dropdown menu. As a result, the interface displays the total number of battery packs per PS with storage and the maximum C-rate in [1/hour].
+96
+
+DESIGN METHODOLOGY
+Figure 5.8.2.3. DC-BESS Supply Cycle Duration. 5.8.2.4. BESS layout In the DC-BESS layout section, the dimensions of the battery containers can be defined.
+Figure 5.8.2.4.1. DC-BESS Layout. In the same section, different setbacks can be also set:
+ Power Station (PS) to Battery Container: This distance must be greater than 5 feet (1.524 m) according to the NFPA 855 standard.
+ Distance between battery Containers (only if more than 2 Battery Containers per PS): The distance between battery containers must be greater than 3 ft (0.9144 m) in accordance with NFPA 855.
+ Battery container to structure: This distance shall be greater than 5 feet (1.524 m) in accordance with NFPA 855.
+ Battery container to road: It is possible to manually define the distance from the battery container to the road. The minimum value is 1.5m.
+97
+
+DESIGN METHODOLOGY
+Figure 5.8.2.4.2. DC-BESS Distances. 98
+
+DESIGN METHODOLOGY
+5.9. Energy
+5.9.1. Simulation In this section, the user can choose the number of years of the simulation. This only affects how much data will be generated in the documentation. The interannual variability (standard deviation) can also be defined. This value will be used to calculate the energy produced in P50, P75, P90, P95 and P99 scenarios. These values are available in the Energy Yield Report and the Energy Yield Results (first tab of the excel sheet).
+Figure 5.9.1. Energy simulation parameters 5.9.2. Horizon The solar irradiance reaching the photovoltaic modules will change if there are hills or mountains on the horizon. These physical obstructions will block the beam component of the irradiance during some periods of the day and will have an impact on the diffuse component as well. Therefore, the horizon profile directly impacts the energy yield of the photovoltaic plant. RatedPower gets the horizon data from PVGIS 5. Unlike the meteorological data, the PVGIS 5 horizon database is available worldwide. A flat horizon option (a horizon without any obstacles) is also available. 5.9.3. Surface Albedo Surface albedo is the value that reflects the ratio of reflected light to that of the total incident sunlight at a certain site. It depends hugely on the type of surface (terrain) and its reflective characteristics.
+99
+
+DESIGN METHODOLOGY
+RatedPower gives users the possibility to choose between various surface albedo options or choosing the MODIS sensor. The MODIS (Moderate Resolution Imaging Spectroradiometer) albedo data source is a key instrument aboard the NASA Terra and Aqua satellites. The data has a monthly temporal resolution and is derived from long term measurements taken from 2000 to 2017. The albedo value for each month is the average of all the available data values for that month. The spatial resolution is 0.1° in latitude and 0.1° in longitude, which is equivalent to a grid of 11x11km at the equator. At locations further from the equator, the resolution in kilometers increases. NASA Power albedo can also be used in this section. It is available in all temporal levels from 1984 (2001 hourly) to within months of near real time (NRT). It uses both GEWEX SRB 4-IP and CERES SYNDeg Ed. 4.1. Its calculation is based on the ratio of the sunlight reflected by the surface of the earth to the total solar energy incident on the surface. The horizontal resolution of the primary solar data source is a global 1° in latitude and 1° in longitude grid, while the meteorological data sources are 0.5° and 0.625° respectively. RatedPower also offers various yearly fixed albedo options depending on the type of terrain of the site. These include:
+ MODIS BSA (default) this value changes depending on the site  NASA_POWER_ALBEDO this value changes depending on the site  A default (bare ground) option with an albedo value of 0.2  Bare soil with an albedo value of 0.17  Grass with an albedo value of 0.25  Dry grass with an albedo value of 0.3  Sand with an albedo value of 0.36  White pebbles with an albedo value of 0.58  Snow with an albedo value of 0.65 An alternative option is to create an albedo data monthly or yearly profile by clicking on the "+" button to the left of the first card as shown in Figure 5.9.3.
+100
+
+DESIGN METHODOLOGY
+Figure 5.9.3. Albedo data. 5.9.4. PV Module Losses In this part, the user can choose the values for some of the main PV plant losses.
+ First Year PV Module Degradation: losses caused by the degradation of the characteristics of the modules. This factor applies for the first year only.
+ Yearly PV Module Degradation: losses caused by the degradation of the characteristics of the modules. This parameter reduces the energy production generated by the PV plant every year. 101
+
+DESIGN METHODOLOGY
+ Soiling Losses: losses caused by the formation of layers of dirt, dust, or snow on the surface of the PV modules. It can be set on a yearly or monthly basis. A separate soiling loss parameter is also available for bifacial modules.
+ Module Quality: this can yield either a loss (when positive) or gain (when negative). It is due to the power tolerance guaranteed by the manufacturer.
+ Module Light-Induced Degradation (LID): losses due to the degradation of the PV modules during the first few days after installation.
+ Mismatch: the loss due to electrical mismatch between modules caused by the varying power of these modules.
+ Bifacial mismatch: the loss caused by heterogeneous illumination of the backface, usually due to the presence of a torque-beam. (Not to be confused with the near shading losses due to the torque beam)
+Figure 5.9.4. PV modules losses. 102
+
+DESIGN METHODOLOGY
+5.9.5. PV Plant Losses
+In this category, several losses can be set:
+ Plant auxiliary loss: power consumption of the plant's auxiliary systems  Photovoltaic plant availability: losses due to the unavailability of the PV plant
+due to maintenance or any other circumstances.  Grid availability: losses due to the unavailability of the grid. The user can also enable the inverter's auxiliary consumption losses for the primary and secondary inverter which are:
+ Auxiliary consumption: consumption due to fans and other auxiliary equipment  Consumption threshold: power value from which the auxiliary loss is applied  Night loss 5.9.6. Advanced Configuration (Energy Tab)
+The user can also modify the following parameters:
+ Constant heat transfer coefficient: a parameter used to calculate the cell temperature of the PV module. It quantifies the heat dissipation between the module and the static air at ambient temperature. It is measured in W/m2K.
+ Wind loss factor: a parameter used to calculate the cell temperature of the PV module. It quantifies the additional heat dissipation produced by the air flow over the surface of the module. It is measured in W/m2K.
+ Table transparency: the percentage of how much light passes through the structure and the modules and illuminates the ground.
+The user can also define the IAM loss model. In Figure 5.9.3, we can see the different models of IAM loss for both the front-face and the back-face (in the case of bifacial modules) of PV modules.
+ Manufacturer IAM profile: this profile is taken directly from the PAN file.  ASHRAE model: uses an incidence angle modifier coefficient of 0.05.  Air-glass model: uses the index of refraction of normal glass of 1.526.  Air-glass model (AR coating): uses the index of refraction of glass with an anti-
+reflective coating of 1.3.
+103
+
+DESIGN METHODOLOGY
+Figure 5.9.6. Front and back face IAM loss models. Finally, the user can modify the time shift. It's a parameter used in the calculation of the solar position. It represents an offset in minutes from the reference time at which the solar position is calculated normally (middle point of the hourly or sub-hourly intervals).
+104
+
+DESIGN METHODOLOGY
+5.10. Financial Tab
+In this tab, users can select different cost templates which will be connected to all accounted entries of the Bill of Quantities (BOQ). Also, after defining a yearly OPEX and an energy selling profile, the pv plant revenue will be calculated and therefore a complete financial analysis will be carried out. By default, RatedPower uses predefined price sheets from our public repository depending on the region of your site. All these public CAPEX templates come from IRENA (International Renewable Energy Agency) for different years as well as for more than 30 countries. They can be easily cloned and make any changes if necessary. Users can either select to use the default CAPEX sheets or create their own ones, adding their internal prices and disabling any entry which they are not interested in. Both public and private templates will be stored on the CAPEX Template bar on the left side menu.
+Figure 5.10.1. RatedPower's library of CAPEX templates. While creating or cloning a CAPEX sheet, users can select between 18 different currencies: USD ($), EUR (), AUD ($), BRL (R$), CAD ($), CLP ($), CNY (¥), COP (Col$), CZK (Kc), GBP (£), INR (), JPY (¥), MXN ($), MZM (MTn), PLN (zl), RON (L), SEK (kr), ZAR (R). They can also set the price per unit as well as different taxes.
+105
+
+DESIGN METHODOLOGY
+Figure 5.10.2. RatedPower's CAPEX tool. After having selected a CAPEX template to be working with, the user can also define an annual OPEX for each iteration they run. Within combined with the discount rate, RatedPower will provide economical results such as the pv plant total investment, it's specific prices and the LCOE.
+Figure 5.10.3. RatedPower's Financial results. 106
+
+DESIGN METHODOLOGY
+Additionally, RatedPower will also provide a complete financial report. To do so, apart from using the previously defined CAPEX template, the yearly OPEX and the discount rate, users will also need to provide an energy selling profile in order to get the pv plant revenue. Users can either select between a "Fixed price" for the energy selling (having the same price for the hourly production, with an escalation factor) or going for a "Variable price" for a better assessment of their pv plant profitability.
+Figure 5.10.4. RatedPower's Energy price profiles. By selecting a "Variable price" profile, three different options will be appearing to let the user upload their specific price profiles for the pv plant financial assessment:
+Figure 5.10.5. RatedPower's 3 different variable price profiles. 1. 12 months x 24 hours: Users can define hourly prices for a representative day of
+each month. 2. 8760 hours: Users can define hourly prices for the first year of the pv plant lifetime. 3. 8760 hours x 50 years: Users can define hourly prices for the entire lifetime of the
+pv plant. Once a revenue profile has been defined, by clicking on `Show more/less' you will see all the different revenue profiles that were previously uploaded to the project. Users will be able to switch between all of them in further simulations.
+107
+
+DESIGN METHODOLOGY
+Figure 5.10.6. RatedPower's stored price profiles. Finally, clicking over each price profile on `show details', the card will be expanded with more detailed information about pricing.
+Figure 5.10.6. RatedPower's detailed price profile info. 108
+
+DESIGN METHODOLOGY
+ Maximum: First year maximum energy selling price.  Minimum: First year minimum energy selling price.  Average: First year average energy selling price.  Spread (First year average daily spread): The first-year average of the differences
+between the maximum and minimum daily prices. Finally, with the CAPEX template, the annual OPEX and the energy selling profile already defined, the calculation model will take all this info into consideration to carry out a complete financial analysis document. All the financial parameters calculated in this model such as Cash Flows, NPV, IRR, Payback and ROI among others (you can find the corresponding glossary at the end of this section) are listed below: Levelized Cost of Energy (LCOE) The levelized cost of energy is the relation between the total cost of producing the energy plant and its energy output, and it is calculated following the formulas shown below.
+Yearly "Free Cash Flow (FCF)" Free cash flow (FCF) is the money a company has left over after paying its operating expenses (OPEX) and capital expenditures (CAPEX).
+Yearly "Cumulative Free Cash Flow (CFCF)" Cumulative Free Cash Flow (CFCF) is calculated by adding up all the Free Cash Flow (FCF) since the inception of the PV project.
+Yearly "Discounted Free Cash Flow (DFCF)" Discounted Free Cash Flow (DFCF) is the present value of the Free Cash Flows (FCF).
+109
+
+DESIGN METHODOLOGY
+Yearly "Discounted Cumulative Free Cash Flow (DCFCF)" Discounted Cumulative Free Cash Flow (DCFCF) is the present value of the Cumulative Free Cash Flow (CFCF).
+Net Present Value (NPV) The net present value (NPV) of a PV plant is the difference between the present value of the revenue from selling the energy produced and the present value of all the operating costs over a certain period of time.
+Internal Rate of Return (IRR) The Internal Rate of Return (IRR) is a financial indicator used to measure the profitability of a potential investment. IRR reflects the discount rate that makes the net present value (NPV) equal to zero for a given period of time.
+110
+
+DESIGN METHODOLOGY
+Payback Period The Discounted Payback Period refers to the number of years it takes to recover the initial investment (CAPEX), discounting future cash flows and taking into account the time value of money. The following inequations system must be verified:
+Discounted Payback Period The Payback Period refers to the number of years it takes to recover the initial investment (CAPEX) of the PV plant. The year in which this initial investment is recovered must verify the following inequations system:
+Return on Investment (ROI) 111
+
+DESIGN METHODOLOGY
+Return on Investment (ROI) is a ratio that reflects the return on the PV plant's net income from the energy selling over a period of time versus the costs for the initial investment (CAPEX) and operation and maintenance (OPEX) throughout its lifetime.
+Glossary:   : is the capital expenditure. It refers to the investment cost required to develop the project.   : stands for operating expenses. It refers to the cost required to make sure that the pv plant is working properly throughout its entire lifetime. It includes the fixed operating costs introduced by the user [m.u/MWp] as well as the purchase costs for the nighttime consumed energy [m.u/MWh consumed].   : is the annual energy injected to the grid produced by the photovoltaic plant.   : It refers to is the money generated from PV plant operation   : is the discount rate   : is the total number of operation years. This parameter reflects the lifetime of the PV plant
+.
+112
+
+DESIGN METHODOLOGY 5.11. Settings tab
+The Settings tab is where the user can define the name of the design as well as adding notes. In the documentation settings, the languages and the unit system can be chosen.
+Figure 5.11.1. Design and documentation settings Finally, if the user is working on a project for a client, they can add the client's name and logo.
+Figure 5.11.2. Client's name and logo setting 113
+
+DESIGN METHODOLOGY
+6. Simulation procedure
+Once the parameters are selected by the user, the software starts to design and optimize the PV design following these steps:
+1. The layout of the modules and structures. The first step is to draw multiple positions of structures and roads in order to maximize the power of the project. Once the software finds the best option, the position of the modules and structures is defined. This takes into account an additional safety distance between the fences and the PV modules.
+2. The layout of the electrical equipment. Based on the electrical equipment defined by the user, the software will define the blocks that best fit the configuration for each inverter, string box, or DC bus. It locates these elements in the optimum position.
+3. The layout and definition of cables and trenches. Cables and trenches are laid down based on the positions of the electrical equipment defined in Step 2. The algorithm tries to find the shortest path to minimize cable length. After that, all cables are sized based on either the IEC or the NEC electrical standard. More information on this topic is available in our Electrical Methodology.
+4. Energy Yield. Once all the elements of the layout are defined, the software calculates the energy yield production of the PV plant. More information regarding how these calculations are done, can be found in our Energy Yield Methodology.
+5. Documentation. The final step is to generate all the documents and drawings needed for requesting the proposal of the project.
+6.1. Batch design tool
+The user can choose to create one design or generate up to 10 different designs simultaneously using the Batch Design tool available by clicking the arrow next to the "Run Design" button.
+Figure 6.1.1. "Run batch" button
+There are three batch design options, allowing the user to vary either the Pitch distance, the DC/AC Ratio or the Tilt angles.
+114
+
+DESIGN METHODOLOGY
+ Pitch distance: Starting from the minimum value of the distance between structures (indicated as `Min. Pitch distance'), RatedPower will simulate up to 10 versions of the design. Each version will be assigned a pitch value higher than the previous one by the increment (`Pitch distance step value') defined.
+Figure 6.1.2. Batch design's pitch distance option
+115
+
+DESIGN METHODOLOGY
+ DC/AC ratio: This tool allows the user to simulate up to 10 designs with different DC/AC ratios. The first design will have the minimum DC/AC ratio defined by the user, while the subsequent designs will have a higher DC/AC ratio than their precedent one by the increment value (the step value). The user can choose specific capacity or maximum capacity.
+Figure 6.1.3. Batch design's DC/AC ratio option
+116
+
+DESIGN METHODOLOGY
+ Tilt angle: For fixed structures the user can generate up to 10 designs while varying the Tilt angles. The first design will have the tilt angle that the user set for the original design while the subsequent designs will have a higher tilt angle than their precedent one by the increment value (the step value). The user can change the angle step value or change the max tilt angle to acquire a set of wanted angles. As the tilt angle is intertwined with pitch distance, the user can choose to vary both at the same time or keep the same pitch distance for all tilt angles.
+Figure 6.1.4. Batch design's tilt angle options
+117
+
+DESIGN METHODOLOGY
+7. Simulation results
+Once the design is generated the user can open it, and there he will see three main tabs. Results are displayed in the Overview followed by the Energy and the Configuration. The user can also have a 3D view of their design in the last tab The Overview tab contains the final layout of the PV plant. Components such as structures, cables, trenches, power stations, roads, OHL and others can be seen. It provides general information about the system including important metrics as shown in the blue box below.
+Figure 7.1. Simulation overview. The Energy tab provides comprehensive details on the energy yield, solar resource, albedo, horizon, as well as the system's losses and gains for the initial year.
+118
+
+DESIGN METHODOLOGY
+Figure 7.2. Energy results. Finally, on the last tab, we have the 3D view of the PV plant.
+Figure 7.3. 3D View. 119
+
+DESIGN METHODOLOGY
+8. Documentation
+Once the design is completed, supporting documentation related to the design is generated. The documentation generated consists of reports, spreadsheets, and drawings. It is important to mention that the generated CAD files for the layout and slopes are georeferenced.
+Documents
+ Design Report (DOCX, PDF)  Energy Yield Report (DOCX, PDF)  Interconnection Facility Report (DOCX, PDF)  BESS Design Report (DOCX, PDF)  Overhead line report (DOCX, PDF)
+Spreadsheets
+ Project Sheet (XLSX)  Bill of Quantities (XLSX)  Financial Analysis (XLSX)  Energy Yield Results (XLSX)  Listing of Cables (XLSX)  Listing of Posts (XLSX)  Terrain XYZ (CSV)  Power flow model (XLSX)
+Drawings
+ General layout (PDF, DXF, KML)  Layout 3D (DWG)  3D scene (PVC) (ZIP)  MV Single Line Diagrams (PDF, DXF)  LV Single Line Diagrams (PDF, DXF)  MV-LV Single Line Diagrams (PDF, DXF)  Topography Analysis (Terrain slopes) (PDF, DXF, KML)  Structure Profiles (ZIP)  Interconnection Facility SLD (PDF, DXF)  Interconnection Facility Layout (PDF, DXF)  BESS General Layout (PDF, DXF, KML)  BESS MVLV SLD (PDF, DXF)  Overhead line layout PDF, DXF)
+120
+
+DESIGN METHODOLOGY 8.1. Documents
+8.1.1. Design Report The design report is a document that describes the site location, topography, solar resource, equipment, and configuration of the whole project. It is generated in both PDF and Word formats.
+Figure 8.1.1. Design report. 121
+
+DESIGN METHODOLOGY
+8.1.2. Energy Yield Report Its purpose is to describe the methodology used to compute the energy yield of the PV plant and to present the results obtained. It is generated in both PDF and Word formats.
+Figure 8.1.2. Example of energy yield report. 122
+
+DESIGN METHODOLOGY
+8.1.3. Interconnection Facility Report Its purpose is to describe the interconnection facility, and everything related to the MV and the HV systems. It is generated in both PDF and Word formats.
+Figure 8.1.3. Example of the interconnection facility report. 123
+
+DESIGN METHODOLOGY
+8.1.4. BESS Design Report The BESS design report is a document that describes the site location, the equipment, and sizing of the BESS. It is generated in both PDF and Word formats.
+Figure 8.1.4. Example of the BESS design report. 124
+
+DESIGN METHODOLOGY
+8.1.5. Overhead Line Report The OHL or Gen-tie report is a document that describes the site location, line characteristics, electrical and mechanical calculations, and tower geometry. It is generated in both PDF and Word formats.
+Figure 8.1.5. Example of the OHL report. 125
+
+DESIGN METHODOLOGY 8.2. Spreadsheets
+8.2.1. Project Sheet The project sheet consists of a one-page summary of site characteristics, equipment, and configuration of the PV project. It is generated in Excel format.
+Figure 8.2.1. Project sheet.
+126
+
+DESIGN METHODOLOGY
+8.2.2. Bill of Quantities The bill of quantities consists of a detailed list of main equipment, civil works, electrical equipment, and some miscellaneous items and is needed for requesting the proposal. It is generated in Excel format. Additional information regarding the different entries of the BOQ can be found in the BOQ Methodology.
+Figure 8.2.2. Example of Bill of Quantities.
+127
+
+DESIGN METHODOLOGY
+8.2.3. Financial Analysis The financial analysis consists of a detailed document where all the units and prices of all the entries selected in the Cost bar are shown. The quantities of these units are also used to calculate the CAPEX of the design.
+Figure 8.2.3. Example of Financial Analysis.
+128
+
+DESIGN METHODOLOGY
+8.2.4. Energy Yield Results It shows a summary of the PV plant's production and different system losses. It also accurately shows the hourly production during the whole lifetime of the plant. It is generated in Excel format. For additional information regarding the energy calculation, please check our Energy Yield Methodology.
+Figure 8.2.4. Example of Energy Yield Results.
+129
+
+DESIGN METHODOLOGY
+8.2.5. Listing of Cables It shows a complete list of all the cables found in the layout divided into subsystems. It includes information like cable characteristics, power, voltage, current, and voltage drop throughout each cable. It is generated in Excel format. For additional information regarding the calculation process of the cross-sections of these cables, please check our Electrical Yield Methodology.
+Figure 8.2.5. Example of Listing of Cables.
+130
+
+DESIGN METHODOLOGY
+8.2.6. Listing of Posts It shows a complete list of all the structures and posts found in the layout. It includes information like the locations, the slopes and other criteria. It is generated in Excel format.
+Figure 8.2.6. Example of Listing of Posts.
+131
+
+DESIGN METHODOLOGY
+8.2.7. Terrain XYZ This file shows the terrain elevation points of the site.
+II Figure 8.2.7. Example of Original terrain XYZ.
+132
+
+DESIGN METHODOLOGY
+8.2.8. Power flow model The Power Flow Model (PFM) document describes the flow of energy that occurs through the different parts of the PV plant, BESS, interconnection facility, and overhead lines (gentie).
+Figure 8.2.8. Example of power flow model in xlxs format.
+133
+
+DESIGN METHODOLOGY 8.3. Drawings
+8.3.1. General Layout The general layout covers the main equipment, structures, roads, perimeter fences, DC and MV cabling, trenches, and substation location. Every item is divided into layers. It is generated in PDF, in CAD (DXF) and in KML.
+Figure 8.3.1. Example of General Layout in CAD format.
+134
+
+DESIGN METHODOLOGY
+8.3.2. Layout 3D The layout 3D covers the structures, roads, power stations, available area location, and substation location. This file can be downloaded in CAD (DWG).
+Figure 8.3.2. Example of Layout 3D in CAD format. 8.3.3. 3D scene (PVC) This document is a .zip folder with one or more .PVC files. This document allows users to export the shading scene from RatedPower to PVsyst. Multiple files are generated only when the size of the PV plant is too big and results in one .PVC file being too heavy to export to PVsyst.
+135
+
+DESIGN METHODOLOGY
+8.3.4. MV Single Line Diagram The medium voltage single line diagram consists of a group of drawings that show the cabling and power station's main values for the medium voltage side. Drawings are generated in both PDF and CAD (DXF) formats.
+Figure 8.3.4. Example of the MV single line diagram drawing.
+136
+
+DESIGN METHODOLOGY
+8.3.5. LV Single Line Diagram The low voltage single line diagram consists of a group of drawings that show the cabling and power station's main values for the low voltage side. Drawings are generated in both PDF and CAD (DXF) formats.
+Figure 8.3.5.1. Example of the LV single line diagram drawing (String box).
+137
+
+DESIGN METHODOLOGY
+Figure 8.3.5.2. Example of the LV single line diagram drawing (Inverter). 138
+
+DESIGN METHODOLOGY
+Figure 8.3.5.3. Example of the LV single line diagram drawing (Power Station). 139
+
+DESIGN METHODOLOGY
+8.3.6. MV-LV Single Line Diagrams The medium and low voltage single line diagram consists of a group of drawings that show the cabling and power station's main values for both the low and medium voltage side. Drawings are generated in both PDF and CAD (DXF) formats.
+Figure 8.3.6. Example of the MV-LV single line diagram drawing.
+140
+
+DESIGN METHODOLOGY
+8.3.7. Topography Analysis (terrain slopes) The topography analysis (terrain slopes) layout shows all the structures, posts and slopes of the terrain. It also marks any structures that exceed the topography criteria defined by the user. The slopes of the terrains are shown in four colors depending on the slope value: green (<5%), orange (5-10%), red (10-15%) and blue (>15%) by default, but these values can be changed by using the slider as we have mentioned earlier in this methodology. It is generated in PDF, in CAD (DXF) and in KML.
+Figure 8.3.7. Example of the topography analysis (terrain slopes) layout.
+141
+
+DESIGN METHODOLOGY
+8.3.8. Structure Profiles The structure profiles layout shows different points of view of all the structures, their posts and the slopes of the terrain. Drawings are generated in CAD (DXF) format that are saved inside a zip file.
+Figure 8.3.8. Example of the structure profiles CAD file.
+142
+
+DESIGN METHODOLOGY
+8.3.9. Interconnection Facility SLD The interconnection facility single line diagram shows the main components of the interconnection facility and their characteristics. Drawings are generated in both PDF and CAD (DXF) formats.
+Figure 8.3.9. Example of the interconnection facility SLD drawing.
+143
+
+DESIGN METHODOLOGY
+8.3.10. Interconnection Facility Layout The interconnection facility layout shows two views of the plane of the substation. Drawings are generated in both PDF and CAD (DXF) formats.
+Figure 8.3.10. Example of the interconnection facility layout.
+144
+
+DESIGN METHODOLOGY
+8.3.11. BESS General Layout The BESS layout covers the battery containers, PCS, MV cabling, trenches, and fence location. It is generated in PDF, in CAD (DXF) and in KML.
+Figure 8.3.11. Example of the BESS layout.
+145
+
+DESIGN METHODOLOGY
+8.3.12. BESS MV-LV Single Line Diagram The BESS MV-LV single line diagram shows the main components of the BESS system, including the battery containers, racks, inverters, MV and LV lines, and other relevant electrical equipment. Drawings are generated in both PDF and in CAD (DXF) formats.
+Figure 8.3.12. Example of the BESS MV-LV SLD.
+146
+
+DESIGN METHODOLOGY
+8.3.13. Overhead line layout The Overhead Line Layout shows the different blocks of towers, including the span and line lengths, distance between towers and elevation. The drawings are generated in both PDF and in CAD (DXF) formats.
+Figure 8.3.13. Example of the Overhead Line Layout.
+147
+
+

@@ -1,0 +1,2890 @@
+Electrical Methodology
+A methodology to size the electrical equipment and the power cables of a photovoltaic plant
+September 10, 2024
+Ignacio Álvarez Iberlucea, Álvaro Pajares Barroso, Álvaro Benito Oliva Petranka Boncheva, Hassan Farhat, Félix Ignacio Pérez Cicala, Miguel Ángel Torrero Rionegro
+
+Abstract
+Abstract
+This electrical methodology explains the electrical calculations that the software does throughout the PV plant. It also explains the different criteria of each of the electrical cabling standards that RatedPower offers. The following topics are introduced in the methodology:
+· The calculation of the maximum and minimum modules per string. · The types of PV plant electrical configurations that RatedPower offers. · The sizing of the equipment's protective devices such as fuses and breakers. · The model that has been followed to size cables according to IEC and NEC standards. · The electrical parameters of the cables, including the positive sequence impedance, the
+zero sequence impedance and the capacitive susceptance. · The power flow representation of the RatedPower project according to the Western Elec-
+tricity Coordinating Council (WECC)
+
+Electrical Methodology
+
+1
+
+Contents
+
+Contents
+
+Abstract
+
+1
+
+1 Electrical equipment calculation
+
+6
+
+1.1 Number of modules per string calculation . . . . . . . . . . . . . . . . . . . . . . 6
+
+1.1.1 Consequences of considering minimum historical temperature as cell tem-
+
+perature . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+
+1.2 Electrical configuration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+1.3 Protective devices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+1.3.1 Fuses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+1.3.2 Breakers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+2 Distribution of strings into inverters and power stations
+
+13
+
+2.1 Definition of possible power stations . . . . . . . . . . . . . . . . . . . . . . . . 13
+
+2.2 Calculation of the resulting power stations . . . . . . . . . . . . . . . . . . . . . 14
+
+2.2.1 Maximum capacity obtaining the exact DC/AC ratio . . . . . . . . . . . 14
+
+2.2.2 Maximum capacity installing the maximum peak power . . . . . . . . . 15
+
+2.2.3 Specific capacity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+
+2.2.4 Distribution of strings into inverters . . . . . . . . . . . . . . . . . . . . 16
+
+3 Electrical Sizing Criteria
+
+19
+
+3.1 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+
+3.2 Cable selection based on the maximum current-carrying capacity . . . . . . . . 20
+
+3.2.1 IEC standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+
+3.2.2 NEC standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+
+3.2.3 Australian standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+
+3.2.4 National Standard of the People's Republic of China . . . . . . . . . . . 23
+
+3.2.5 Temperature of the cable . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+
+3.3 Cable selection based on short-circuit temperature rise . . . . . . . . . . . . . . 24
+
+3.3.1 IEC standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+
+3.3.2 NEC standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+
+3.3.3 Australian standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+
+3.3.4 National Standard of the People's Republic of China . . . . . . . . . . . 28
+
+3.3.5 Consequences of taking the cable heat dissipation factor = 1 . . . . . . . 28
+
+3.4 Cable selection based on voltage drop . . . . . . . . . . . . . . . . . . . . . . . . 30
+
+3.4.1 Consequences of taking the maximum operational temperature of the
+
+insulation for cable sizing based on voltage drop . . . . . . . . . . . . . 31
+
+3.4.2 Consequences of taking the AC resistance equals to the DC resistance . 32
+
+Electrical Methodology
+
+2
+
+Contents
+
+4 Electrical Parameters
+
+34
+
+4.1 Resistance calculation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+
+4.2 Reactance calculation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+
+4.3 Zero sequence impedance calculation . . . . . . . . . . . . . . . . . . . . . . . . 35
+
+4.4 Capacitive Susceptance calculation . . . . . . . . . . . . . . . . . . . . . . . . . 36
+
+5 Power Flow Model
+
+38
+
+5.1 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+
+5.2 Explicit representation of the Overhead Line . . . . . . . . . . . . . . . . . . . . 39
+
+5.3 Explicit representation of the Power Transformers . . . . . . . . . . . . . . . . . 39
+
+5.4 Equivalent representation of the MV Collectors . . . . . . . . . . . . . . . . . . 40
+
+5.5 Equivalent representation of the inverter pad-mounted transformers . . . . . . 40
+
+5.6 Equivalent representation of the generators . . . . . . . . . . . . . . . . . . . . . 41
+
+Bibliography
+
+43
+
+A Determining the distribution of strings into inverters
+
+45
+
+B Determining cable cross-sections
+
+48
+
+B.1 Medium voltage cables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
+
+B.1.1 IEC standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
+
+B.1.2 NEC standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 50
+
+B.2 Low voltage cables. String level . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+
+B.2.1 IEC standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
+
+B.2.2 NEC standard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 53
+
+C Determining electrical characteristics of the cable
+
+55
+
+C.1 Determining the electrical characteristics of a medium voltage cable . . . . . . . 55
+
+C.1.1 Temperature of the cable . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+
+C.1.2 Voltage drop . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+
+C.1.3 Withstand short-circuit current . . . . . . . . . . . . . . . . . . . . . . . 56
+
+D Determining electrical parameters of the cable
+
+57
+
+D.1 Determining the positive sequence parameters . . . . . . . . . . . . . . . . . . . 57
+
+D.2 Determining the zero sequence parameters . . . . . . . . . . . . . . . . . . . . . 58
+
+D.3 Determining the capacitive susceptance . . . . . . . . . . . . . . . . . . . . . . . 58
+
+Electrical Methodology
+
+3
+
+List of Figures
+List of Figures
+1.1 Maximum number of modules per string with module temperature from -10 ºC to -8ºC. Source: Own elaboration. . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+1.2 Maximum number of modules per string with module temperature from 5 ºC to 7ºC. Source: Own elaboration. . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+1.3 Maximum number of modules per string with module temperature from 10 ºC to 12ºC. Source: Own elaboration. . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+1.4 Maximum number of modules per string with module temperature from 20 ºC to 22ºC. Source: Own elaboration. . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+3.1 Dissipation factor and Cu XLPE cross-section based on short-circuit temperature rise [2]. Source: Own elaboration. . . . . . . . . . . . . . . . . . . . . . . . . 29
+3.2 Dissipation factor and Al XLPE cross-section based on short-circuit temperature rise [2]. Source: Own elaboration. . . . . . . . . . . . . . . . . . . . . . . . . 30
+3.3 Al XLPE cable cross-section based on resistivities at different temperatures [2]. Source: Own elaboration. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+3.4 AC and DC resistivities for a Cu cable based on IEC. Source: Own elaboration. . 33 3.5 AC and DC resistivities for a Cu cable based on Tables 8 and 9 of the NEC stan-
+dard. Source: Own elaboration. . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+5.1 Power Flow Model example. Source: RatedPower . . . . . . . . . . . . . . . . . 39 5.2 Power Flow Model of a PV plant with a secondary inverter enabled. Source:
+RatedPower . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41 5.3 Power Flow Model of a PV plant with an AC coupled battery energy storage
+system. Source: RatedPower . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+
+Electrical Methodology
+
+4
+
+List of Tables
+List of Tables
+3.1 Correction factors applied according to IEC standards, [4] and [5]. . . . . . . . . 21 3.2 Correction factors applied according to NEC standard [2] . . . . . . . . . . . . . 23 3.3 Correction factors applied according to AUS standards, [6] [7]. . . . . . . . . . . 23 3.4 Correction factors applied according to GB 50217-2018 [8] . . . . . . . . . . . . 24 3.5 Constants that depend on the nature of the conductor . . . . . . . . . . . . . . . 26 3.6 Maximum conductor temperatures for different types of insulating compound
+according to IEC [4] and [5]. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26 3.7 Maximum conductor temperatures for different types of insulating compound
+according to NEC [2]. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27 3.8 Maximum conductor temperatures for different types of insulating compound
+according to Australian standards [6] [7]. . . . . . . . . . . . . . . . . . . . . . . 27 3.9 Differences between the  used in RatedPower and the one given by the Aus-
+tralian Standard [6] [7]. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27 3.10 Maximum conductor temperatures for different types of insulating compound
+according to [8] . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28 3.11 Differences between the  used in RatedPower and the one given by the Chinese
+Standard [8]. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28 3.12 Maximum conductor temperatures for different types of insulating in normal
+condition to electrical standards . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+B.1 Correction factors according to IEC standard for MV cables. . . . . . . . . . . . 49 B.2 Correction factors according to NEC standard for MV cables. . . . . . . . . . . . 51 B.3 Correction factors according to IEC standard for LV cables. . . . . . . . . . . . . 52 B.4 Correction factors according to NEC standard for LV cables. . . . . . . . . . . . 53
+
+Electrical Methodology
+
+5
+
+Chapter 1. Electrical equipment calculation
+
+Chapter 1
+Electrical equipment calculation
+
+1.1 Number of modules per string calculation
+The number of modules that can be connected in series in a PV plant is constrained by two conditions. The first condition is that the voltage of the modules must always be lower than the maximum input voltage of the inverter and the maximum module voltage. The second condition is that the voltage of the modules must be within the voltage range that maximizes the efficiency of the inverter.
+The upper limit of the number of modules per string is constrained by both conditions, and the second condition marks the lower limit.
+The maximum voltage will be reached in low-temperature conditions when the modules operate at high efficiency. Therefore, based on the minimum operating temperature, the expression used to calculate the maximum number of modules in series according to the first condition mentioned above is given by Equation 1.1.
+
+ max (max
+
+DC
+
+system)
+
+=
+
+max DC system oc (cell min)
+
+(1.1)
+
+Where:
+
+·  max (max DC system) is the maximum number of modules per string that can be defined without exceeding the maximum DC voltage.
+· max DC system is the minimum of the following values: maximum input voltage at the inverter, and maximum approved voltage of the module in [V].
+· oc(cell min) is the open-circuit voltage of the cell at its minimum temperature in [V], calculated using Equation 1.2.
+
+The open-circuit voltage of the PV cells as a function of their temperature is calculated using Equation 1.2.
+
+oc (cell min)
+
+=
+
+oc (25)
+
++
+
+(cell min
+
+-
+
+25)
+
+· oc (25)
+
+·
+
+ 100
+
+(1.2)
+
+Electrical Methodology
+
+6
+
+Chapter 1. Electrical equipment calculation
+Where:
+· oc(cell min) is the open-circuit voltage of the cell at its minimum temperature in [V]. · oc(25) is the open-circuit voltage of the cell at standard conditions in [V]. ·  is the module temperature coefficient of Voc in [%/ºC]. · cell min is the minimum temperature of the solar cells in [ºC], calculated using Equation 1.3.
+The cell temperature is obtained from the minimum air temperature at the location, as recommended in IEC 62548 [1] and NEC 2017 [2] standards, as expressed in Equation 1.3.
+
+cell min = air min
+
+(1.3)
+
+Where:
+· cell min is the minimum temperature of the solar cells in [ºC]. · air min is the minimum historical value of air temperature at the location in [ºC].
+To determine the maximum number of modules per string, the second condition must be also taken into consideration. The expression used to calculate the maximum number of modules per string that satisfies this condition is given by Equation 1.4.
+
+ max (max
+
+MPPT
+
+inverter)
+
+=
+
+max MPPT inverter mp (25)
+
+(1.4)
+
+Where:
+·  max (max MPPT inverter) is the maximum number of modules per string that can be defined to work within the voltage range that maximizes inverter's efficiency.
+· max MPPT inverter is the maximum voltage of the MPPT voltage range of the inverter in [V]. · mp(25) is the voltage at the maximum power of the cell at standard conditions in [V].
+Once both conditions have been evaluated, the most restrictive value of the maximum number of modules per string is considered as the final one.
+To ensure that the voltage given by the string is within the operation window of the inverters, the minimum number of modules per string must ensure that the voltage given is above the minimum MPPT voltage accepted by the inverter even at maximum temperature conditions, where the voltage of the string will be lower. The minimum number of modules per string is calculated using Equation 1.5.
+
+ min
+
+=
+
+min MPPT inverter mp (cell max)
+
+(1.5)
+
+Where:
+·  min is the minimum number of modules per string. · min MPPT inverter is the minimum voltage of the MPPT voltage range of the inverter in [V].
+
+Electrical Methodology
+
+7
+
+Chapter 1. Electrical equipment calculation
+· mp(cell max) is the voltage at the maximum power of the module at maximum temperature in [V], calculated using Equation 1.6.
+The voltage of the module at its MPP when the temperature is the maximum one is calculated using Equation 1.6.
+
+mp (cell max)
+
+=
+
+mp (25)
+
++
+
+(cell max
+
+-
+
+25)
+
+· mp (25)
+
+·
+
+ 100
+
+(1.6)
+
+Where:
+
+· mp(cell max) is the voltage at the maximum power of the module at maximum temperature in [V].
+· mp(25) is the voltage at the maximum power of the module at standard conditions in [V].
+·  is the module temperature coefficient of Voc in [%/ºC]. · cell max is the maximum temperature of the solar cells in [ºC], calculated using Equation 1.7.
+And, the maximum cell temperature is obtained from Equation 1.7.
+
+cell
+
+max
+
+=
+
+air
+
+max
+
++
+
+max
+
+·
+
+  ( ) -20 800 /2
+
+(1.7)
+
+Where:
+· cell max is the maximum temperature of the solar cells in [ºC]. · air max is the maximum historical value of air temperature at the location in [ºC]. ·  ()-20 is the nominal operating cell temperature (45 °C), measured at 800 W/2
+irradiance, with spectral distribution AM 1.5 G, air temperature 20 °C and wind speed 1 m/s. · max is the maximum irradiance in [W/2]. It equals 1000 [W/2].
+1.1.1 Consequences of considering minimum historical temperature as cell temperature
+When the first condition is approached, deviations from the method above mentioned can be applied with engineering justification. A method that is commonly applied in ground-mounted PV plant designs is the one defined by IEC TS 62738 [3], which recommends to take as cell temperature the minimum historical temperature limited to sunlight hours when irradiance is higher than 10 W/2.
+The minimum historical temperature normally occurs after the sunrise, when the atmosphere has been longer without the sun heating it up. For this reason, differences between both temperatures (minimum historical temperature and minimum historical temperature limited to sunlight hours) do not normally cause differences in the maximum number of modules per string.
+Considering a system where the DC maximum voltage is 1500 V, OC of the module is 49.6 V and the module temperature coefficient is -0.233 %/ºC and minimum historical temperatures of -10
+
+Electrical Methodology
+
+8
+
+Chapter 1. Electrical equipment calculation ºC, 5 ºC, 10 ºC and 20 ºC, Figure 1.1, Figure 1.2, Figure 1.3 and Figure 1.4 represent the temperature variation needed in the module to get an increase on the maximum value recommended of modules per string.
+Figure 1.1: Maximum number of modules per string with module temperature from -10 ºC to -8ºC. Source: Own elaboration.
+
+Figure 1.2: Maximum number of modules per string with module temperature from 5 ºC to 7ºC. Source: Own elaboration.
+
+Electrical Methodology
+
+9
+
+Chapter 1. Electrical equipment calculation
+Figure 1.3: Maximum number of modules per string with module temperature from 10 ºC to 12ºC. Source: Own elaboration.
+
+Figure 1.4: Maximum number of modules per string with module temperature from 20 ºC to 22ºC. Source: Own elaboration.
+
+These figures show that the differences between minimum historical temperature and the minimum historical temperature limited to sunlight hours must be 0.6 ºC, 1.7 ºC, 11.6 ºC and 1.6 ºC for the cases where the minimum historical temperature is -10 ºC, 5 ºC, 10 ºC and 20 ºC, respectively, to denote an increase on the maximum recommended number of modules per string. Moreover, in a range of 30 ºC (between -10 ºC and 20 ºC), only 2 units on the number of modules per string were increased (from 27 to 29).
+Due to the small differences in the results obtained with both methods and to be in compliance with NEC 2017 [2], RatedPower uses as cell temperature the minimum historical temperature to calculate the maximum number of modules per string.
+
+1.2 Electrical configuration
+RatedPower offers two types of electrical configurations in the case of central inverters and two in the case of string inverters.
+
+Electrical Methodology
+
+10
+
+Chapter 1. Electrical equipment calculation
+
+In the case of central inverters:
+· String Box: The strings of modules are connected to a string box. And groups of string boxes are connected to central inverters. The number of strings per string box ranges from 4 to 36.
+· Bus System: The strings are connected to a DC Bus collector and the connections reach the inverters. The number of strings per DC Bus collector ranges from 4 to 36.
+In the case of string inverters:
+· String Inverter (Field): The strings are connected directly to the string inverters. The string inverters are located in the field (outside the power stations).
+· String Inverter (Station): The string inverters, in this case, are located in the power stations.
+
+1.3 Protective devices
+
+1.3.1 Fuses
+The fuses of the LV DC side must meet the following conditions:
+
+1. The fuse current must be greater than or equal to 1.56 times the module's short circuit
+
+current.
+
+fuse  1.56 · sc
+
+(1.8)
+
+2. The fuse current must have a value between the cable's load current and its maximum
+
+current capacity.
+
+load  fuse  ccc
+
+(1.9)
+
+Where:
+
+· fuse is the rated current of the fuse in [A]. · sc is the short-circuit current of the PV module for string cables and the short-circuit
+current of the PV module multiplied by the number of strings per box/DC bus collector for upper PV plant levels in [A].
+· load is the load current through the cable in [A]. · ccc is the maximum current capacity of the cable in [A].
+
+1.3.2 Breakers
+To size the on-load circuit breaker, the following conditions must be considered:
+
+1. The switch current rating must be greater than or equal to 1.25 times the module's short
+
+circuit current.
+
+breaker  1.25 · sc
+
+(1.10)
+
+2. The switch current rating must be less than or equal to the maximum current capacity of
+
+cables.
+
+breaker  ccc
+
+(1.11)
+
+Where:
+
+Electrical Methodology
+
+11
+
+Chapter 1. Electrical equipment calculation
+· breaker is the rated current of the breaker in [A]. · sc is the short-circuit current of the PV module for string cables and the short-circuit
+current of the PV module multiplied by the number of strings per box/DC bus collector for upper PV plant levels in [A]. · ccc is the maximum current capacity of the cable in [A].
+
+Electrical Methodology
+
+12
+
+Chapter 2. Distribution of strings into inverters and power stations
+
+Chapter 2
+Distribution of strings into inverters and power stations
+
+This section explains how strings are distributed into inverters and power stations in RatedPower.
+This distribution will be influenced by many aspects:
+· The equipment defined such as PV module, inverter, structure and power station. · The number of modules per string. · The maximum number of structures that can be installed in the area, along with the number
+of strings defined per structure. Strings from one structure will always be connected to the same inverter. · The power requirements like the distribution preferences and the desired DC/AC ratio.
+It is important to also mention that areas cannot be connected electrically in RatedPower, so strings from one area must be connected to inverters defined in that area.
+2.1 Definition of possible power stations
+There are two types of power stations that will be defined:
+1. Default power stations: power stations that will be prioritised in the plant, installing as many as possible. Default power stations are defined by users.
+2. Non-default power stations: power stations that will be installed in the case that the strings remaining are not enough to fill one additional default power station. The order of priority when installing them will be determined by the AC power of the non-default power station. The definition of non-default power stations will depend on the type of inverter defined.
+· Central inverters: all the possible combinations of inverters that do not exceed the total amount of inverters defined in a default power station nor the maximum value defined for one type of inverter.
+· String inverters: all the possible combinations within the limits defined by the user.
+
+Electrical Methodology
+
+13
+
+Chapter 2. Distribution of strings into inverters and power stations
+2.2 Calculation of the resulting power stations
+The calculation of the resulting power stations installed will be done based on the power requirements:
+1. Maximum capacity: install the maximum AC power in the design. There can be two modes of simulation:
+· Obtain the desired DC/AC ratio: this option ensures that the DC/AC ratio defined by the user is matched in every area, but may result in structures uninstalled due to incompatible electrical configuration.
+· Install the maximum peak power: this option ensures that the maximum peak power is installed for every area, always having a resulting DC/AC ratio that does not exceed the limits of ±0.15 with respect to the desired one.
+2. Specific capacity: install a specific AC power in the design by defining the number of inverters of each type desired. It will ensure that the DC/AC ratio defined by the user is matched in every area.
+This calculation will give as result the power stations that will be installed and the total number of strings per area. The later step will define the distribution of strings into inverters.
+2.2.1 Maximum capacity obtaining the exact DC/AC ratio
+This option ensures that the maximum AC power is installed, obtaining as result the desired DC/AC ratio in every area.
+For every possible power station, starting with the default one and following with the non-default ones, the number of power stations installed is calculated by Equation 2.1.
+
+PS = 
+
+DC,available AC,PS · DC/AC, desired + DC,embedded
+
+(2.1)
+
+Where:
+· PS is the resulting amount of the power station in evaluation to install. · DC,available is the DC power available. It is recalculated considering power stations that
+have been already installed. · AC,PS is the active AC power of the power station in evaluation. · DC/AC, desired is the desired DC/AC ratio. · DC,embedded is the DC power loss relative to one embed power station (if applicable).
+The total number of strings installed is calculated by Equation 2.2.
+
+strings,area =  AC,comb · DC/AC, desired ·
+
+1
+
+· strings,structure
+
+DC,string
+
+string,structure
+
+Where:
+
+(2.2)
+
+Electrical Methodology
+
+14
+
+Chapter 2. Distribution of strings into inverters and power stations
+· strings,area is the number of strings to install in the area evaluated. · AC,comb is the active AC power related to the combination of power stations installed in
+the area. · DC/AC, desired is the desired DC/AC ratio. · DC,string is the DC power related to one string. · strings,structure is the number of strings installed in one structure.
+2.2.2 Maximum capacity installing the maximum peak power
+This option ensures that the maximum AC power is installed, installing the maximum DC power in every area, not exceeding the limits of DC/AC ratio ± 0.15.
+Many combinations are evaluated, following the procedure explained hereafter.
+For every possible power station, starting with the default one and following with the non-default ones sorted by AC power, the lower and upper amount of power stations of each type that can be installed is calculated using Equation 2.3 and Equation 2.4.
+
+Where:
+
+PS,lower = 
+
+DC,available AC,PS · DC/AC, desired + DC,embedded
+
+PS,upper = 
+
+DC,available AC,PS · DC/AC, desired + DC,embedded
+
+(2.3) (2.4)
+
+· PS,lower is the upper amount of the power station in evaluation to install. When installing this amount of the power station in evaluation, there cannot be other power stations installed afterwards, as would give a DC/AC ratio that deviates more from the one desired.
+· PS,upper is the lower amount of the power station in evaluation to install. When installing this amount of the power station in evaluation, there can be other power stations installed afterwards.
+· DC,available is the DC power available. It is recalculated considering the lower number of previous power stations already installed.
+· AC,PS is the active AC power of the power station in evaluation.
+· DC/AC, desired is the desired DC/AC ratio.
+· DC,embedded is the DC power loss relative to one embed power station (if applicable).
+
+For every possible combination, it will be evaluated if installing the maximum number of strings available would give a DC/AC ratio within the limits. If so, that number of strings will be considered as the maximum that can be installed with that combination. If not, the maximum number of strings that can be installed for the combination in evaluation is calculated as the value that would give the maximum possible DC/AC ratio.
+
+From all the combinations in consideration, the resulting combination for the area in evaluation is the one with the highest DC power and the DC/AC ratio closest to the one desired.
+
+Electrical Methodology
+
+15
+
+Chapter 2. Distribution of strings into inverters and power stations
+2.2.3 Specific capacity
+This option ensures that the required AC power is installed, while also getting the DC/AC ratio defined by the user.
+It is important to note that, with this option, the areas that will be filled first with the inverters defined will be the ones that are closest to the substation.
+To calculate the resulting combination of power stations, a similar approach to the one explained above for maximum capacity is followed, but considering also the number of inverters that are remaining to be installed.
+For every possible power station, starting with the default one and following with the non-default ones sorted by AC power, the number of power stations installed is calculated using Equation 2.5.
+
+PS =  remaining,PS, max,PS
+
+(2.5)
+
+Where:
+· remaining,PS is the number of power stations that can be installed according to the inverters remaining to be installed. It is calculated as the minimum relation between the inverters remaining and the ones defined in the power station in evaluation.
+· max,PS is the maximum number of power stations that can be installed according to the DC power available, calculated using Equation 2.6.
+
+max, PS = 
+
+DC,available AC,PS · DC/AC, desired + DC,embedded
+
+(2.6)
+
+And:
+· max,PS is the maximum amount of the power station in evaluation. · DC,available is the DC power available. It is recalculated considering the lower number of
+previous power stations already installed. · AC,PS is the active AC power of the power station in evaluation. · DC/AC, desired is the desired DC/AC ratio. · DC,embedded is the DC power loss relative to one embed power station (if applicable).
+The total number of strings installed is calculated by Equation 2.2.
+
+2.2.4 Distribution of strings into inverters
+The objective is to minimise the number of inverters working at different DC/AC ratios, while having the power stations as balanced as possible.
+For each inverter, the optimal number of strings to get the DC/AC ratio closest to the resulting one is using Equation 2.7.
+
+Electrical Methodology
+
+16
+
+Chapter 2. Distribution of strings into inverters and power stations
+
+strings,inverter =  AC,inverter · DC/AC, resulting ·
+
+1
+
+· strings,structure
+
+DC,string
+
+string,structure
+
+(2.7)
+
+Where:
+· strings,inverter is the number of strings installed in the inverter evaluated. · AC,inverter is the active AC power related to the inverter evaluated. · DC/AC, resulting is the resulting DC/AC ratio. · DC,string is the DC power related to one string. · strings,structure is the number of strings installed in one structure.
+This number of strings defined per inverter could imply exceeding or not reaching the number of strings desired to be installed in the area. The number of strings remaining to be installed or removed from defined inverters is calculated as byEquation 2.8.
+
+inv, area
+
+
+
+strings, redistribution = strings, area -
+
+strings, i
+
+ =1
+
+(2.8)
+
+Where:
+· strings,redistribution is the number of strings that are remaining to be installed or that have to be removed from defined inverters. Note that this value can be negative or positive.
+· strings,area is the number of strings to be installed in the area. · inv,area is the number of inverters defined in the area. · strings,i is the number of strings installed in the inverter in evaluation.
+These strings remaining to be installed imply a certain number of inverters to be redistributed, calculated using Equation 2.9.
+
+inverters, adapt =  (strings, redistribution) strings, structure
+
+(2.9)
+
+Where:
+· inverters,adapt is the number of inverters to be adapted in the area. · strings,redistribution is the number of strings that are remaining to be installed or that have
+to be removed from defined inverters. Note that this value can be negative or positive. · strings,structure is the number of strings installed in one structure.
+The number of inverters to be redistributed per power station will be directly related to the total contribution of its inverters to the total number of inverters.
+
+inverters, adapt PS = inverters, PS · inverters, adapt inverters, total
+Electrical Methodology
+
+(2.10) 17
+
+Chapter 2. Distribution of strings into inverters and power stations
+Where:
+· inverters,adapt PS is the number of inverters to adapt in the PS. · inverters,PS is the total number of inverters that compose the PS. · inverters, total is the total number of inverters installed in the area. · inverters,adapt is the number of inverters to be adapted in the area.
+Lastly, the inverters that will be adapted to include the strings remaining will be the ones with higher AC power, as those will have a lower deviation on the DC/AC ratio.
+
+Electrical Methodology
+
+18
+
+Chapter 3. Electrical Sizing Criteria
+
+Chapter 3
+Electrical Sizing Criteria
+
+This section explains the different criteria followed by each of the electrical standards that RatedPower offers.
+3.1 Introduction
+To size the cables of the PV plant based on the electrical standards, the following criteria must be satisfied:
+· Current-carrying capacity criterion: The operating current is corrected based on the different characteristics of the installation and the site. This corrected value must then be lower than the maximum current-carrying capacity that the cable can withstand. These maximum current-carrying capacity values are based on standard tables.
+· Short-circuit temperature rise criterion: The short-circuit current must be lower than the limit supported by the cabling. This criterion is taking into account only for medium voltage cables.
+· Voltage drop criterion: The voltage drop criterion which states that the voltage drop in each cable should be lower than the maximum values established by the user in RatedPower. Although this criterion is considered to size the cable, to not comply with this condition do not imply that the cable becomes damaged, but imply that the losses will be higher.
+The constraints considered when calculating the low voltage (LV) and medium voltage (MV) cables were:
+· To minimize the costs using the minimum valid cable cross-section(s). We tend to limit the number of cross-sections to a maximum of two in each sub-system of the PV plant (standardize the cable cross-sections).
+· Copper is proposed as the conducting material for the LV DC string cables. Aluminium is proposed as the conducting material for the rest of cables (DC, AC and MV).
+The assumptions made when sizing and rating the cables are the following:
+· The soil temperature equals 25°C if no information is available.
+
+Electrical Methodology
+
+19
+
+Chapter 3. Electrical Sizing Criteria
+· The ambient temperature is the maximum historical temperature of the site (provided by the meteo data source).
+· The soil resistivity equals 1 K·m/W if no information is available. · The depth of cables are 700 mm for buried LV cables and 900 mm for MV cables. · There is no space between LV cables and the MV cables are spaced 0.2 m between group
+centres. · String cables are fastened to the structures. The rest of LV cables are directly buried in
+trenches. MV radial networks from the power stations to the substation are directly buried in trenches. · Within a single MV circuit, cables are disposed in trefoil, with a separation between them equal to two times the diameter of the cable.
+3.2 Cable selection based on the maximum current-carrying capacity
+The current-carrying capacity is defined as the maximum current that can flow through an electric conductor without damaging it. This value varies depending on the conductor, environmental conditions, cross-section, insulating material, the number of grouped conductors, among others.
+The operating current is corrected based on the different characteristics of the installation and the site. This corrected value must then be lower than the maximum current-carrying capacity that the cable can withstand.
+The equation for the corrected allowed current is given by Equation 3.1.
+
+sizing  ccc
+
+(3.1)
+
+Where:
+· sizing is the sizing current for the current-carrying capacity criterion in [A]. · ccc are the current values standardized for each cable cross-section based on the cable and
+the installation characteristics in [A]
+As it is presented in the following sections, the operating current of the cable is corrected with some factors:
+1. An ambient air temperature correction factor is only applied when the cables are exposed to air or installed in trays fastened to the structures.
+2. A soil temperature correction factor is only applied when the cables are directly buried in trenches or underground cable ducts.
+3. A soil resistivity correction factor is only applied when the cables are directly buried in trenches or underground cable ducts.
+4. We consider a depth of burial correction factor is only applied when the cables are directly buried in trenches or underground cable ducts.
+
+Electrical Methodology
+
+20
+
+Chapter 3. Electrical Sizing Criteria
+5. Grouping cables together leads to additional heating of the cables which increases the current passing through them.
+3.2.1 IEC standard
+Based on IEC standards [4] and [5], the sizing current is given by Equation 3.2.
+
+sizing = operating 
+
+(3.2)
+
+Where:
+
+· sizing is the sizing current for the current-carrying capacity criterion in [A]. · operating is the load current running through the cable in [A]. ·  is the product of all the applied correction factors.
+The ambient and soil temperature correction factors are calculated using Equation 3.3.
+
+temp =
+
+i i
+
+- a - a
+
+·
+
+ 
+
++
+
+
+
+ i
+
++ i
+
+1 2
+
+(3.3)
+
+Where:
+
+· temp is the ambient or soil temperature correction factor.
+
+·  is the reciprocal of the temperature coefficient of resistivity at 0ºC. This parameter equals
+
+234.5 ºC for copper (Cu) and 228 ºC for aluminium (Al).
+
+·
+
+
+
+ i
+
+is
+
+the
+
+conductor
+
+rated temperature at which
+
+the
+
+base
+
+ampacity
+
+is
+
+specified
+
+in
+
+[ºC].
+
+· i is the maximum allowable conductor temperature in [ºC]. It equals the maximum operational insulator temperature in normal operation.
+
+·
+
+
+
+ a
+
+is
+
+the
+
+ambient or
+
+soil
+
+temperature
+
+at
+
+which
+
+the
+
+base
+
+ampacity
+
+is
+
+specified
+
+in
+
+[ºC].
+
+· a is the actual soil or ambient temperature in [ºC]. It equals the maximum historical air temperature of the site or a temperature of 25 ºC underground cables.
+
+The other correction factors that are used to size a cable according to IEC standards are given in Table 3.1.
+Table 3.1: Correction factors applied according to IEC standards, [4] and [5].
+
+Correction Factors
+For soil thermal resistivities For depths of laying
+For groups of cables
+
+For MV cables: IEC 60502-2 Table B.14, B.15, B.16, and B.17 Table B.12 and B.13 Table B.18, B.19, B.20, B.21, B.22, and B.23
+
+For LV cables: IEC 60364-5-52 Table B.52.16
+Not applied
+Table B.52.17, B.52.18, B.52.19
+
+According to IEC standards [4] and [5], in order to compute the correction factor for a group of cables:
+
+Electrical Methodology
+
+21
+
+Chapter 3. Electrical Sizing Criteria
+· For DC cables: Two single-core cables or one multi-core cable are considered as one currentcarrying conductor.
+· For AC cables: Three single-core cables or one multi-core cable are considered as one current-carrying conductor.
+3.2.2 NEC standard
+Based on the Article 690 of the NEC standard [2], the sizing current for the output circuit of a PV plant (from inverters to the substation) is given by Equation 3.4.
+
+sizing = operating 
+
+(3.4)
+
+Where:
+
+· sizing is the sizing current for the current-carrying capacity criterion in [A]. · operating is the load current running through the cable in [A]. It is the inverter continuous
+output current for string inverters and the operating current for the MV system.
+·  is the product of all the applied correction factors.
+
+The sizing current for the photovoltaic source circuit (from modules to the inverters) is given by Equation 3.5.
+
+sizing =  (corrected , OCPD)
+
+(3.5)
+
+Where corrected is calculated using Equation 3.6.
+
+corrected = 1.25 · sc
+
+(3.6)
+
+ 
+
+Where:
+
+· corrected is the current corrected by factors in [A]. · sc is the short-circuit current of the PV module for the string cables and the short-circuit
+current of the module multiplied by the number of strings per box/DC bus in [A].
+·  is the product of all the applied correction factors.
+
+And the OCPD is calculated by Equation 3.7.
+
+1.25 · (1.25 · sc) = 1.56 · sc  OCPD
+
+(3.7)
+
+After that, we raise the result to the next standard fuse or circuit breaker size defined in section 240.6 of the NEC. The obtained current will be denoted as OCPD.
+Where:
+· OCPD is the protective device rated current defined in section 240.6 of the NEC in [A].
+
+Electrical Methodology
+
+22
+
+Chapter 3. Electrical Sizing Criteria
+
+· sc is the short-circuit current of the PV module for the string cables and the short-circuit current of the module multiplied by the number of strings per box/DC bus in [A].
+
+The ambient and soil temperature correction factors are calculated using Equation 3.3. The other correction factors that are used to size a cable according to NEC standards are given in Table 3.2.
+
+Table 3.2: Correction factors applied according to NEC standard [2]
+
+Correction Factors
+For soil thermal resistivities For depths of laying For groups of cables
+
+For MV and LV cables: NEC 2017
+IEEE Std 399-1997 Table 13-5, 13-6, 13-7 NEC Annex B, Section B.3(b) NEC Annex B, Table B.310.15(B)(2)(11)
+
+According to NEC standards, in order to compute the correction factor for a group of cables:
+· For DC cables: Two single-core cables or one multi-core cable are considered as two current-carrying conductors.
+· For AC cables: Three single-core cables or one multi-core cable are considered as three current-carrying conductors.
+
+3.2.3 Australian standard
+Based on [6] [7], the sizing current is given by Equation 3.2, where the ambient temperature and soil resistivity correction factors are calculated using Equation 3.3, and the other correction factors are given by the tables mentioned in Table 3.3.
+
+Table 3.3: Correction factors applied according to AUS standards, [6] [7].
+
+Correction Factors
+For soil thermal resistivities For depths of laying For groups of cables
+
+For MV cables: Prysmian Guide Ratings information (page 135-136) Ratings information (page 135-137) Ratings information (page 136-137)
+
+For LV cables: AS 3008.1.1 Table 29 Table 29
+Table 22, Table 25 and Table 26
+
+The Australian standard considers one circuit to compute the correction factor for a group of cables as any multicore cable with 2 or 3 current-carrying cores or a group of single core cables with 2 or 3 current-carrying cables.
+3.2.4 National Standard of the People's Republic of China
+This standard has been implemented according to [8], being the sizing current calculated by using Equation 3.2. The ambient and soil correction factors have been calculated by using Equation 3.3, and the other correction factors considered are defined in Table 3.4.
+
+Electrical Methodology
+
+23
+
+Chapter 3. Electrical Sizing Criteria
+
+Table 3.4: Correction factors applied according to GB 50217-2018 [8]
+
+Correction Factors
+For soil thermal resistivities For depths of laying For groups of cables
+
+For MV and LV cables: GB 50217-2018 Table D 0.3 Not apply
+Table D 0.4 and D 0.5
+
+To adapt the values given by [8] to the type of cables that are used in photovoltaic installations, the following considerations have been made:
+· Table C.0.1-1/2 has been used for low voltage PVC cables and Table C.0.1-3/4 has been used for low voltage XLPE cables.
+· Table C.0.3 has been used for MV XLPE cables. · The values given for single core low voltage cables have been considered for both AC and
+DC cables. · The values given for multi core medium voltage cables have been considered for both single
+and multi core cables. · Soil resistivity correction factor has been considered for XLPE and PVC low voltage cables
+and for XLPE medium voltage cables. · The correction factors for groups of cables have been extended up to 12 cables, including
+also the possibility of having cables touching. To do this, the guidelines presented in other standards such as [4] and [6] have been followed.
+3.2.5 Temperature of the cable
+The temperature of the cable is calculated using Equation 3.8. [9]
+
+2
+
+
+
+ = amb + (i - amb) ·
+
+(3.8)
+
+a
+
+Where:
+·  is the temperature of the cable in [ºC]. · amb is the ambient/ground temperature in [ºC]. · i is the maximum allowable conductor temperature in [ºC]. It equals the maximum oper-
+ational insulator temperature in normal operation. ·  is the load current in [A]. · a is current-carrying capacity for the conductor based on standard tables in [A].
+
+3.3 Cable selection based on short-circuit temperature rise
+When a short-circuit occurs, the amount of current flowing through the conductor might surpass nominal current during short periods of time, heating up the insulator. It is necessary to verify that the proposed cross-section can withstand the maximum short-circuit current. This criterion
+
+Electrical Methodology
+
+24
+
+Chapter 3. Electrical Sizing Criteria
+
+is only applied in the case of MV cables and the equation that is applied is valid for all the electrical standards. [10]
+The cross-section of the cable is given by Equation 3.9.
+
+
+
+
+
+ = AD ·  = sc · 
+
+
+
+ · 
+
+(3.9)
+
+Where:
+·  the cable cross-section in [2]. · AD is the short-circuit current for adiabatic conditions. · sc is the short-circuit current. The complete calculation of this short-circuit current is
+presented in [11]. ·  is the cable heat dissipation factor. For adiabatic conditions  = 1. ·  is the short-circuit duration in [s]. It equals 1 [s]. ·  is given by Equation 3.10.
+
+
+
+ =  ·
+
+f +  
+
+i + 
+
+(3.10)
+
+Where:
+·  is a constant that depends on the nature of the conductor and the temperature limit of the insulator in [0.5/2]. This parameter equals 226 0.5/2 for copper (Cu) and 148 0.5/2 for aluminium (Al).
+·  is the reciprocal of the temperature coefficient of resistivity at 0ºC. This parameter equals 234.5 ºC for copper (Cu) and 228 ºC for aluminium (Al).
+· f is the final short circuit temperature of the conductor in [ºC]. Its value depends on the standard.
+· i is the maximum allowable conductor temperature in [ºC]. It equals the maximum operational insulator temperature in normal operation.
+Hence, the cross-section of the cable is given by Equation 3.11.
+
+
+
+ =
+
+sc · 
+
+
+
+ ·
+
+f +  
+
+i + 
+
+(3.11)
+
+Where the  that is a constant that depends on the nature of the conductor and the temperature limit of the insulator and  that is the reciprocal of the temperature coefficient of resistivity at 0ºC, are shown in Table 3.5.
+
+Electrical Methodology
+
+25
+
+Chapter 3. Electrical Sizing Criteria
+
+Table 3.5: Constants that depend on the nature of the conductor
+
+Conductor material K [0.5/2]  [ºC]
+
+Copper
+
+226
+
+234.5
+
+Aluminium
+
+148
+
+228
+
+3.3.1 IEC standard
+The IEC standard that has been followed to perform this calculation is [4] and [5]. In addition, the IEC 60502-2 presents the maximum conductor temperatures for different types of insulating compound and they can be seen in Table 3.6.
+
+Table 3.6: Maximum conductor temperatures for different types of insulating compound according to IEC [4] and [5].
+
+Maximum conductor temperature [ºC] XLPE EPR
+
+in normal operation, i
+
+90 90
+
+in short-circuit conditions, f
+
+250 250
+
+3.3.2 NEC standard
+According to Table 240.92(B) in [2], conductors are considered to be protected under short-circuit conditions when their short-circuit temperature limit is not exceeded. Conductor heating under short-circuit conditions is determined by Equation 3.12 or Equation 3.13.
+
+s2c ·  = 0.0297 · C2u · 10
+
+f + 234.5 i + 234.5
+
+(3.12)
+
+s2c ·  = 0.0125 · A2 l · 10
+
+f + 228 i + 228
+
+(3.13)
+
+Where:
+·  the cable cross-section in [cmils]. · sc the maximum short-circuit current in [A]. · f is the final short circuit temperature of the conductor in [ºC]. Its value depends on the
+standard. · i is the initial short circuit temperature of the conductor in [ºC]. Its value depends on the
+standard. ·  is the short-circuit duration in [s]. It equals 1 seconds.
+However, by applying Equation 3.14 and Equation 3.15.
+
+  ( ) 10() = 2.3 1 2 = 1973.5 
+
+(3.14) (3.15)
+
+Electrical Methodology
+
+26
+
+Chapter 3. Electrical Sizing Criteria
+
+The NEC equations to calculate the section based on the short-circuit rise criterion are the same as the method followed by the IEC.
+
+
+
+Cu
+
+=
+
+ 0.0297
+
+·
+
+sc · 1973.5
+
+·
+
+ 
+
+
+f + 234
+
+2.3
+
+i + 234
+
+ Cu = 224.1  226 0.5/2
+
+
+
+Al = 
+
+sc ·  
+
+0.0125
+
+· 1973.5 · 
+
+2.3
+
+f + 228 i + 228
+
+ Al = 145.4  148 0.5/2
+
+(3.16) (3.17)
+
+The NEC presents the maximum conductor temperatures for different types of insulating compound and they can be seen in Table 3.7.
+
+Table 3.7: Maximum conductor temperatures for different types of insulating compound according to NEC [2].
+
+Maximum conductor temperature [ºC] THHN XHHN
+
+in normal operation , i
+
+75
+
+90
+
+in short-circuit conditions, f
+
+150 250
+
+3.3.3 Australian standard
+Australian standards [6] [7] presents in its Table 53 the temperature limits according to the type of insulation used. These are summed up in Table 3.8.
+
+Table 3.8: Maximum conductor temperatures for different types of insulating compound according to Australian standards [6] [7].
+
+Maximum conductor temperature [ºC] XLPE/EPR PVC
+
+in normal operation , i
+
+90
+
+75
+
+in short-circuit conditions, f
+
+250
+
+160
+
+Apart from these temperature limits, the Australian Standard provides the value of  required in its Table 52. The differences between those values and the ones calculated using the constants presented in Table 3.5 are outlined in Table 3.9. As the differences are negligible, the constants from Table 3.5 have been used to apply this criterion.
+
+Table 3.9: Differences between the  used in RatedPower and the one given by the Australian Standard [6] [7].
+
+Conductor and insulator Cu PVC Al PVC Cu XLPE/EPR Al XLPE/EPR
+
+ RatedPower [0.5/2] 111.3 73.6 143.1 94.5
+
+ Australian standard [0.5/2] 111.0 73.6 143.0 94.5
+
+Electrical Methodology
+
+27
+
+Chapter 3. Electrical Sizing Criteria
+
+3.3.4 National Standard of the People's Republic of China
+The maximum operating temperatures are given in Table A in [8], being the ones presented in Table 3.10.
+
+Table 3.10: Maximum conductor temperatures for different types of insulating compound according to [8]
+
+Maximum conductor temperature [ºC] XLPE PVC
+
+in normal operation , i
+
+90 70
+
+in short-circuit conditions, f
+
+250 140
+
+Applying the recommended values from this standard for copper and aluminium, and the maximum temperature allowed by insulating materials, the differences in the value of  between Table 3.5 and the ones given by this standard are the ones presented in Table 3.11. The values are very similar and the constants from Table 3.5 have been used to apply this standard.
+
+Table 3.11: Differences between the  used in RatedPower and the one given by the Chinese Standard [8].
+
+Conductor and insulator Cu PVC Al PVC Cu XLPE/EPR Al XLPE/EPR
+
+ RatedPower [0.5/2] 102.8 68.0 143.1 94.5
+
+ Chinese standard [0.5/2] 112.82 67.07 143.37 93.22
+
+3.3.5 Consequences of taking the cable heat dissipation factor = 1
+According to [12], the cable heat dissipation factor is given by Equation 3.18.
+
+
+
+
+
+ = 1 +  ·  ·  +  2 ·  · 
+
+
+
+
+
+(3.18)
+
+Where:
+·  is the cable heat dissipation factor. ·  is a factor that considers the irregularity of the thermal contacts between conductors. It
+equals to 0.7. ·  the cable cross-section in [2]. ·  is the short-circuit duration in [s]. It equals 1 seconds. · ,  are empirical constants.
+In order to analyse the error that is made by estimating a dissipation factor equals to 1, the next process has been followed.
+1. The cross-section of the cable is calculated with a dissipation factor equals to 1. 2. Then, the cross-section is introduced in Equation 3.18 and the real dissipation factor is
+obtained.
+
+Electrical Methodology
+
+28
+
+Chapter 3. Electrical Sizing Criteria
+3. If the real dissipation factor is closed to 1, the error made would be negligible.
+As presented in Figure 3.1 and Figure 3.2, the real dissipation factor for short-circuit currents higher than 10 kA (more common short-circuit currents for the MV system of a PV plant), is almost 1. In conclusion, the dissipation factor can be taken as 1 and the error made would be negligible.
+
+Figure 3.1: Dissipation factor and Cu XLPE cross-section based on short-circuit temperature rise [2]. Source: Own elaboration.
+
+Electrical Methodology
+
+29
+
+Chapter 3. Electrical Sizing Criteria
+
+Figure 3.2: Dissipation factor and Al XLPE cross-section based on short-circuit temperature rise [2]. Source: Own elaboration.
+
+3.4 Cable selection based on voltage drop
+Voltage drop limitations impose the use of bigger cable cross-sections. However, not to fulfil with this criterion only derives in higher losses. To calculate the cable cross-section that respects the voltage drop limit chosen by the user the following equations are used. These equations vary slightly depending on the type of current running through the cable.
+In the case of AC cables, in both LV and MV sub-systems, the minimum cable cross-section per the voltage drop criterion is given by Equation 3.19.
+
+ · cos 
+
+ =
+
+ · 
+
+ · 
+
+-  · sin 
+
+3 ·  · 
+
+(3.19)
+
+Where:
+·  the cable cross-section in [2]. ·  is the conducting material resistivity at the cable's insulator maximum operational tem-
+perature in [2/]. · cos  is the power factor, taken at the inverters point. ·  is the number of trefoil circuits ·  is the reactance of a single circuit in [/]
+
+Electrical Methodology
+
+30
+
+Chapter 3. Electrical Sizing Criteria
+·  is the cable length in [m]. ·  is the operating current running through the cable in [A]. ·  is the voltage drop in parts per one. ·  is the voltage of the system of the PV plant in [V].
+In the case of DC cables, the minimum cable cross-section per the voltage drop criterion ig given by Equation 3.20.
+
+2 ·  ·  ·   =  · 
+
+(3.20)
+
+Where:
+·  the cable cross-section in [2]. ·  is the conducting material resistivity at the cable's insulator maximum operational tem-
+perature in [2/ ]. ·  is the cable length in [m]. ·  is the operating current running through the cable in [A]. ·  is the voltage drop in parts per one. ·  is the voltage of the system of the PV plant in [V].
+The resistivity of the conducting material at a specific temperature is calculated using Equation 3.21.
+
+ (i) =  (20) · (1 +  (i - 20))
+
+(3.21)
+
+Where:
+·  is the conducting material resistivity at the cable's insulator maximum operational temperature in [2/].
+·  (20) is the conducting material resistivity at 20ºC in [2/]. It equals 1/56·10-6 2/ for copper and 1/35 · 10-6 2/ for aluminium
+·  is a parameter that depends on the type of material used. It equals 0.00392  -1 for copper and 0.00403  -1 for aluminium.
+· i is the maximum allowable conductor temperature in [ºC]. It equals the maximum operational insulator temperature in normal operation.
+
+3.4.1 Consequences of taking the maximum operational temperature of the insulation for cable sizing based on voltage drop
+To size the cable based on the voltage drop criterion, the temperature that has been taken to obtain the section equals the maximum operation temperature of the insulation material in normal conditions. These temperatures can be seen in Table 3.12.
+
+Electrical Methodology
+
+31
+
+Chapter 3. Electrical Sizing Criteria
+
+Table 3.12: Maximum conductor temperatures for different types of insulating in normal condition to electrical standards
+
+Maximum conductor temperature [ºC] PVC THHN EPR/XLPE/XHHN
+
+in normal operation , i
+
+70 75
+
+90
+
+Sometimes, this temperature is taken as the maximum ambient temperature: 30 ºC or 35 ºC. This decision can cause up to 25% error when sizing a cable. Taking the maximum operational temperature causes more conservative results as it is seen in Figure 3.3.
+
+Figure 3.3: Al XLPE cable cross-section based on resistivities at different temperatures [2]. Source: Own elaboration.
+
+3.4.2 Consequences of taking the AC resistance equals to the DC resistance
+There is a slight difference between the DC cable resistance and the AC cable resistance. The second one is affected by the skin effect and the proximity of other conductors. The AC resistance is calculated using Equation 3.22. [12]
+
+AC = DC · (1 + s + p)
+Where: · AC is the AC cable resistance /. · DC is the DC cable resistance /. · s represents the skin effect. · s represents how other close conductors affect the cable.
+Electrical Methodology
+
+(3.22) 32
+
+Chapter 3. Electrical Sizing Criteria
+Considering the DC cable resistance equals to the AC cable resistance can produce a maximum of 7% error for sections from 300 to 630 2. For sections lower than 300 2, this error is negligible. Taking both resistances as equals causes less conservative results as it is seen in Figure 3.4 and Figure 3.5.
+
+Figure 3.4: AC and DC resistivities for a Cu cable based on IEC. Source: Own elaboration.
+
+Figure 3.5: AC and DC resistivities for a Cu cable based on Tables 8 and 9 of the NEC standard. Source: Own elaboration.
+
+Electrical Methodology
+
+33
+
+Chapter 4. Electrical Parameters
+
+Chapter 4
+Electrical Parameters
+
+This section presents the calculation of the electrical parameters for the cables of the PV plant and the BESS. The chapter introduces the calculation of the resistance, reactance, zero sequence resistance, zero sequence reactance and susceptance of the conductors, covering only the LV AC and MV AC cables.
+
+4.1 Resistance calculation
+
+The resistance of the cables will be calculated using the resistivity at a specific temperature ob-
+
+tained from Equation 3.21. The calculation for a bundle of circuits is performed following Equa-
+
+tion 4.1:
+
+ ( )
+
+   =  · 
+
+(4.1)
+
+Where:
+
+·  is the resistance of the AC cable in [/]. Subsection 3.4.2 covers the reason why the AC resistance is taken as equal to the DC resistance.
+·  is the resistance of the DC cable in [/]. 
+·  ( ) is the resistivity of the conductor at temperature  in 2 ·  . ·  is the section of the conductor in [2].
+·  is the number of circuits.
+
+4.2 Reactance calculation
+The inductive reactance of the cables is applicable only to the AC cables due to its dependency with the frequency. Additionally, the geometrical configuration between the conductors plays an important role in the calculation of the inductance between the cables.
+The inductance of the conductors can be obtained from Equation 4.2.
+
+ =  + 0.2 · ln 2 ·  · 10-6
+
+(4.2)
+
+
+
+Electrical Methodology
+
+34
+
+Chapter 4. Electrical Parameters
+Where:
+·  is the inductance of the conductor in [H/m]. ·  is a constant that depends on the number of wires in the conductors. A value of 0.05 is
+used, which corresponds to solid conductors [13]. ·  is the axial spacing between conductors in trefoil in [mm]. A value of two times the
+diameter was selected, assuming an insulation thickness equal to the conductor's radius. The conductors in trefoil are considered to not have an extra separation between each other. ·  is the diameter of the conductor in [mm].
+The reactance is then calculated using Equation 4.3:
+
+ = 2  
+
+(4.3)
+
+Where:
+
+·  is the reactance of the conductor bundle in [/]. ·  is the frequency in [Hz]. ·  is the inductance calculated from Equation 4.2 in [H/m].
+
+4.3 Zero sequence impedance calculation
+Unlike the positive and negative sequence currents, zero sequence currents have no phase shift between different phases, and are typically used for the calculation of phase to ground shortcircuit currents. Obtaining the zero sequence parameters can be challenging, as complex equations are required. Hence, a simplified set of equations is presented in the IEC-60909 [14]:
+
+1.851
+
+ =
+
+(4.4)
+
+
+
+2  0
+
+
+
+Where:
+
+·  is the equivalent soil penetration depth in [m]. · 0 is the permeability of free space, which is equal to 4 · 10-7 in [H/m]. ·  is the soil resistivity in []. A value of 300 has been assumed for the calculations in
+RatedPower, corresponding to a medium level of soil resistivity. This value is typical for limestone, sandstone and shale [15].
+
+0
+
+=
+
+0
+
++
+
+j0
+
+=
+
+1 
+
++
+
+3  
+4
+
+0
+
++
+
+j
+
+0
+
+ 3 · ln
+ 3  · 2
+
++  4 · 
+
+(4.5)
+
+
+
+Where:
+
+· 0 is the zero sequence impedance of the conductor in [/].
+
+Electrical Methodology
+
+35
+
+Chapter 4. Electrical Parameters
+
+· 1 is the positive sequence resistance of the conductor in [/]. ·  is the number of subconductors per bundle, which is equal to 1. ·  is the frequency in [Hz]. ·  is the equivalent soil penetration depth according to Equation 4.4 in [m]. ·  is the radius of the conductor in [m]. ·  is the geometrical mean spacing between the conductors in [m]. A value of two times
+the diameter of the conductor is taken, considering that the insulation thickness is equal to the radius of the conductor. ·  is the relative permeability of the conductor, which is considered equal to 1 for conductors.
+
+4.4 Capacitive Susceptance calculation
+
+The capacitance of a conductor is the property that permits the storage of an electric charge, mea-
+
+sured in Farads. The conductor will have a capacitance due to its sheath, and will be calculated
+
+with the following equation:
+
+
+
+ =
+
+(4.6)
+
+
+
+Where:
+
+·  is the capacitance of the capacitor in [F]. ·  is the maximum charge that can be stored in [C]. ·  is the voltage across the two plates of the capacitor in [V].
+
+The potential difference between the capacitor can be calculated as:
+
+ 
+
+ -  = ì · ì
+
+(4.7)
+
+
+
+Where:
+
+·  and  are the voltage levels at A and B respectively in [ ]. · ì is the electrical field in [ /]. · ì is the derivative of the distance between A and B in [].
+
+By applying the geometrical features of the cylindrical surface of a conductor, the following formula is obtained for the capacitance:
+
+ = 20
+
+(4.8)
+
+ln 2
+
+1
+
+Where:
+
+·  is the capacitance of the conductor per unit length in [ /] · 0 is the permittivity of free space, which is equal to 8.8542 · 10-12 [ /]
+·  is the relative permittivity of the material, also known as the dielectric constant. It takes a value depending on the insulation material of 3.0 for EPR, 2.3 for XLPE and 4.5 for PVC.
+
+Electrical Methodology
+
+36
+
+Chapter 4. Electrical Parameters
+
+· 1 is the radius of the conductor in [m].
+· 2 is the radius of the conductor and the insulation in [m], which is assumed to have the same thickness as the conductor radius. Therefore, it will be equal to two times 1.
+
+The susceptance is then calculated from the capacitance using Equation 4.9, where "B" is the capacitive susceptance in Siemens [S].
+
+ = 2  
+
+(4.9)
+
+Electrical Methodology
+
+37
+
+Chapter 5. Power Flow Model
+Chapter 5
+Power Flow Model
+This section presents the calculation of the Power Flow Model (PFM) following the guidelines of the WECC [16]. The PFM represents the different elements of a PV plant as equivalent systems in a simplified way.
+5.1 Introduction
+According to the WECC, the representation of the PFM is carried out for PV plants of over 20 MVA and connected to 60 kV or above. However, RatedPower calculates the equivalent model regardless of the size of the facility, therefore this calculation is applicable to any design generated with the software. The model includes the following equivalent systems:
+· An explicit representation of the overhead line, if it was defined in the site. · An explicit representation of every power transformer of the substation. For switching
+and breaking stations, this will be omitted. · An equivalent representation of the collector systems. This refers to the equivalent of
+the medium voltage lines that collect the capacity of the different power stations and are connected to the interconnection facility. · An equivalent representation of the inverter pad-mounted transformers, which represents the power stations of the PV plant or the power conversion systems from a battery energy storage system (BESS). · An equivalent representation of the generators, which can come from PV or from BESS. Since RatedPower does not include the calculation of the reactive compensation devices, the equivalent reactive compensation is not considered in the calculation of the PFM. An example of a simple power flow model is shown in Figure 5.1.
+
+Electrical Methodology
+
+38
+
+Chapter 5. Power Flow Model
+
+Figure 5.1: Power Flow Model example. Source: RatedPower
+5.2 Explicit representation of the Overhead Line
+Since the representation of the Overhead Line does not require the calculation of an equivalent system, the calculation of the electrical parameters is carried out according to the overhead line methodology [17]. The explicit representation of the overhead line will include the following information:
+· The voltage of the line in kV. · The capacity of the line in MVA. · The positive sequence resistance and reactance per unit. · The zero sequence resistance and reactance per unit. · The susceptance per unit. · The base per unit values (capacity, voltage and impedance).
+The base capacity used to calculate the values per unit will be considered equal to 100 MVA. However, for overhead lines with smaller capacities of less than 20 MVA, the base capacity will be equal to the capacity of the line.
+5.3 Explicit representation of the Power Transformers
+The representation of the power transformers does not require a calculation of an equivalent system. Each pair of windings, primary and secondary, will be represented as a power transformer in the PFM, meaning that a three winding transformer will have two explicit representations, one for the primary-secondary pair and one for the primary-tertiary pair.
+The power transformer includes the following characteristics:
+· The input and output voltage levels in kV. · The rated capacity of the transformer (not the capacity connected to it). · The resistance and reactance per unit, which will be applicable to both, positive and zero
+sequence. · The base per unit values (capacity, voltage and impedance). The values for the high voltage
+side will be used to calculate the impedances.
+The calculation of the short circuit resistance and reactance can be done using the copper losses and the short circuit impedance of the transformer.
+
+Electrical Methodology
+
+39
+
+Chapter 5. Power Flow Model
+
+The copper losses given as parts per unit will represent the per unit resistance of the transformer. The per unit reactance can then be calculated as:
+
+
+
+ =
+
+ 2 - 2
+, 
+
+(5.1)
+
+The criteria to calculate the base capacity will be the same as the one for the overhead line.
+
+5.4 Equivalent representation of the MV Collectors
+The underground medium voltage lines that are placed in the PV plant and in the BESS facility can be represented as equivalent MV collector systems. The calculation of the MV collector system can be performed according to a method developed by NREL [18], which is used to obtain the equivalent impedance and susceptance with Equation 5.2 and Equation 5.3 respectively:
+
+ =  +  =
+
+  =1
+
+
+
+·
+
+2
+
+
+ 2
+
+
+  = 
+ =1
+
+(5.2) (5.3)
+
+Where:
+·  is the equivalent impedance of the MV collector system in []. ·  is the impedance of a single MV line in [] calculated from Equation 4.1 and Equa-
+tion 4.3. ·  is the number of inverters connected to a single MV line. ·  is the total number of inverters in the MV collector system. ·  is the total number of MV lines. ·  is the equivalent capacitive susceptance of the MV collector system in []. ·  is the capacitive susceptance a single MV line in [].
+The criteria to calculate the base capacity will be the same as the one for the overhead line.
+
+5.5 Equivalent representation of the inverter pad-mounted transformers
+The pad-mounted transformers of the PV plant are represented with an equivalent system. When all the power transformers are identical, and are connected to the same number of inverters, the following equations are applicable:
+
+ = 
+
+(5.4)
+
+ =  · 
+
+(5.5)
+
+Where:
+
+Electrical Methodology
+
+40
+
+Chapter 5. Power Flow Model
+·  is the equivalent impedance per unit of the equivalent pad-mounted transformer. ·  is the impedance per unit of a single transformer in its own MVA base. ·  is the equivalent power rating of the equivalent pad-mounted transformer in [ ]. ·  is the number of inverters connected to the transformer. ·  is the power rating of one transformer in [ ].
+The WECC [16] covers the case where there is a different number of inverters connected to each power transformer, which requires the application of the same method used for the MV collector (Equation 5.2). However, RatedPower will consider the simplified case where the default power station will be repeated across the PV plant. The base capacity used to convert to per unit values is calculated according to Equation 5.6:
+
+Where:
+
+ =  · 
+
+(5.6)
+
+·  is the base capacity of the equivalent pad mounted transformer in [VA]. ·  is the rated capacity of one inverter in [VA]. ·  is the number of inverters of the equivalent system.
+
+If different inverters are installed behind the same substation transformer, each type of inverter will have its own pad-mounted transformer equivalent. Figure 5.2 shows an example of an equivalent system with secondary inverter enabled.
+
+Figure 5.2: Power Flow Model of a PV plant with a secondary inverter enabled. Source: RatedPower
+5.6 Equivalent representation of the generators
+The equivalent system that represents the PV modules and the batteries will be defined as a generator and not a negative load.
+Since the power level of a solar PV plant depends on the weather conditions, the definition of this power will depend on the objective of the equivalent model. For interconnection studies, which is the case in RatedPower, the PV plant is modelled at full output. For other purposes, this PV power can be modelled at partial output.
+
+Electrical Methodology
+
+41
+
+Chapter 5. Power Flow Model For the AC coupled BESS, the batteries and PV are modelled by separate equivalent generators, equivalent pad-mounted transformers and equivalent MV collector systems. In Figure 5.3, an example of a PFM with batteries is presented, without enabling the secondary inverter for the PV plant.
+Figure 5.3: Power Flow Model of a PV plant with an AC coupled battery energy storage system. Source: RatedPower
+
+Electrical Methodology
+
+42
+
+Bibliography
+
+Bibliography
+
+[1] Technical Committee 84, "Photovoltaic (pv) arrays - design requirements," International Electrotechnical Commision, IEC 62548:2016, 2016.
+[2] National Electrical Code Committee, "Nfpa 70 national electrical code," International Standard, 2017.
+[3] Technical Committee 82, "Ground-mounted photovoltaic power plants - design guidelines and recommendations," International Electrotechnical Commision, IEC TS 62738:2018, 2018.
+[4] Technical Committee 20, "Power cables with extruded insulation and their accessories for rated voltages from 1 kv (um = 1,2 kv) up to 30 kv (um = 36 kv) - part 2: Cables for rated voltages from 6 kv (um = 7,2 kv) up to 30 kv (um = 36 kv)," International Electrotechnical Commision, IEC 60502-2:2014, 2014.
+[5] Technical Committee 64, "Low-voltage electrical installations - part 5-52: Selection and erection of electrical equipment - wiring systems," International Electrotechnical Commision, IEC 60364-5-52:2009, 2009.
+[6] S. A. Limited and S. N. Zealand, "Electrical installations: Selection of cables. cables for alternating voltages up to and including 0.6/1 kv : Typical australian installation conditions," AS 3008.1.1:2017, 2017.
+[7] "Medium voltage cables," Prysmian Australia Pty Ltd, Technical report, 2015.
+[8] "Standard for design of cables of electric power engineering," National Standard of the People's Republic of China, Technical report GB 50217-2018, 2018.
+[9] Prysmian Group, "Manual tecnico y practico de cables y accesorios para media tension," White paper, 2008.
+[10] Technical Committee 20, "Calculation of thermally permissible short-circuit currents, taking into account non-adiabatic heating effects," International Electrotechnical Commision, IEC 60949:1988, 1988.
+[11] RatedPower, "Interconnection facility methodology. a methodology to design an air-insulated substation," RatedPower, 2020.
+[12] Technical Committee 20, "Electric cables - calculation of the current rating - part 1-1: Current rating equations and calculation of losses - general," International Electrotechnical Commision, IEC 60287-1-1:2006, 2006.
+[13] BICC Cables Ltd, Electric Cables Handbook, 3rd Edition. 1997.
+
+Electrical Methodology
+
+43
+
+Bibliography
+[14] Technical Committee 73, "Short-circuit currents in three-phase ac systems - part 3: Currents during two separate simultaneous line-to-earth short circuits and partial short-circuit currents flowing through earth," International Electrotechnical Commision, IEC 609093:2009, 2009.
+[15] IEEE, "Ieee guide for measuring earthresistivity, ground impedance, and earth surface potentials of agrounding system," IEEE Industry Applications Society, IEEE Std 81:2012, 2012.
+[16] WECC Modeling and Validation Work Group, "Solar photovoltaic power plant modeling and validation guideline," Western Electricity Coordinating Council, 2019.
+[17] RatedPower, "Overhead line methodology," RatedPower, 2022.
+[18] E. Muljadi, A. Ellis, et al, "Equivalencing the collector system of a large wind power plant," National Renewable Energy Laboratory, 2006.
+[19] IEEE, "IEEE Recommended Practice for Industrial and Commercial Power Systems Analysis," no. IEEE Std 399-1997, 1997.
+[20] Technical Committee 20, "Electric cables - calculation of the current rating - part 3-1: Operating conditions - site reference conditions," International Electrotechnical Commision, IEC 60287-3-1:2017, 2017.
+[21] Technical Committee 64, "Low-voltage electrical installations - part 5-54: Selection and erection of electrical equipment - earthing arrangements and protective conductors," International Electrotechnical Commision, IEC 60364-5-54:2011, 2006.
+
+Electrical Methodology
+
+44
+
+Appendix A. Determining the distribution of strings into inverters
+
+Appendix A
+Determining the distribution of strings into inverters
+
+For a better understanding of the process followed by RatedPower to calculate the distribution of strings into inverters and power stations, one case scenario with the following characteristics is considered:
+1. There is just one available area. 2. The PV module has a DC power of 595 W. 3. The central inverter has an AC power of 2500 kVA. 4. The structure is a 2V tracker with 3 strings, each of which has a total number of 25 modules.
+The maximum number of structures that can be installed is 743. 5. The default power station has 2 inverters and is located outside the DC field. 6. The objective is to install the maximum capacity while installing the maximum peak power,
+with an objective DC/AC ratio of 1.2.
+The possible power stations to be defined are:
+1. Default power station: formed by 2 central inverters. 2. Non-default power station: formed by 1 central inverter.
+The maximum DC power available is calculated as:
+
+DC,available = 0.595  / · 25 / · 2229  = 33156.375   (A.1) The lower and upper number of default power stations that can be installed is calculated as:
+
+defPS,lower = 
+
+DC,available AC,PS · DC/AC, desired + DC,embedded
+
+(A.2)
+
+Electrical Methodology
+
+45
+
+Appendix A. Determining the distribution of strings into inverters
+
+33156.375  
+
+defPS,lower = 
+
+=5
+
+ 
+
+5000   · 1.2
+
++0
+
+ 
+
+defPS,upper = 
+
+DC,available AC,PS · DC/AC, desired + DC,embedded
+
+(A.3) (A.4)
+
+33156.375  
+
+defPS,upper = 
+
+=6
+
+ 
+
+5000   · 1.2
+
++0
+
+ 
+
+The updated DC power remaining for non-default power stations is calculated as:
+
+(A.5)
+
+ 
+
+DC,available = 33156.375   - 5 · 5000   · 1.2
+
+= 3156.375  
+
+ 
+
+(A.6)
+
+The lower and upper number of non-default power stations that can be installed is calculated as:
+
+defPS,lower = 
+
+DC,available AC,PS · DC/AC, desired + DC,embedded
+
+(A.7)
+
+defPS,lower = 
+
+3156.375  
+
+=1
+
+ 
+
+2500   · 1.2
+
++0
+
+ 
+
+defPS,upper = 
+
+DC,available AC,PS · DC/AC, desired + DC,embedded
+
+(A.8) (A.9)
+
+3156.375  
+
+defPS,upper = 
+
+=2
+
+ 
+
+2500   · 1.2
+
++0
+
+ 
+
+(A.10)
+
+The possible combinations of power stations to evaluate are:
+
+· 5 default power stations: 2229 strings can be installed and the resulting ratio would be 1.326.
+· 6 default power stations: 2229 strings can be installed and the resulting ratio would be 1.105
+· 5 default power stations and 1 non-default power station: 2229 strings can be installed and the resulting ratio would be 1.205
+· 5 default power stations and 2 non-default power stations: 2229 strings can be installed and the resulting ratio would be 1.105
+
+Electrical Methodology
+
+46
+
+Appendix A. Determining the distribution of strings into inverters
+From the possible combinations, installing 5 default power stations and 1 non-default power station is selected as the optimal one, as all the strings available would be installed and the ratio is the one closest to the desired.
+The optimal number of strings to install in one inverter is calculated as:
+
+strings,inverter =  AC,inverter · DC/AC, resulting ·
+
+1
+
+· strings,structure
+
+DC,string
+
+string,structure
+
+(A.11)
+
+ 
+
+strings,inverter = 
+
+2500   · 1.2056  
+
+·1
+
+0.595  / · 25 / 3
+
+· 3 = 204
+
+(A.12)
+
+The number of strings that have to be redistributed is calculated as:
+
+inv, area
+
+
+
+strings, redistribution = strings, area -
+
+strings, i
+
+ =1
+
+inv, area
+
+
+
+strings, redistribution = 2229 -
+
+strings, i = 2229 - 11 · 204 = -15 
+
+ =1
+
+So, the number of inverters to adapt the optimal strings defined is:
+
+(A.13) (A.14)
+
+inverters, adapt
+
+=
+
+ (strings, redistribution) strings, structure
+
+=
+
+ (-15) 3
+
+=
+
+5 
+
+(A.15)
+
+15 strings need to be removed from 5 inverters, or 3 strings per inverter. As 5 default power stations were defined, 3 strings will be removed from one inverter in each of them.
+After this calculation, the resulting combination of power stations that will give a DC/AC ratio of 1.2056 and will be composed by:
+· 5 default power stations with 2 inverters, one with 201 strings and another with 204 strings. · 1 non-default power station with 1 inverter with 204 strings.
+
+Electrical Methodology
+
+47
+
+Appendix B. Determining cable cross-sections
+
+Appendix B
+Determining cable cross-sections
+
+The assumptions made for the following examples are the following ones:
+· The soil temperature equals 25°C. · The ambient temperature equals 40°C. · The soil resistivity equals 1 Km/W. · The depth of cables are 700 mm for buried LV cables and 900 mm for MV cables. · The MV cables are spaced 0.2 m between group centres and there is no space between LV
+cables. · String cables are single core Cu cables fastened to the structures. XLPE is chosen for IEC
+and XHHN for NEC. · Medium voltage cables are single core Al cables directly buried in trenches. XLPE is chosen
+for IEC and XHHN for NEC. · The voltage drop is considered as 0.5 % for LV and MV cables. · The power factor is considered as 0.9 at the MV cables level, resulting in a phi of 25.842º
+
+B.1 Medium voltage cables
+The power of the cable is 12 MVA. The voltage level is 30 kV and the length is 500 m. In addition, there are 10 lines that are group together to connect the plant with the substation. The shortcircuit current equals 25 kA and the short-circuit time equals 1 s.
+B.1.1 IEC standard
+The operating current is calculated as:
+
+load
+
+=
+
+VA  · 3
+
+=
+
+12 · 106 
+30 · 103 · 3
+
+=
+
+230 
+
+(B.1)
+
+The IEC standard followed to size a medium voltage cable is the IEC 60502-2. The reference conditions that the IEC standard takes as basis for its tables are the following ones:
+
+Electrical Methodology
+
+48
+
+Appendix B. Determining cable cross-sections
+
+· A maximum conductor temperature of 90 °C · An ambient air temperature of 30 °C · A ground temperature of 20 °C · A depth of laying of 0.8 m · A thermal resistivity of soil of 1.5 Km/W
+As the medium voltage cable is directly buried, the ground temperature correction factor is given by Equation 3.3. The conductor is aluminium whose  equals 228 ºC. The insulator material is XLPE whose operational temperature in normal conditions is i = 90 ºC.
+
+temp =
+
+i
+
+
+
+ i
+
+- a
+
+-
+
+
+
+ a
+
+·
+
+ 
+
++
+
+
+
+ i
+
++ i
+
+1 2
+=
+
+90 - 25 · 228 + 90 90 - 20 228 + 90
+
+1 2
+= 0.928
+
+(B.2)
+
+The others corrections factors are given in the following table. In order to find them in the tables, there are few parameters that need to be taken into account.
+
+First of all, this medium voltage cable is a single core cable. There are 10 circuits that are grouped together to link the power stations to the substations. In this case, according to IEC, a value of 10 current-carrying conductors should be considered to obtain the correction factor for a group of cables. Second, the cable is installed at a depth of 0.9 m and they are spaced 0.2 m between group centres. Last, the soil resistivity that is considered equals 1 Km/W.
+
+Table B.1: Correction factors according to IEC standard for MV cables.
+
+Correction Factors
+For soil thermal resistivities For depths of laying For groups of cables
+
+For MV cables: IEC 60502-2 Table B.14 Table B.12 Table B.19
+
+Correction factors
+ 1.19  0.975
+0.54
+
+Then, the sizing current is given by Equation 3.2.
+
+sizing
+
+=
+
+operating  
+
+=
+
+230 0.928 · 1.19 · 0.975 ·
+
+0.54
+
+=
+
+230 0.58
+
+=
+
+395 
+
+(B.3)
+
+According to table B.3 of the IEC standard, the section chosen is 300 2.
+
+ = 300 2  ccc = 414  > sizing = 395 
+
+(B.4)
+
+According to the short-circuit current criterion, the section is obtained using Equation 3.11. The short-circuit temperature of the XLPE is 250 ºC.
+
+
+
+
+
+ =
+
+sc · 
+
+=
+
+25000 · 1
+
+= 266 2
+
+(B.5)
+
+
+
+
+
+ ·
+
+f +  
+
+148 ·
+
+250 + 228 
+
+i + 
+
+90 + 228
+
+Electrical Methodology
+
+49
+
+Appendix B. Determining cable cross-sections
+
+The inductance value is calculated from Equation 4.2:
+
+ =  + 0.2 · ln 2 ·  · 10-6 = (0.005 + 0.2 · ln 2) · 10-6 = 0.1436 · 10-6 /
+
+(B.6)
+
+
+
+ = 2   = 2 · 50 · 0.1436 · 10-6 = 0.00004511/
+
+(B.7)
+
+The resistivity is calculated from Equation 3.21
+
+ (i) =  (20) · (1 +  (i - 20)) = 1/35 · (1 + 0.00403(90 - 20)) = 0.0366312/ (B.8)
+
+According to the voltage drop criterion, the section is obtained using Equation 3.19.
+
+ · cos 
+
+ =
+
+ · 
+
+ · 
+
+-  · sin 
+
+= 1·
+
+0.036631 · 0.9
+
+0.005 
+
+· 30000
+
+- 0.00004511 ·
+
+sin 25.842
+
+ 452
+
+(B.9)
+
+3 ·  · 
+
+3 · 230 · 500
+
+Finally, the section of the cable is given by the following expression:
+
+ =  300 2, 266 2, 45 2 = 300 2
+B.1.2 NEC standard
+The operating current is calculated as:
+
+(B.10)
+
+load
+
+=
+
+VA  · 3
+
+=
+
+12 · 106 
+30 · 103 · 3
+
+=
+
+230 
+
+(B.11)
+
+The reference conditions that the NEC standard takes as basis for its tables of MV cables are the following ones:
+
+· A maximum conductor temperature of 90 °C · An ambient air temperature of 40 °C · A ground temperature of 20 °C · A depth of laying of 0.9 m · A thermal resistivity of soil of 0.9 Km/W
+
+As the medium voltage cable is directly buried, the ground temperature correction factor is given by Equation 3.3. The conductor is aluminium whose  equals 228 ºC. The insulator material is XHHN whose operational temperature in normal conditions is i = 90 ºC.
+
+temp =
+
+i
+
+
+
+ i
+
+- a
+
+-
+
+
+
+ a
+
+·
+
+ 
+
++
+
+
+
+ i
+
++ i
+
+1 2
+=
+
+90 - 25 · 228 + 90 90 - 20 228 + 90
+
+1 2
+= 0.928
+
+(B.12)
+
+The others corrections factors are given in the following table. In order to find them in the tables, there are few parameters that need to be taken into account.
+
+Electrical Methodology
+
+50
+
+Appendix B. Determining cable cross-sections
+
+First of all, this medium voltage cable is a single core cable. There are 10 circuits that are grouped together to link the power stations to the substations. In this case, according to NEC, a value of 30 current-carrying conductors should be considered to obtain the correction factor for a group of cables. Second, the cable is installed at a depth of 0.9 m and they are spaced 0.2 m between group centres. Last, the soil resistivity that is considered equals 1 Km/W.
+
+Table B.2: Correction factors according to NEC standard for MV cables.
+
+Correction Factors
+For soil thermal resistivities For depths of laying For groups of cables
+
+For MV cables: NEC
+IEEE Std 399-1997 - Table 13-7 NEC Annex B, Section B.3(b) NEC Table B.310.15(B)(2)(11)
+
+Correction factors
+ 0.91 1 0.6
+
+Then, the sizing current is given by Equation 3.6.
+
+sizing
+
+=
+
+operating  
+
+=
+
+0.928
+
+·
+
+230 0.91
+
+·
+
+1
+
+·
+
+0.6
+
+=
+
+453 
+
+(B.13)
+
+According to table 310.60(C)(86) of the NEC standard, the section chosen is 750 kcmil.
+
+ = 750   ccc = 550  > sizing = 453 
+
+(B.14)
+
+According to the short-circuit current criterion, the section is obtained using Equation 3.11. The short-circuit temperature of the XHHN is 250 ºC.
+
+
+
+ =
+
+sc · 
+
+
+
+ ·
+
+f +  
+
+i + 
+
+
+
+=
+
+25000 · 1
+
+
+
+148 ·
+
+250 + 228 
+90 + 228
+
+= 266 2
+
+(B.15)
+
+According to the voltage drop criterion, the section is obtained using the same methodology as for IEC with Equation B.9.
+
+  =   452 Finally, the section of the cable is given by the following expression:
+
+(B.16)
+
+ =  750 , 266 2, 45 2 = 750   380 2
+
+(B.17)
+
+B.2 Low voltage cables. String level
+The power of the string is 10.585 kW. The MPP voltage is 1145 V and the length is 30 m. In addition, there are 24 strings that are group together to connect the structures to a string box. The short-circuit current of the modules equals 9.75 A.
+
+Electrical Methodology
+
+51
+
+Appendix B. Determining cable cross-sections
+
+B.2.1 IEC standard
+The operating current is calculated as:
+
+load
+
+=
+
+VA  · 3
+
+=
+
+10.585 · 103 1145·
+
+=
+
+9.24 
+
+(B.18)
+
+The IEC standard followed to size a low voltage cable is the IEC 60364-5-52. The reference conditions that the IEC standard takes as basis for its tables are the following ones:
+· A maximum conductor temperature of 90 °C for XLPE and 70 ºC for PVC. · An ambient air temperature of 30 °C · A ground temperature of 20 °C · The depth of laying is not considered. · A thermal resistivity of soil of 2.5 Km/W
+As the low voltage cable is fastened to a structure, the ambient temperature correction factor is given by Equation 3.3. The conductor is copper whose  equals 234.5 ºC. The insulator material is XLPE whose operational temperature in normal conditions is i = 90 ºC.
+
+temp =
+
+i
+
+
+
+ i
+
+- a
+
+-
+
+
+
+ a
+
+·
+
+ 
+
++
+
+
+
+ i
+
++ i
+
+1 2
+=
+
+90 - 40 · 234.5 + 90 90 - 30 234.5 + 90
+
+1 2
+= 0.83
+
+(B.19)
+
+The others corrections factors are given in the following table. In order to find them in the tables, there are few parameters that need to be taken into account.
+
+First of all, this low voltage cable is a single core cable. There are 24 circuits that are grouped together to link the structures to a string box. In this case, according to IEC, a value of 24 currentcarrying conductors should be considered to obtain the correction factor for a group of cables. Second, the cable is fastened to a structure and they are touching among each other.
+
+Table B.3: Correction factors according to IEC standard for LV cables.
+
+Correction Factors
+
+For MV cables: Correction factors IEC 60502-2
+
+For groups of cables Table B.52.17
+
+0.72
+
+Then, the sizing current is given by Equation 3.2.
+
+sizing
+
+=
+
+operating 
+
+=
+
+9.24 0.833 · 0.72
+
+=
+
+15.4 
+
+According to table B.52.12 of the IEC standard, the section chosen is 1.5 2.
+
+ = 1.5 2  ccc = 29  > sizing = 15.4 
+
+(B.20) (B.21)
+
+Electrical Methodology
+
+52
+
+Appendix B. Determining cable cross-sections According to the voltage drop criterion, the section is obtained using Equation 3.20.
+
+
+
+=
+
+2 ·  (20) · (1 +  (i - 20)) ·  ·   · 
+
+=
+
+2 · 1/56 · (1 + 0.00392(90 - 20)) · 30 · 15.4 0.005 · 1145
+
+= 3.7 2
+
+(B.22)
+
+Finally, the section of the cable is given by the following expression:
+
+ =  1.5 2 , 3.7 2 = 3.7 2  4 2 ( )
+B.2.2 NEC standard
+The sizing current is calculated by Equation 3.5.
+
+(B.23)
+
+sizing =  (corrected , OCPD)
+
+(B.24)
+
+The reference conditions that the NEC standard takes as basis for its tables of LV cables are the following ones:
+· A maximum conductor temperature of 90 °C for XHHN insulation and 75 ºC for THHN insulation.
+· An ambient air temperature of 30 °C · A ground temperature of 20 °C · A thermal resistivity of soil of 0.9 Km/W
+As the low voltage cable is fastened to a structure, the ambient temperature correction factor is given by Equation 3.3. The conductor is copper whose  equals 234.5 ºC. The insulator material is XHHN whose operational temperature in normal conditions is i = 90 ºC.
+
+temp =
+
+i
+
+
+
+ i
+
+- a
+
+-
+
+
+
+ a
+
+·
+
+ 
+
++
+
+
+
+ i
+
++ i
+
+1 2
+=
+
+90 - 40 · 234.5 + 90 90 - 30 234.5 + 90
+
+1 2
+= 0.83
+
+(B.25)
+
+The others corrections factors are given in the following table. In order to find them in the tables, there are few parameters that need to be taken into account.
+
+First of all, this low voltage cable is a single core cable. There are 24 circuits that are grouped together to link the structures to a string box. In this case, according to NEC, a value of 48 current-carrying conductors should be considered to obtain the correction factor for a group of cables. Second, the cable is fastened to a structure and they are touching among each other.
+
+Table B.4: Correction factors according to NEC standard for LV cables.
+
+Correction Factors
+
+For MV cables: NEC
+
+Correction factors
+
+For groups of cables NEC Table B.310.15(B)(2)(11)
+
+0.5
+
+Electrical Methodology
+
+53
+
+Appendix B. Determining cable cross-sections
+
+Then, the corrected current is given by Equation 3.6.
+
+corrected
+
+=
+
+1.25 · sc 
+
+=
+
+1.25 · 9.75 0.83 · 0.5
+
+=
+
+29 
+
+On the other hand, the OCPD is calculated based on Equation 3.7.
+
+(B.26)
+
+1.25 · (1.25 · sc) = 1.56 · 9.75 = 15.21   OCPD = 20  Then, the sizing current is calculated as:
+
+(B.27)
+
+sizing =  (29  , 20 ) = 29  According to table 310.15(B)(17) of the NEC standard, the section chosen is 14 AWG.
+
+(B.28)
+
+ = 14    ccc = 35  > sizing = 29  According to the voltage drop criterion, the section is obtained using Equation 3.20.
+
+(B.29)
+
+
+
+=
+
+2 ·  (20) · (1 +  (i - 20)) ·  ·   · 
+
+=
+
+2 · 1/56 · (1 + 0.00392(90 - 20)) · 30 · 15.4 0.005 · 1145
+
+= 3.7 2
+
+(B.30)
+
+Finally, the section of the cable is given by the following expression:
+
+ =  14   , 3.7 2 = 3.7 2  10   ( )
+
+(B.31)
+
+Electrical Methodology
+
+54
+
+Appendix C. Determining electrical characteristics of the cable
+
+Appendix C
+Determining electrical characteristics of the cable
+
+After selecting the cross-section based on the three criteria that have been presented in this methodology, the electrical characteristics of the cable are computed. These are the voltage drop, the temperature and the short-circuit current that the cables can withstand.
+
+C.1 Determining the electrical characteristics of a medium voltage cable
+The following example is based on the cable that was calculated in Subsection B.1.1. At the end, the cable cross-section was 300 2.
+C.1.1 Temperature of the cable
+The temperature of the cable is calculated using Equation 3.8.
+
+2
+  = amb + (i - amb) ·
+a
+
+(C.1)
+
+ = 25 + (90 - 25) ·
+
+230 414 · 0.58
+
+2
+
+=
+
+84
+
+
+
+
+<
+
+i
+
+=
+
+90
+
+
+
+
+
+
+
+
+(C.2)
+
+C.1.2 Voltage drop
+The voltage drop is calculated using the following formula:
+
+  = 3 ·  ·  ·
+
+ · cos  +  · sin 
+
+ · 
+
+
+
+=
+
+ 3 · 230 · 500 ·
+
+0.036631 · 0.9 + 0.00004511 · sin 25.842
+
+1 · 300
+
+1
+
+= 25.8
+
+(C.3)
+
+Electrical Methodology
+
+55
+
+Appendix C. Determining electrical characteristics of the cable
+
+ (%) =   100 = 0.086% < input = 0.5%   
+
+(C.4)
+
+C.1.3 Withstand short-circuit current
+The withstand short-circuit current that the cable can withstand is calculated as follows:
+
+
+
+ ·  ·
+
+f +  
+
+i + 
+
+sc =
+
+
+
+
+
+(C.5)
+
+
+
+300 · 148 ·
+
+250 + 228 
+
+90 + 228
+
+sc =
+
+
+
+1
+
+= 28.2  > sc grid = 25   
+
+(C.6)
+
+Electrical Methodology
+
+56
+
+Appendix D. Determining electrical parameters of the cable
+
+Appendix D
+Determining electrical parameters of the cable
+
+After the conductor section has been selected, the electrical parameters of the cable can be computed following the equations of Chapter 4.
+The following example is based on the cable that was calculated in Subsection B.1.1. At the end, the cable cross-section was 300 2.
+A radius of 9.77 mm has been considered. A distance between the center of the cables in trefoil of 39.09 mm has been considered, which is equal to two times the diameter of the conductor. Therefore, the geometrical mean separation between the conductors of the trefoil is also equal to 39.09 mm as they are symmetrically disposed. A relative permeability  of 1 has been considered for the conductor.
+D.1 Determining the positive sequence parameters
+The resistance of the conductor can be calculated according to Equation 3.21 and Equation 4.1:
+
+ (i) =  (20) · (1 +  (i - 20)) = 1/35 · (1 + 0.00403(84 - 20)) = 0.035942/ (D.1)
+
+
+
+
+
+
+
+=
+
+ ( ) ·
+ · 
+
+=
+
+0.03594 300 · 1
+
+·
+
+500
+
+=
+
+0.00012/
+
+The total resistance of the conductor would be:  =  ·  = 0.00012 · 500 = 0.06
+
+(D.2) (D.3)
+
+The reactance of the conductor can be calculated from Equation 4.2 and Equation 4.3. Note that the axial separation of the conductors in trefoil "S" has been approximated to two times the
+
+Electrical Methodology
+
+57
+
+Appendix D. Determining electrical parameters of the cable
+diameter of the conductor, meaning that Equation 4.2 can be calculated without knowing the real diameter of the conductor.
+
+ =  + 0.2 · ln 2 ·  · 10-6 = 0.05 + 0.2 · ln (2 · 2 · 9.77 ) · 10-6 = 0.32726 · 10-6 / (D.4)
+
+
+
+9.77
+
+ = 2   = 2 · 50 · 0.32726 · 10-6 = 0.000103/ The total reactance of the conductor would be:
+ =  ·  = 0.000103 · 500 = 0.0514
+
+(D.5) (D.6)
+
+D.2 Determining the zero sequence parameters
+The zero-sequence impedance of the conductor is calculated according to Equation 4.4 and Equation 4.5:
+
+1.851
+
+1.851
+
+ =
+
+=
+
+= 1612.7
+
+ 2  0 
+
+ 2
+
+·
+
+4 50
+
+·
+
+10-7
+
+300
+
+(D.7)
+
+0
+
+=0
+
++
+
+j0
+
+=
+
+1 
+
++
+
+3  
+4
+
+0
+
++
+
+j
+
+0
+
+ 3 · ln
+ 3  · 2
+
++  4 · 
+
+
+
+=
+
+0.00012
+
++
+
+3 
+
+·
+
+50
+
+·
+
+4
+
+·
+
+10-7
+
++
+
+j50
+
+·
+
+4
+
+·
+
+10-7
+
+3 · ln 
+
+1612.7
+
++1
+
+14
+
+3 0.00977 · 0.039092 4 · 1
+
+= (0.000268 + j0.00206)
+
+(D.8)
+
+The total zero-sequence impedance would be: 0 = ì0 ·  = (0.000268 + j0.00206) · 500 = (0.134 + j1.031)
+
+(D.9)
+
+Due to a small distance between the conductors in the trefoil, the zero-sequence reactance value is much higher than the positive-sequence value
+
+D.3 Determining the capacitive susceptance
+The capacitive susceptance of the conductor can be calculated from Equation 4.8 and Equation 4.9 :
+
+
+
+=
+
+20 ln 2
+
+=
+
+2
+
+· 8.8542 · 2.25 · 10-12 9.77 · 2
+ln
+
+=
+
+1.806 · 10-10 /
+
+1
+
+9.77
+
+Electrical Methodology
+
+(D.10) 58
+
+Appendix D. Determining electrical parameters of the cable
+
+ = 2   = 2 · 50 · 1.806 · 10-10 = 0.0567 · 10-6/
+The total susceptance of the cable is calculated as  =  ·  = 0.0567 · 10-6 · 500 = 28.37 · 10-6
+
+(D.11) (D.12)
+
+Electrical Methodology
+
+59
+
+

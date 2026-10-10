@@ -1,0 +1,935 @@
+Topography Analysis Methodology
+Methodology for topography analysis, installation of PV mounting structures and earthworks calculation.
+September 12, 2024
+Félix Ignacio Pérez Cicala Mario Bennekers Vallejo Miguel Ángel Torrero Rionegro
+
+Abstract
+Abstract
+This document describes the calculations and algorithms used in the topography analysis module of RatedPower. The aim is to provide the reader a comprehensive and thorough calculation methodology, while leaving out the implementation details of the algorithms themselves. The focus will be in the criteria used to design the algorithm, and in explaining the decisions involved. The document follows the natural order for solving the topography analysis problem. The first step is to build a digital elevation model, which can be consulted for any point located in the PV plant. The source elevation data is assumed to be available in XYZ format. The following step is to determine what areas of the PV plant are suitable for the installation of mounting structures. Mounting structures (single axis trackers, fixed structures or east west structures) are kept or discarded, according to variable criteria depending on plant design, equipment characteristics and user choice. To decide whether a structure can be installed or not, a preliminary structure installation is calculated. Based on the results of this preliminary installation, such as table slope or pile length, the structure is kept or discarded in the final layout. This approach was chosen due to its simplicity and quality of the results, which are very accurate because all structures are tested individually. Compared to alternate approaches, such as removing structures based on slope alone, the process described in this methodology results in higher peak power. Finally, an earthworks calculation methodology is described, which uses the results obtained in the previous calculations, and then calculates earthworks platforms on which structures are installed. Some aspects of the civil engineering work of designing a PV plant which are not covered by this document are the analysis of the characteristics of the terrain beyond its slope, the structural analysis of the mounting structures, and the positioning of a structure or its piles.
+
+Topography Analysis Methodology
+
+1
+
+Contents
+
+Contents
+
+Abstract
+
+1
+
+1 Digital Elevation Model
+
+4
+
+1.1 Inverse Distance Weighting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+
+1.1.1 Problems of IDW interpolation . . . . . . . . . . . . . . . . . . . . . . . 6
+
+1.2 Radial Basis Functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+
+1.2.1 Calculation of the coefficients . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+1.2.2 Partition of unity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+1.2.3 Problems of RBF interpolation . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+1.3 Triangular Irregular Network . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+
+2 Installation of mounting structures
+
+14
+
+2.1 Installation of the piles . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+
+2.2 Installation of the table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+
+2.3 Criteria for discarding a structure . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+
+2.3.1 Slope limits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+
+2.3.2 Pile length limit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+
+2.3.3 Linked row tracker slope limit . . . . . . . . . . . . . . . . . . . . . . . . 20
+
+3 Calculation of earth works
+
+22
+
+3.1 Criteria for applying earthworks . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+
+3.2 Calculation of platform boundaries . . . . . . . . . . . . . . . . . . . . . . . . . 23
+
+3.3 Refinement of platform boundaries . . . . . . . . . . . . . . . . . . . . . . . . . 24
+
+3.4 Calculation of the optimal earthworks platform . . . . . . . . . . . . . . . . . . 25
+
+3.4.1 Plane rectification . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+
+3.5 Calculation of fill and cut volume . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+
+3.6 Installation of the structure on the earthworks platform . . . . . . . . . . . . . . 29
+
+Bibliography
+
+30
+
+Topography Analysis Methodology
+
+2
+
+List of Figures
+List of Figures
+1.1 Interpolation using IDW [10] [11] . . . . . . . . . . . . . . . . . . . . . . . . . . 5 1.2 Examples of the bulls-eye issue . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7 1.3 Comparison of terrain generated with sparse dataset . . . . . . . . . . . . . . . 8 1.4 TIN generated from a contour lines dataset . . . . . . . . . . . . . . . . . . . . . 12 1.5 Example of DEM using TIN interpolation on contour lines . . . . . . . . . . . . 13 2.1 Piles used in different types of structures . . . . . . . . . . . . . . . . . . . . . . 15 2.2 Structure installation method . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16 2.3 Structure installation on challenging terrain . . . . . . . . . . . . . . . . . . . . 17 2.4 Example of east-west slope reference points for single axis tracker . . . . . . . . 19 2.5 Example of structure with excessively long piles . . . . . . . . . . . . . . . . . . 20 3.1 Problematic shapes in groups obtained by direct application of earthworks crite-
+ria. Structures which require earthworks are shown in yellow. . . . . . . . . . . 23 3.2 Result of the regularization process applied to the structures shown in Figure 3.1 24 3.3 An example of mesh simplification [32] . . . . . . . . . . . . . . . . . . . . . . . 25 3.4 An example of the results obtained using least squares . . . . . . . . . . . . . . 27 3.5 Rotation of a plane around one axis . . . . . . . . . . . . . . . . . . . . . . . . . 28
+
+Topography Analysis Methodology
+
+3
+
+Chapter 1. Digital Elevation Model
+
+Chapter 1
+Digital Elevation Model
+
+To understand the concept of Digital Elevation Model (DEM), it is necessary to present first the term Digital Terrain Model (DTM). The term was introduced by Miller and Laflamme [1]. A DTM is a "statistical representation of the continuous surface of the ground by a large number of selected points with known xyz coordinates in an arbitrary coordinate field."
+A DEM is a type of DTM which only contains ground elevation data, usually understood as a measurement taken using the sea level as reference [2]. This is an important distinction to make, because by its definition a DTM can contain information other than the ground elevation [2], and because the two terms seem to be synonymous with each other. For the purposes of this document, the term DEM will be used throughout the document to describe the continuous model of the terrain in which the PV plant is to be installed, containing only elevation data.
+The data for the DEM can be obtained from a myriad of different sources. RatedPower gives users a default DEM for any PV plant, which is generated using the Google Maps Elevation API [3]. Other public sources are described in [4] [5] [6].
+The DEM data itself can be used to build a graphical representation of the terrain. However, to get the elevation of the terrain in unknown points, interpolation methods must be used [2].
+The RatedPower software has three interpolators, which are inverse distance weighting (IDW), radial basis function (RBF) and triangular irregular network (TIN). TIN is automatically used for custom topography uploads, while RBF is used when the default DEM is chosen (Google Maps Elevation API data). IDW is used as the ground interpolator for the overhead line terrain.
+1.1 Inverse Distance Weighting
+The algorithm RatedPower uses for the overhead line terrain is an inverse distance weighting (IDW) algorithm. The IDW method was proposed by Shepard [7] in 1968.
+This algorithm was chosen for producing a solution which contains the points of the DEM data set. Another important property of the solution is that it is a continuous, smooth surface. It is also very robust and exhibits good performance. According to Pavlova [8], the IDW algorithm "provides DEMs with minimum errors for different terrain conditions: flat and slope areas and floodplains." Another comparison between different interpolation algorithms by Arun [9] found
+
+Topography Analysis Methodology
+
+4
+
+Chapter 1. Digital Elevation Model
+
+Figure 1.1: Interpolation using IDW [10] [11]
+that the IDW algorithm adjusted well to terrain variations when compared to other methods. Therefore, the IDW algorithm produces acceptably accurate results for unknown points.
+The IDW is desirable for other characteristics as well. It can be made to be computationally fast, by using a patchwise interpolation approach [2]. This consists in dividing the area into smaller patches in which the interpolation is performed.
+From a photovoltaic engineering standpoint, a desirable characteristic of the IDW algorithm is that it produces a DEM which is continuous and smooth, which is closer to real terrain and thus allows for more accurate installation of mounting structures. Other algorithms, such as the triangular irregular network (TIN) algorithm, produce surfaces which are not smooth, especially if the source data set resolution is coarse compared to the size of the mounting structures.
+Another advantage is that the IDW algorithm can not produce elevation values outside the range of values in the data set (that is, the minimum and maximum elevation values in the data set are respected). While this may be a disadvantage in some cases, as it can result in undesired undulations between points, it also means that no unrealistic elevation values can be produced.
+The inverse distance weighting algorithm calculates the elevation of unknown points in the terrain using a weighted average of the elevation of known points [2], as shown in (1.1). The weights are calculated as the inverse of the square of the distance of the unknown point to the known points [2], as shown in (1.2).
+Using the inverse of the square of the distance as a weight is a mathematical expression of Tobler's first law of geography [12], which is an observation that "all things are related, but nearby things are more related than distant things". Because the weight from a known point to an unknown point gets bigger as the distance decreases, at distance zero the weight approaches infinity and overcomes the weight of any other known point, and the result of the algorithm is the elevation of the known point.
+A graphical representation of the IDW algorithm is shown in Figure 1.1.
+
+Topography Analysis Methodology
+
+5
+
+Chapter 1. Digital Elevation Model
+
+Where:
+
+ =
+
+  =1
+
+
+
+·
+
+
+
+
+
+=1 
+
+(1.1)
+
+·  is elevation of the unknown point. ·  is weight value for a given known point , calculated according to (1.2). ·  is elevation of a given known point .
+
+1
+
+ = 2
+
+(1.2)
+
+
+
+Where:
+
+·  is weight value for a given known point . ·  is distance from the unknown point to a given known point , calculated in 2D space.
+The formulation of the inverse distance weighting algorithm is simple. However, programming the algorithm to perform well with very large data sets is challenging. RatedPower uses a patchwise interpolation approach with variable search radius. The goal is to find a fixed number of points near the unknown point. The objective value is chosen depending on the source of the data set. If the resolution of the dataset is fine, the search radius will be small, and only the closest points will influence the result. If the resolution is coarse, the search radius will get bigger to include more points in the interpolation. Many of the considerations involved in programming this algorithm are described in [7].
+
+The variable radius search comes with a desirable side-effect, which is that when no known points are found within a given radius of the unknown point, it can be concluded that the unknown point is outside the area of coverage of the DEM. This results in that the algorithm naturally handles any points outside of its area of coverage, and no result is returned in that case.
+
+1.1.1 Problems of IDW interpolation
+Simple inverse distance weighting has a key advantage in it's simplicity and robustness. However, it has severe shortcomings in dealing with sparse datasets and complicated terrains.
+
+Some of the issues of IDW interpolation are:
+
+· Bulls-eye pattern. Inverse distance weighting produces a bulls-eye effect when looking at terrain in a contour line plot. Peaks and troughs appear between data points, due to points far away having an excessive influence in local terrain. Examples are shown in Figure 1.2.
+· Anisotropic point distribution. It does not account for the spatial distribution of points when considering their weight. For example, it is possible to have one data point on one side of the unknown point, and at the same distance but at the opposite side ten other data points. In this situation, the cluster of ten data points will have a disproportionate effect. This is also known as the directionality problem.
+· Continuity problems when dealing with complicated terrain and interpolating in patches. If the terrain changes abruptly, a discontinuity can appear, which is a jump in elevation in a very small distance.
+
+Topography Analysis Methodology
+
+6
+
+Chapter 1. Digital Elevation Model
+
+(a) Bulls-eye pattern observable in contour lines [13]
+
+(b) Profile view of the bulls-eye issue [14]
+
+Figure 1.2: Examples of the bulls-eye issue
+
+1.2 Radial Basis Functions
+To address the issues described in Subsection 1.1.1, it was necessary to implement a different interpolation method. The method which best suited the requirements of RatedPower and of photovoltaic plant design was interpolation using radial basis functions (RBF).
+RBF interpolation has many applications in fields such as numerical calculus (solution of partial differential equations), image processing, and 3D surface generation. It also has been successfully used for DEM generation, and there are many sources in the literature comparing it to other methods [15]­[19]. A summary of the advantages of RBF interpolation for terrain generation is that:
+· It is a deterministic (exact) interpolator. The produced surface passes through the original data points.
+· It produces a smooth surface, resembling natural terrain. It does not produce any kind of distortion at known data points such as the bulls-eye effect.
+· Partition of unity methods can be applied, allowing for interpolation over big datasets. · Using various optimization techniques, such as the aforementioned partition of unity, it
+can be made to be very fast.
+The advantages of RBF interpolation are summarized in Figure 1.3. The same dataset, a mountainous terrain with sparse resolution, was interpolated using IDW and RBF. The terrain generated by IDW suffers from the bulls-eye effect, while the terrain generated using multi quadratic RBF is smooth and natural looking.
+Interpolation based on radial basis functions covers a wide range of techniques and algorithms. Radial basis functions are mathematical functions which only depend on distance. The distance is measured from the origin to a point, or from a reference point (center) to another point.
+Some examples of radial basis functions are:
+· Gaussian: G() = exp -()2
+
+Topography Analysis Methodology
+
+7
+
+Chapter 1. Digital Elevation Model
+
+(a) IDW with bulls-eye effect
+
+(b) Same terrain interpolated using RBF
+
+Figure 1.3: Comparison of terrain generated with sparse dataset
+ · Multi quadratic: mq() = 2 + 2 · Thin plate spline: tps() = 2 · log()
+
+Interpolation using radial basis function is abundantly described in the literature. The formulation described in this methodology was first described by Hardy [20]. More descriptions of the method can be found in [19], [21]­[24].
+
+The value of the elevation at unknown points is calculated using equation (1.3). Solving the
+coefficients k is the challenging part of the interpolation process. To do so, a linear system  =  is defined such that the result of equation (1.3) is the known elevation value at each known point. This process is described in Subsection 1.2.1.
+
+
+ unk = k ·  (kunk) + p1 + p2 · unk + p3 · unk
+ =1
+
+(1.3)
+
+Where:
+
+· unk is the elevation value at the unknown point. ·  are the known data points used to calculate the elevation at the unknown point. · k and p are the coefficients of the interpolant, calculated by solving the linear system
+defined in equation (1.7). The k are the coefficients associated to the RBF evaluations, and p are the coefficients of the first degree polynomial. ·  is the radial basis function, calculated using equation (1.5). · kunk is the distance from the known point  to the unknown point. · unk is the X coordinate of the unknown point. · unk is the Y coordinate of the unknown point.
+The equation (1.3) has two parts. The first part is the summation of the values of the RBF function evaluated between each known point and the unknown point.
+
+Topography Analysis Methodology
+
+8
+
+Chapter 1. Digital Elevation Model
+The second part, p1 + p2 · unk + p3 · unk is a first degree polynomial which is critical to achieve a correct interpolation surface. Adding the polynomial ensures the interpolant is planar in the known points [20], [21]. Without it, peaks were observed to appear at the data points.
+Because the polynomial adds three new unknowns to the system (the p coefficients), three new conditions are required [21] to be able to solve the  =  system:
+
+
+ k = 0
+ =1
+
+ k · k = 0
+ =1
+
+ k · k = 0
+ =1
+
+(1.4)
+
+Where:
+
+· k are the coefficients associated to the RBF evaluations. · k are the X coordinates of the known points used to calculate the coefficients. · k are the Y coordinates of the known points used to calculate the coefficients.
+These conditions are reflected in the final three rows of the matrix, as found in equation (1.7).
+
+The choice of the radial basis function is an important decision which has an effect in the final result. While many functions have been studied for terrain interpolation, the multi quadratic RBF is generally accepted to be the best choice for terrain (for example, see [18], [25]). The thin plate spline is another good candidate, with the added benefit that it does not require the calculation of a smoothing parameter [18], [22].
+
+In this methodology we have chosen the multi quadratic RBF, calculated according to equation (1.5). Using thin plate splines did not yield a measurable improvement of precision.
+
+
+
+mq () = 2 + 2
+
+(1.5)
+
+Where:
+
+· mq is the multi quadratic RBF. ·  is the distance for which the RBF is evaluated. ·  is the smoothing parameter, calculated using equation (1.6).
+
+An optimal value of the smoothing parameter can be easily estimated using equation (1.6), according to [13], [26].
+
+ = c
+
+(1.6)
+
+ · 25
+
+Where:
+
+Topography Analysis Methodology
+
+9
+
+Chapter 1. Digital Elevation Model
+·  is the smoothing parameter using in the multi quadratic RBF. · c is a characteristic length of the dataset, for example, the diagonal of the envelope con-
+taining the points. ·  is the total number of known points available in the dataset.
+1.2.1 Calculation of the coefficients
+To calculate the coefficients k of equation (1.3), a linear system has to be solved. The result is a vector of coefficients which represents an RBF surface associated to a collection of known points.
+The process is:
+1. Build the  matrix, calculating the value of the RBF function between known points at each row. Fill the values to meet the conditions of equation (1.4) at the edges of the matrix.
+2. Build the  vector using the z value of the known points. 3. Solve the  =  system, where  is the vector of coefficients. The system  =  is defined in equation (1.7). The first  rows are the evaluations of (1.3) at each known point, which need to result in the known z value (making the interpolator deterministic). The final three rows represent the conditions described in equation (1.4).
+
+ = 
+
+ (11)  (12) . . .  (1n) 1 1 1  1  1
+
+ 
+
+(21)
+
+ (22)
+
+...
+
+ (2n)
+
+1
+
+2
+
+  2  2 
+
+ 2 
+
+ 
+
+..
+
+.
+
+.. .
+
+...
+
+.. .
+
+.. ..
+
+..
+
+ 
+
+ 
+
+..
+
+ 
+
+ 
+
+..
+
+ 
+
+. . . .  .
+
+(1.7)
+
+ 
+
+(n1)
+
+ (n2)
+
+...
+
+ (nn)
+
+1
+
+n
+
+ n
+
+  
+
+ 
+
+=
+
+  
+
+
+
+   
+
+1
+
+1 . . . 1 0 0 0  1  0 
+
+
+
+   
+
+ 1
+
+2 . . . n 0 0 0  2  0 
+
+
+
+   
+
+ 1
+
+2 . . . n 0 0 0  3  0 
+
+
+
+   
+
+Where:
+·  (kn) is the result of evaluating the RBF function between points k and n. ·  is the X coordinate of the n known point. ·  is the Y coordinate of the n known point. ·  is the coefficient associated to the n known point. ·  are the coefficients of the first degree polynomial. ·  is the elevation value of the n known point.
+
+1.2.2 Partition of unity
+Partition of unity consists of breaking the global dataset into local interpolants, by means of a data structure which allows the program to efficiently find the most relevant known points closer to the unknown point. Some partition of unity techniques are described in [21], [23], [27].
+
+It is a key component of the algorithm, which allows it to retain fast computational speed regardless of the dataset size. In this methodology, the algorithm consists of finding the closest
+
+Topography Analysis Methodology
+
+10
+
+Chapter 1. Digital Elevation Model
+
+known points to the unknown point, and building interpolants using the process described in Section 1.2. Each interpolant will be associated to a known point, and will use the closest points to that known point.
+Finally, the result of the interpolation will be computed by applying Shepard's method over the results of each interpolant. It can be visualized as the superposition of many surfaces which give an elevation result at the unknown point. The number of interpolants used will influence the smoothness of the final surface, but also the computational time required, so a careful balance must be achieved.
+To calculate the result of the interpolation using the results of each interpolant, equation (1.1) is used. However, the weight used is calculated using equation (1.8). This formulation for the weighting function was proposed by Franke and Little [28]. We find that this formulation is better behaved than the original Shepard's weight, and results in smoother transitions from one interpolant to the next.
+
+k =
+
+(d - kunk)+ 2 d · kunk
+
+(1.8)
+
+Where:
+
+· k is the weight associated to the k result calculated using an interpolant with center k.
+· d is the radius of influence, calculated as the distance from the unknown point to the first known point not used to generate an interpolant.
+· kunk is the distance from the k point to the unknown point. · ()+ denotes a positive valued result. When the result of the operation is lower than zero,
+it is is disregarded and set to zero.
+
+1.2.3 Problems of RBF interpolation
+The main problem with RBF interpolation is that it may fail to produce a valid surface if there are great elevation changes in very small distances [29]. This may happen, for example, when modeling a cliff with high resolution data.
+
+However, this issue can also appear when interpolating a terrain from a dataset generated from contour lines. The densely packed contour lines can result in interpolation errors, such as points being at unrealistic elevation values, and the surface is not better than the results of IDW.
+
+For this reason, RatedPower still uses IDW interpolation for custom topography data. IDW is more robust when the dataset can't be expected to have any underlying structure.
+
+Another possible issue with RBF interpolation is that, unlike IDW, it can produce elevation values outside of the range contained in the dataset. However, for this to be a significant problem the terrain would have to be very abrupt, and the overall smoothness of the surface outweighs this potential inexactitude.
+
+Topography Analysis Methodology
+
+11
+
+Chapter 1. Digital Elevation Model
+
+(a) Dataset from contour lines
+
+(b) TIN generated from the dataset
+
+Figure 1.4: TIN generated from a contour lines dataset
+
+1.3 Triangular Irregular Network
+The Triangular Irregular Network interpolator (TIN) was implemented to address the shortcomings of IDW when used on terrain generated from contour lines.
+To generate a DEM from contour lines, the vertices of the lines are extracted and used as ground elevation points. However, the uneven spatial distribution of contour lines shown in Figure 1.4 is very problematic for IDW. The reasons are multiple:
+· The densely packed points have too much influence in their local area. When IDW selects the data points for the interpolation, it only picks points from the same contour line. Because all the vertices of a contour line have the same elevation, flat areas appear. When the interpolation switches between one contour line and the next, an abrupt elevation change occurs, resulting in terraces appearing between contour lines.
+· The gaps in between contour lines are handled incorrectly. In densely packed but far-apart contour lines, the gap in between them could be detected as a void.
+· Even if the contour lines are reasonably dense, and evenly distributed, terraces can appear due to the bulls eye effect.
+These problems made DEM generated using IDW from contour lines unsuitable for the purposes of RatedPower. RBF interpolation also proved unfeasible, due to problems when interpolating using data points which were very closed together but had a large difference in elevation.
+The interpolation method using TIN addresses all of these issues, with few drawbacks. TIN interpolation is a global interpolation method, meaning it interpolates over the entire dataset at once. The first step is to perform a Delaunay triangulation of the dataset, producing a TIN like the one shown in Figure 1.4. A Delaunay triangulation is a set of linked but nonoverlapping triangles [2], connecting a network of points (vertices). The key property of the triangulation is that no point will be inside the circumcircle of any triangle.
+Once the triangulation for the dataset is calculated, the interpolation process consists of finding the triangle which contains the unknown point, and then calculating the elevation of the unknown point using the 3 vertices of the triangle, for which the elevation is known since they are part of the original dataset. The elevation can be calculated assuming that the 3 points belong to a plane, or alternatively, smoothing functions can be used. In the interpolator used in RatedPower, no smoothing is done.
+
+Topography Analysis Methodology
+
+12
+
+Chapter 1. Digital Elevation Model
+
+(a) High detail in 3D representation
+
+(b) Underlying triangulation of the terrain
+
+Figure 1.5: Example of DEM using TIN interpolation on contour lines
+
+An example of a high detail DEM generated using TIN is shown in Figure 1.5.
+The advantages of TIN interpolation are that:
+· For high resolution datasets, it produces a high fidelity DEM, with every feature represented in the interpolated surface.
+· Every point in the dataset is contained in the surface, and elevation values outside the range defined in the dataset are not possible.
+· For datasets produced from contour lines, it can produce a valid representation of the terrain, connecting the contours to form planar surfaces.
+· It can achieve high performance, in spite of being a global interpolation method.
+However, TIN interpolation also has two disadvantages in the context of its usage in RatedPower. The first is that the surface it produces is not continuous, in the sense that the slope is discontinuous between triangles. This slope discontinuity would result in inaccurate installation of structures, but fortunately it is only relevant if a dataset with sparse resolution is used to generate a DEM.
+The second disadvantage is that, if interpolating contour lines, a naive Delaunay triangulation can connect points from the same line into triangles. The result of this error is that flat areas and terraces may appear if the contour lines are far apart and have twists.
+These two issues are easily corrected by using a higher resolution dataset, especially if the dataset is formed by contour lines. By adding minor contour lines, the appearance of terraces can be prevented.
+
+Topography Analysis Methodology
+
+13
+
+Chapter 2. Installation of mounting structures
+
+Chapter 2
+Installation of mounting structures
+In the context of this methodology, installing mounting structures refers to calculating their position in 3D space, including the piles and the table of the structure.
+For this chapter, the position of the structure in the PV plant in 2D space is assumed to be known, as well as the position of the piles relative to the structure itself. The information regarding the position of the piles changes between mounting structure models, and even the same model can have different configurations of piles depending on its length. For this reason, it is recommendable to assume the position of the piles is completely variable, and should be specified for each simulation. The algorithm which positions the structures within the boundaries of the photovoltaic plant is not dealt with in this methodology.
+The first component of the algorithm to be described is the installation algorithm, which calculates the elevation and length of the piles as described in Section 2.1, and the installation of the table in Section 2.2.
+The second component of the algorithm is the criteria to keep or discard a structure, using as input information the results of the installation. This is by design, all structures are installed at first regardless of the features of the terrain. After the installation is calculated, the results are checked to see if any parameter exceeds the limits imposed by the user, such as slope limits or maximum pile length.
+It is important to consider that the approach proposed in this methodology results in the maximum possible number of structures installed. This is because a structure is only removed if, after trying to install it, the limits are exceeded, instead of removing it preemptively if the terrain presents a challenging feature which could otherwise be compensated for.
+Another consideration must be taken into account for discarding structures. Linked-row single axis trackers have more restrictive limitations than single-row trackers or fixed structures. In particular, a linked-row tracker can't be split in RatedPower. For this reason, when a table in a linked-row tracker is found to exceed any topography limit, the whole tracker is removed.
+
+Topography Analysis Methodology
+
+14
+
+Chapter 2. Installation of mounting structures
+
+(a) Piles in a single axis tracker [30]
+
+(b) Piles in a fixed mounting structure [31]
+
+Figure 2.1: Piles used in different types of structures
+
+2.1 Installation of the piles
+Photovoltaic mounting structures have a varying number of piles, usually configured in one or two rows (only for fixed structures). Two examples of such mounting systems are shown in Figure 2.1.
+There are two considerations for designing an algorithm to install the piles:
+· The top of all the piles should be aligned, and belong to a plane if there are two rows of piles. This is so that the table can be installed on top.
+· The length of pile buried under ground should be sufficient to ensure that the pile can support the structure.
+The algorithm requires two inputs, which are the minimum length of pile which must be exposed overground, and the minimum length of pile which should be buried. The first determines the minimum ground clearance of the structure, and combined they define the length of the shortest pile of the structure. These parameters are dependent on the model of the mounting structure and the design parameters set by the user.
+The algorithm used by RatedPower consists in extracting the elevation of the terrain in the position of each pile (using the DEM), and then calculating the best-fitting line to those points (a calculation also used to calculate the trend of a data set, for example). The best-fitting line is calculated using a simple statistical linear regression. This algorithm is simple and performs well, which is an important consideration when dealing with photovoltaic plants with potentially hundreds of thousands of mounting structures.
+Once the the linear regression result is obtained, the shortest pile is found, as shown in Figure 2.2, by finding the pile for which the elevation difference to the trend line is greatest, as shown in equation (2.1). This shortest pile sets the elevation for the table of the structure, calculated using the minimum length of pile which should be exposed overground.
+
+Where:
+
+raise, row = max ground, i - fit, i
+
+(2.1)
+
+· raise, row is the difference from the ground to the best fitting line value in the shortest pile (positive if the best fitting line is below the ground).
+
+Topography Analysis Methodology
+
+15
+
+Chapter 2. Installation of mounting structures
+
+Figure 2.2: Structure installation method
+
+· ground, i is the z coordinate of the ground for the pile i. · fit, i is the z coordinate of the best fitting line for the pile i.
+Once the elevation of the table is calculated using equation (2.1), the top position of the rest of the piles can be calculated using equation (2.2). The assumption used to calculate the elevation is that the top of each pile will belong to a line which is parallel to the ground elevation trend line and which contains the top of the shortest pile. If the ground is perfectly flat or if it is a plane, the value of raise will be close to zero or zero, in which case all the piles will be elevated by min exposed above ground.
+
+Where:
+
+pile, top = fit + min exposed + raise, row
+
+(2.2)
+
+· pile, top is the z coordinate of a pile. · fit is the z coordinate of the best fitting line in the pile position. · min exposed is the minimum length of pile which must be exposed overground, which may
+change for different rows of piles (in fixed structures with two rows of piles, for example). · raise, row is elevation raise value for the row, calculated using equation (2.1).
+
+The length of each pile can then be calculated if the fixed depth value is known, and will be the sum of the distance from the table to the ground plus the fixed depth value, as shown in equation (2.3). To choose the value of the fixed pile depth, considerations should include the mounting structure model, the type of piles, and the type of terrain.
+
+Where:
+
+pile = pile, top - ground + depth
+
+(2.3)
+
+· pile is the length of each pile. · pile, top is the z coordinate of the pile, calculated using equation (2.2). · ground is the elevation of the ground below the pile. · depth is the fixed pile depth for all piles.
+
+Topography Analysis Methodology
+
+16
+
+Chapter 2. Installation of mounting structures
+
+Figure 2.3: Structure installation on challenging terrain
+
+This calculation method has some desirable characteristics for solving this particular problem:
+· The structure position is naturally adjusted to the terrain slope, when the terrain is smooth and continuous.
+· When the terrain is undulated, the structure will be installed in an optimal position in which the length of all the piles will be balanced (that is, there should be a similar number of short and long piles).
+· The calculation of the linear regression is a well known algorithm which is very fast. · If the terrain contains a challenging feature (for example, a sizable depression) but it's
+dimensions are such that it's smaller than the structure, then the installation will largely ignore it. An example is shown in Figure 2.3.
+The shortcoming of this approach is that it can produce excessively long piles, or place the structure in extreme slopes. This is why this calculation method requires a third stage in which the results are analyzed, and any structures exceeding the established limits are discarded.
+When the structure has two rows of piles, the elevation of the piles of both rows are added to the regression. By doing this, the structure will be fitted to the terrain of both pile rows. This approach gives a good fit to the terrain while being fast to compute.
+Each row of piles can have a different exposed length above ground. This can be used to make one row stand higher than the other, thus giving the fixed structure its tilt. Since both rows are installed on the same trend line (but at different xy positions), the calculation of the required elevation difference between the rows is straight forward.
+Another important aspect of this method is that the position of the piles is calculated in flat layout on 2D terrain. When the structure is installed, the elevation of each pile is calculated, but the position of the pile is not changed. This results in the table being stretched to match the position of the piles. Therefore, the length of the table is correct in a 2D representation, but incorrect if measured in 3D space.
+This error in the dimensions in 3D space was accepted in order to maintain the quality of the 2D layout, and to reduce the complexity of the algorithm. Introducing this calculation in the algorithm would result in longer calculation times, and a layout which would appear to have many different structures in the 2D representation, due to the changing length.
+The final consideration to take into account is the availability of information regarding the terrain. The DEM can be incomplete, or only partially cover the boundaries of the photovoltaic plant. As described in Chapter 1, if an unknown point is outside the area of coverage of the
+
+Topography Analysis Methodology
+
+17
+
+Chapter 2. Installation of mounting structures
+DEM, no result is returned. In this situation, the installation of the structure in 3D terrain can't be realized, as one or more points have an unknown elevation. These structures which lie outside the coverage of the DEM are marked for removal if the topography criteria (slope and pile length filters) is being used.
+2.2 Installation of the table
+The table is defined as the plane on which the photovoltaic modules are mounted. For the purposes of this methodology, the dimensions of the table are assumed to be known, as well as the required tilt if the structure is of the fixed type.
+When the structure is a single axis tracker, the table is installed with zero tilt on top of the piles. The presence of the axis is not taken into account, nor is any additional separation which may exist between the axis and the table itself. These considerations can be included as part of the pile length.
+If the structure is fixed and has a single row of piles, then the table is installed on top of the piles as a plane with the predefined tilt angle. Usually the piles will be off center, resulting in an asymmetrical structure when viewed from the east west axis. The presence of support beams attached to the piles is not considered.
+If the structure is fixed and has two rows of piles, the table is installed as plane which contains the pile tops. This plane is perfectly defined, as the pile tops form two parallel lines in 3D space. Therefore, in this case the tile angle is intrinsically included in the calculation by definition of the pile lengths of each row.
+2.3 Criteria for discarding a structure
+As explained in Section 2.1, all structures are installed, and the results are analyzed. If any structure exceeds some given limits, it is discarded.
+Four types of limits can be set up:
+1. A slope limit in the north-south direction. 2. A slope limit for north-facing slopes, and a different limit for south-facing slopes. 3. A slope limit in the east-west direction. 4. A pile length limit. 5. A linked-row tracker slope limit.
+For any structure, many of these limits can be exceeded. All the checks are performed for all structures, regardless of previous checks having failed. If a limit is exceeded, the structure is removed from the layout.
+Depending on the terrain features, it is possible to be at a situation where in an area some structures are removed and some are kept. This layout would be very hard to build due to the gaps and voids in between structures. When this happens, there are four options:
+
+Topography Analysis Methodology
+
+18
+
+Chapter 2. Installation of mounting structures
+
+Figure 2.4: Example of east-west slope reference points for single axis tracker
+· Review the topography limits to ensure that they are not excessive, and are consistent with terrain (for example, very restrictive structures should not be used in complicated terrain which far exceeds the capabilities of the mounting structures).
+· Change the mounting structure to a model with better terrain adaptability. · Ignore the problematic area altogether using a restricted area in the site definition. · Use earthworks to force the installation of structures in the area.
+2.3.1 Slope limits
+The slope limits depend on how the slope value of each structure is calculated. In single axis trackers, the north-south slope is measured as the slope of the pile top positions (alternatively, the slope of the table itself). The east-west slope is measured using reference points at the edge of the table, as shown in Figure 2.4, using the DEM to measure the elevation of the ground at those points. The slope is calculated using pairs of points and averaging all pairs. If a limit in either direction is exceeded, the structure is discarded.
+For fixed structures, the method is analogous to that of single axis trackers. The slope as measured at the top of the piles now represents the slope along the east-west direction, and the slope measured at the table reference points is now the north-south slope.
+This definition lends itself to being simplified with regards to the structure type. If the slope along the pile top positions is renamed as row slope (because it follows the direction of the row of trackers or axis direction), and the perpendicular slope is renamed as pitch slope (because it follows the direction of the pitch distance), then the definition is agnostic with regards to the type of structures.
+The slope between two arbitrary points is calculated using equation (2.4). When measuring the slope between two arbitrary points, the sign can be referenced to the north-south direction, or to the east-west direction. The points do not have to be aligned with either direction. When the sign is referenced to the north-south direction, south-facing slopes are considered positive. When the sign is referenced to the east-west direction, west-facing slopes are considered positive.
+
+Topography Analysis Methodology
+
+19
+
+Chapter 2. Installation of mounting structures
+
+Figure 2.5: Example of structure with excessively long piles
+
+ =  (1, 2) =
+
+2 - 1
+
+(2.4)
+
+ (1, 2)
+
+ (2 - 1)2 + (2 - 1)2
+
+Where:
+·  is slope between the arbitrary points 1 and 2. ·  is the elevation difference between points. ·  is the euclidean distance between points in two dimensional space (measured without
+considering the elevation component). ·  is elevation of point . ·  is the x coordinate of point . ·  is the y coordinate of point .
+2.3.2 Pile length limit
+The pile length limit is straightforward, any structure with piles exceeding the maximum allowed length is discarded. It is a very useful limit to remove structures located on top of holes or hills but installed flatly.
+An example is shown of this situation in Figure 2.5. This example is a fixed structure with two rows of piles. The shortest piles are located in the highest points of the terrain, but the depression in the middle of the structure results in very long piles in the center.
+The pile length limit can also be understood as an undulation tolerance parameter. The more undulated the terrain is, the higher the pile length limit must be in order for the structure to be installed. In other words, increasing the undulation tolerance allows the installation of structures in more undulated terrain.
+2.3.3 Linked row tracker slope limit
+Some single axis trackers use a linkage to drive multiple rows at the same time. The linkage system is advantageous in some situations because it results in a lower number of motors to
+
+Topography Analysis Methodology
+
+20
+
+Chapter 2. Installation of mounting structures
+drive the same amount of trackers, which in turn increases the efficiency of the photovoltaic plant. However, because the linkage is a bar connecting many rows together, the system presents some challenges when installing in complicated terrain.
+The approach presented in this methodology is a simplification of the problem. By measuring the slope between rows, the slope which the linkage would be installed over can be approximated. The linkage is supposed to be as straight as possible between one row and the next, and so there is a limit to how much the terrain can be undulated between a single linked row tracker.
+The linked-row slope limit is calculated by measuring the slope between structures belonging to a linked-row tracker. The reference point is at the center of each structure. If the slope between any two tables of the tracker exceeds the limit, the entire tracker is removed.
+
+Topography Analysis Methodology
+
+21
+
+Chapter 3. Calculation of earth works
+
+Chapter 3
+Calculation of earth works
+
+The conditions of the terrain may justify the realization of earthworks to adequate the terrain to the installation of mounting structures. To determine the feasibility of the photovoltaic plant with or without earthworks, a techno-economic assessment should be realized.
+The aim of this calculation methodology is to aid in the realization of said assessment. The result of the calculation will be an estimate of the volume of earthworks required to build a photovoltaic plant, given some design choices and assumptions. Because the calculation will be performed by the RatedPower software, it should be fast and scale well with the size of photovoltaic plants.
+The calculation will consist in the following steps:
+1. Using the results of the topography module (slopes, pile length), determine if earthworks are to be done.
+2. Calculation of platform boundaries. A platform may include one or more structures. 3. Refinement of platform boundaries using terrain data. 4. Calculation of an optimal platform for the mounting structures of a group, and refinement
+of the platform to comply with slope restrictions. 5. Calculation of the fill and cut volume required to build said platform. 6. Installation of the mounting structure on the calculated platform.
+When multiple structures are adjacent and require earthworks, they will be grouped together into larger platforms. Adjacent structures which did not require earthworks may be included in the platform to simplify its shape and improve the constructability of the design. Structures which were rejected by the topography criteria may also be included, potentially resulting in higher peak power when using earthworks.
+3.1 Criteria for applying earthworks
+For each structure, a decision must be made regarding whether to do earthworks or not. This decision should reflect the limitations of the mounting structure model regarding the slopes of the terrain, and the feasibility of installing the structure in undulating terrain.
+
+Topography Analysis Methodology
+
+22
+
+Chapter 3. Calculation of earth works
+
+Figure 3.1: Problematic shapes in groups obtained by direct application of earthworks criteria. Structures which require earthworks are shown in yellow.
+To make this decision, the previously calculated results of the installation on natural terrain are used. As explained in Section 2.3, the slope in which the structure is installed is calculated in the north-south and east-west directions. The length of the piles is also calculated using the results of the installation algorithm.
+The earthworks criteria consists in a range of values in which the structure will be installed in a platform built with earthworks. A minimum and a maximum value for earthworks will be defined. If the slope of the structure lies within the range for earthworks, then the structure is determined to require earthworks.
+If the slope exceeds the maximum value, structures will be discarded as explained in Chapter 2. However, it is important to remark that if a structure is adjacent to structures which did meet the criteria for earthworks, it may be installed as part of the platform for the adjacent structures. This simplifies construction and increases peak power.
+Undulation tolerance can also be taken into account by doing the same for pile length. If the longest pile of a structure lies within a predefined range, then the structure is determined to require earthworks. This results in undulating terrain being smoothed in challenging areas.
+3.2 Calculation of platform boundaries
+The criteria described in Section 3.1 results in a selection of structures which require earthworks. But the groups of structures resulting of the application of the criteria defined by the user can have very complex boundaries, which complicate construction.
+Some examples of the problems that are observed can be seen in Figure 3.1:
+· Boundaries with gaps where one or two structures do not require earthworks (removed structure highlighted in red in Figure 3.1).
+· Boundaries with holes (group with a hole highlighted in pink in Figure 3.1). · Boundaries with complicated shapes, such as L or Z shaped groups (complex group shape
+highlighted in green in Figure 3.1).
+
+Topography Analysis Methodology
+
+23
+
+Chapter 3. Calculation of earth works
+
+(a) Platforms with structures
+
+(b) Platform boundaries without structures
+
+Figure 3.2: Result of the regularization process applied to the structures shown in Figure 3.1
+
+To fix these issues, the approach taken is to regularize the shape of the groups. To do so, the initial boundary is transformed into a more regular shape by using a convex hull calculation, which fixes problems with gaps and problematic shapes. If the convex hull is too large (which may happen for an L shaped group for example), a concave hull is used instead.
+Any structure which intersects with this hull is added to the group, including rejected structures. Additionally, structures which are inside the group are also added, thus fixing holes in the group.
+Finally a new group boundary is calculated based on the structures which are included in it. This is necessary in order to ensure that all structures in the group are completely installed on a platform, and that neighboring structures are unaffected by it.
+The result of the regularization process and the inclusion of rejected structures is shown in Figure 3.2.
+3.3 Refinement of platform boundaries
+The groups resulting from the steps described in Section 3.2 could span large areas of the PV plant. It would be desirable to split the platforms in such a way that if the terrain is complicated, big platforms are split into smaller ones which better fit the terrain. On the other hand, flat or homogeneously sloped areas should remain as part of bigger platforms.
+To achieve this objective, a mesh simplification algorithm is used to obtain an approximation of how the terrain features should reflect on the earthworks platform.
+A mesh simplification algorithm reduces the number of faces in a mesh, while attempting to preserve the original features of the mesh as far as possible, as shown in Figure 3.3. When applied to the natural terrain, a simplified model of the terrain is obtained, with smaller triangles in areas where the terrain has complicated characteristics such as rapidly changing slopes or holes, and larger ones in flat or homogeneous areas.
+The simplified mesh is used as a guideline to split the platforms obtained in Section 3.2. Using this technique, bigger platforms which match flat terrain areas will remain mostly unmodified. But large platforms which span complicated areas of the terrain will get split into smaller platforms.
+
+Topography Analysis Methodology
+
+24
+
+Chapter 3. Calculation of earth works
+
+Figure 3.3: An example of mesh simplification [32]
+
+After the platforms are split using the mesh simplification result, a post processing stage is required to refine the shapes of the platforms. This is required in order to improve the constructability of the platforms. The aim of the post processing process is two-fold:
+· To fix the shape of big platforms with complicated geometry, by splitting them at choke points in the perimeter.
+· To merge very small platforms (2 or less structures) into bigger adjacent platforms.
+3.4 Calculation of the optimal earthworks platform
+The optimal earthworks platform is a plane which cuts the terrain and which minimizes the volume of earthworks. Such a plane will be calculated using the elevation of a set of points which belong to a boundary in 2D space. Therefore, the problem consists of finding the bestfitting plane to a set of known 3D points which belong to the DEM.
+To solve this problem, a least squares approach is used. The calculation method is described by Lay, Lay, and McDonald [33]. The formulation of the problem starts with the equation of a plane, as shown in equation (3.1), can be formulated as a simple linear equation, given in equation (3.2).
+
+ ·  +  ·  +  = 
+
+(3.1)
+
+Where:
+
+·  is the coefficient of the  variable. ·  is the coefficient of the  variable. ·  is the fixed coefficient.
+If equation (3.1) is written for each known point of the set of points, a system of linear equations is obtained, shown in (3.2).
+
+Topography Analysis Methodology
+
+25
+
+Chapter 3. Calculation of earth works
+
+ = 
+
+0 0 1
+
+ 0 
+
+ 1    
+
+1 . ..
+
+ 1    
+
+         
+
+=
+
+
+
+ 1
+
+
+
+ 
+
+. ..
+
+
+
+     
+
+(3.2)
+
+  1   
+
+
+
+
+
+
+
+Where:
+
+·  is the coefficient matrix of the equation. ·  is the variable matrix. ·  is the constant term. · , ,  are the coordinates of the known DEM points.
+If the columns of matrix  are linearly independent, the equation  =  has a unique solution by least squares [33], calculated using equation (3.3).
+
+ 
+
+-1
+
+
+
+=
+
+   
+
+=
+
+
+ 
+
+
+ 
+
+(3.3)
+
+
+
+  
+
+
+
+Where:
+
+·  is the variable matrix. ·  is the coefficient of the  variable. ·  is the coefficient of the  variable. ·  is the fixed coefficient. ·  is the coefficient matrix of the equation. ·  is the constant term.
+
+An example of the results obtained is shown in Figure 3.4. If the solution can be calculated, it is guaranteed that the plane will be such that the distance in elevation to the known elevation points will be minimal. This guarantees that the plane is a good fit to the terrain, and that the volume of earthworks will be minimal and balanced between cut and fill.
+
+3.4.1 Plane rectification
+The plane calculated using the method described in Section 3.4 will be fitted to the terrain in an optimal manner. While this guarantees a minimal volume of earthworks, the plain slopes are unconstrained. This could result in a plane which follows the terrain perfectly but is unsuitable for the installation of structures, such terrain could be a hillside for example.
+
+This is an issue due to the limitations of the mounting structure which were described in Chapter 2, and because of which earthworks are done. If the platform slope was greater than the maximum allowed slope of the mounting structure, then the structure couldn't be installed, and doing earthworks would not be useful.
+
+Topography Analysis Methodology
+
+26
+
+Chapter 3. Calculation of earth works
+
+Figure 3.4: An example of the results obtained using least squares
+
+For this reason, the slope of the optimal platform must be checked, and if it exceeds the limits of the structures, it should be rectified. The objective is to make sure the maximum slope of the plane respects the limits of the mounting structure.
+For example, if the structure has a north-south slope limit of 10%, and earthworks are being done for slopes between 10% and 20%, then the earthworks platforms will be at most at a slope of 10%. This will be regardless of the DEM terrain slope for each platform.
+The rectification consists in rotating the plane around an arbitrary point, so that its slope does not exceed the limits of the structure. The value of the rotation is calculated so that the magnitude is as small as possible, and so that the direction of the slope is retained. A graphical representation of a plane rotation around one axis is shown in Figure 3.5. The optimal plane is the plane calculated using the method described in Section 3.4. The rotation axis is arbitrary, because the position of the plane will be corrected.
+If the plane slope is excessive in both directions (north-south and east-west), which would be a rare case, then the plane is rotated first in one direction and then in the other.
+Finally, after the plane is rotated, the elevation of the plane must be recalculated. After the plane is rotated, it is not guaranteed that it will be balanced in terms of fill and cut volume. To find the new elevation value, an iterative approach is used, testing the plane at different elevation values between the lowest and highest points in the terrain. The elevation value corresponding to the plane with the lowest difference between fill and cut is chosen.
+The fill and cut volume calculation described in Section 3.5 is used to find the optimal elevation value.
+3.5 Calculation of fill and cut volume
+The calculation of the fill and cut volume consists in computing the volume difference from the earthworks platform to the DEM.
+
+Topography Analysis Methodology
+
+27
+
+Chapter 3. Calculation of earth works
+
+Figure 3.5: Rotation of a plane around one axis
+
+Due to the variability inherent to the DEM, it is necessary to sample the elevation of the terrain in as many points as possible within the boundaries of the earthworks platform. The volume can then be calculated using the elevation difference between the platform and the DEM, times a characteristic area value, as shown in equation (3.4).
+
+Where:
+
+ =points
+
+
+i, plat - i, DEM
+
+| | =
+
+ =0
+
+plat
+
+points
+
+(3.4)
+
+·  is the volume difference between the platform and the DEM, in absolute value. · points is the number of sampling points. · i, plat is the elevation of the i point in the earthworks platform. · i, DEM is the elevation of the i point in the terrain. · plat is the area of the earthworks platform.
+
+The sampling points are generated using a simple square grid superimposed on the earthworks platform, retaining only points which are within the boundaries of the platform. The sampling grid resolution is an important parameter, which will dominate the calculation time.
+
+Each point is assigned the same area value, as shown in equation (3.4). The area value is equivalent to the average area per point. This approach speeds up the calculation significantly when compared to a more sophisticated approach using better area per point estimations.
+
+Finally, to calculate the fill and cut volume, the addend in equation (3.4) is split in positive value differences and negative value differences. The positive values are fill volume, and the negative value is cut volume.
+
+Topography Analysis Methodology
+
+28
+
+Chapter 3. Calculation of earth works
+The sampling points are also used to estimate the maximum cut depth and fill height of the platform, versus the original terrain. To do so, the sampling point with maximum positive height difference against the terrain is found, which will be the result for maximum fill height. The sampling point with the minimum (negative) height difference again the terrain will result in the maximum cut depth.
+3.6 Installation of the structure on the earthworks platform
+Once the characteristics of the platform have been calculated, the structure is installed again using the procedures defined in Chapter 2.
+The calculation is very straightforward. The DEM is replaced by the plane calculated using the methods described in Section 3.4 and Subsection 3.4.1. The structure then adapts its position to the new terrain.
+Because the terrain is now a plane, structures will be installed in a sloped position. However, since the plane is guaranteed to not exceed the mounting structure limits as described in Subsection 3.4.1, the installation is suitable. Additionally, all the piles will have the same length, as the terrain does not undulate under the structure.
+
+Topography Analysis Methodology
+
+29
+
+Bibliography
+
+Bibliography
+
+[1] C. Miller and R. Laflamme, The Digital Terrain Model -: Theory & Application (Publication (Massachusetts Institute of Technology. Photogrammetry Laboratory)). M.I.T. Photogrammetry Laboratory, 1958.
+[2] Z. Li, C. Zhu, and C. Gold, Digital Terrain Modeling: Principles and Methodology. CRC Press, 2004, isbn: 9780203486740.
+[3] G. Developers. "Google elevation api." (2020), [Online]. Available: https : / / developers . google.com/maps/documentation/elevation/start (visited on 12/16/2020).
+[4] C. Hirt, "Digital terrain models," in Encyclopedia of Geodesy, E. Grafarend, Ed. Springer International Publishing, 2014. doi: 10.1007/978-3-319-02370-0_31-1. [Online]. Available: https://doi.org/10.1007/978-3-319-02370-0_31-1.
+[5] A. Nisbet. "Open topo data." (2020), [Online]. Available: https://www.opentopodata.org/ (visited on 12/30/2020).
+[6] J. R. Lourenço. "Open-elevation." (2020), [Online]. Available: https://open-elevation.com/ (visited on 12/30/2020).
+[7] D. Shepard, "A two-dimensional interpolation function for irregularly-spaced data," in Proceedings of the 1968 23rd ACM national conference on -, ACM Press, 1968. doi: 10 . 1145 / 800186.810616. [Online]. Available: https://doi.org/10.1145%2F800186.810616.
+[8] A. I. Pavlova, "Analysis of elevation interpolation methods for creating digital elevation models," Optoelectronics, Instrumentation and Data Processing, vol. 53, no. 2, pp. 171­177, Mar. 2017. doi: 10.3103/s8756699017020108. [Online]. Available: https://doi.org/10.3103% 2Fs8756699017020108.
+[9] P. V. Arun, "A COMPARATIVE ANALYSIS OF DIFFERENT DEM INTERPOLATION METHODS," Geodesy and Cartography, vol. 39, no. 4, pp. 171­177, Dec. 2013. doi: 10 . 3846 / 20296991.2013.859821. [Online]. Available: https://doi.org/10.3846%2F20296991.2013. 859821.
+[10] T. C. Coburn, "Geographical information systems: Principles, techniques, applications and management," Computers & Geosciences, vol. 26, no. 3, pp. 353­354, Apr. 2000. doi: 10 . 1016 / s0098 - 3004(99 ) 00127 - 2. [Online]. Available: https : / / doi . org / 10 . 1016 % 2Fs0098 3004%2899%2900127-2.
+[11] QGIS Documentation. "Spatial analysis (interpolation)." (2021), [Online]. Available: https: / / docs . qgis . org / 3 . 16 / en / docs / gentle _ gis _ introduction / spatial _ analysis _ interpolation . html#id2 (visited on 03/25/2021).
+
+Topography Analysis Methodology
+
+30
+
+Bibliography
+[12] C. Dempsey. "Tobler's first law of geography." (2014), [Online]. Available: https://www. geographyrealm.com/toblers-first-law-geography/ (visited on 04/29/2014).
+[13] Golden Software. "Surfer help." (2022), [Online]. Available: https://surferhelp.goldensoftware. com/surfer/introduction_to_surfer.htm (visited on 03/04/2022).
+[14] ESRI. "How inverse distance weighted interpolation works." (2022), [Online]. Available: https : / / pro. arcgis . com / en / pro - app / latest / help / analysis / geostatistical - analyst / how inverse-distance-weighted-interpolation-works.htm (visited on 03/04/2022).
+[15] R. Gradka and A. Kwinta, "A short review of interpolation methods used for terrain modeling," Geomatics, Landmanagement and Landscape, 2018.
+[16] A. A. Kuta, O. G. Ajayi, T. J. Osunde, P. O. Ibrahim, D. O. Dada, and A. A. Awaal, "Investigation of the robustness of different contour interpolation models for the generation of contour map and digital elevation models," School of Environmental Technology International Conference, SETIC, 2018., 2018.
+[17] M. El-Quilish, M. El-Ashquer, G. Dawod, and G. El Fiky, "Development and accuracy assessment of high-resolution digital elevation model using gis approaches for the nile delta region, egypt," American Journal of Geographic Information System, vol. 7, no. 4, pp. 107­ 117, 2018.
+[18] R. L. Hardy, "Theory and applications of the multiquadric-biharmonic method 20 years of discovery 1968­1988," Computers & Mathematics with Applications, vol. 19, no. 8-9, pp. 163­ 208, 1990.
+[19] D. Roller and H. Hagen, Geometric Modeling: Methods and Applications. Springer, 1991. [20] R. L. Hardy, "Multiquadric equations of topography and other irregular surfaces," Journal
+of geophysical research, vol. 76, no. 8, pp. 1905­1915, 1971. [21] G. E. Fasshauer, Meshfree approximation methods with MATLAB. World Scientific, 2007,
+vol. 6.
+[22] R. Franke, "Thin plate splines with tension," Computer Aided Geometric Design, vol. 2, no. 13, pp. 87­95, 1985.
+[23] H. Wendland, Scattered data approximation. Cambridge university press, 2004, vol. 17. [24] V. Skala, "A practical use of radial basis functions interpolation and approximation," Inves-
+tigacion Operacional, vol. 37, no. 2, pp. 137­145, 2016.
+[25] R. Carlson and T. Foley, "Radial basis interpolation methods on track data, lawrence livermore national laboratory," UCRL-JC-1074238, 1991.
+[26] R. E. Carlson and T. A. Foley, "The parameter r2 in multiquadric interpolation," Computers & Mathematics with Applications, vol. 21, no. 9, pp. 29­42, 1991.
+[27] R. Cavoretto, A. De Rossi, and E. Perracchione, "Efficient computation of partition of unity interpolants through a block-based searching technique," Computers & Mathematics with Applications, vol. 71, no. 12, pp. 2568­2584, 2016.
+[28] R. E. Barnhill, "Representation and approximation of surfaces," in Mathematical software, Elsevier, 1977, pp. 69­120.
+
+Topography Analysis Methodology
+
+31
+
+Bibliography
+[29] ESRI. "How radial basis functions work." (2022), [Online]. Available: https://pro.arcgis. com/en/pro- app/2.8/help/analysis/geostatistical- analyst/how- radial- basis- functionswork.htm (visited on 03/08/2022).
+[30] Á. Achaerandio. "Tracker configuration, the key to reducing the solar lcoe." (2020), [Online]. Available: https : / / www. stinorland . com / en / news / tracker - configuration - key reducing-solar-lcoe (visited on 06/24/2020).
+[31] Xiamen Solar first Energy Technology Co., Ltd. "Ramming pile ground mount." (2022), [Online]. Available: https://www.enfsolar.com/pv/mounting-system-datasheet/6026.
+[32] M. Ben-Chen and A. Lai Lin. "Mesh simplification." (2022), [Online]. Available: https:// graphics.stanford.edu/courses/cs468-10-fall/LectureSlides/08_Simplification.pdf (visited on 12/19/2022).
+[33] D. Lay, S. Lay, and J. McDonald, Linear Algebra and Its Applications. Pearson, 2016, isbn: 9780321982384. [Online]. Available: https://books.google.es/books?id=L8SUoAEACAAJ.
+[34] F. Sahin, "A radial basis function approach to a color image classification problem in a real time industrial application," Ph.D. dissertation, Virginia Tech, 1997.
+
+Topography Analysis Methodology
+
+32
+
+
