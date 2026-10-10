@@ -1,12 +1,13 @@
 Metadata-Version: 2.4
 Name: pv-layout-design
-Version: 0.1.0
-Summary: PV site geometric and electrical design tool
+Version: 0.2.0
+Summary: PV site geometric and electrical design tool (Layer 1 base + Layer 2/3 improvements)
 Requires-Python: >=3.11
 Requires-Dist: pvlib>=0.10
 Requires-Dist: numpy>=1.26
 Requires-Dist: scikit-learn>=1.4
 Requires-Dist: matplotlib>=3.8
+Requires-Dist: shapely>=2.0
 Provides-Extra: dev
 Requires-Dist: pytest>=8; extra == "dev"
 Requires-Dist: pytest-cov; extra == "dev"

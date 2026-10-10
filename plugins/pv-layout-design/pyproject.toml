@@ -4,14 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pv-layout-design"
-version = "0.1.0"
-description = "PV site geometric and electrical design tool"
+version = "0.2.0"
+description = "PV site geometric and electrical design tool (Layer 1 base + Layer 2/3 improvements)"
 requires-python = ">=3.11"
 dependencies = [
     "pvlib>=0.10",
     "numpy>=1.26",
     "scikit-learn>=1.4",
     "matplotlib>=3.8",
+    "shapely>=2.0",
 ]
 
 [project.optional-dependencies]
