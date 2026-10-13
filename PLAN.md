@@ -97,17 +97,13 @@ pytest plugins/pv-layout-design/tests/ -v
 
 ## Next steps (priority order)
 
-1. **Commit `layout_lshape.png`** — it is the only untracked file.
-   ```
-   git add plugins/pv-layout-design/examples/layout_lshape.png
-   git commit -m "chore: add L-shape layout example PNG"
-   ```
-2. **Fix polygon boundary outline in `plot.py`** — add optional `boundary`
-   shapely argument; draw with `ax.plot(*boundary.exterior.xy)` before rows.
-3. **Update README.md** in `plugins/pv-layout-design/` to document all Layer 2/3
-   features and usage examples.
-4. **Push to GitHub** — user must run manually (auto-permission blocks it in
-   Claude Code):
+1. ~~**Commit `layout_lshape.png`**~~ — **DONE** (commit `44994a9`)
+2. ~~**Fix polygon boundary outline in `plot.py`**~~ — **DONE** (commit `7ec1ffb`);
+   `render_layout` now accepts `boundary=<shapely Polygon>` and draws
+   `ax.plot(*boundary.exterior.xy)` instead of the bounding-box rectangle.
+3. ~~**Update README.md**~~ — **DONE** (commit `7ec1ffb`); full feature
+   reference (F1–F10), three usage examples, updated citations.
+4. **Push to GitHub** — user must run manually:
    ```
    git push -u origin improvements
    ```
