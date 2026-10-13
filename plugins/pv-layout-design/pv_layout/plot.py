@@ -1,10 +1,10 @@
 """
 Render the PV site layout as a matplotlib figure.
 
-Draws: site boundary rectangle, panel row footprints (to scale), DC cable
-runs (block centroid → assigned inverter, thin orange), AC cable runs
-(inverter → transformer, thick red), inverter markers (×), transformer
-marker (filled square).
+Draws: site boundary (rectangle or shapely polygon), panel row footprints
+(to scale), DC cable runs (block centroid → assigned inverter, thin orange),
+AC cable runs (inverter → transformer, thick red), inverter markers (×),
+transformer marker (filled square).
 
 Uses matplotlib (PSF/BSD-compatible licence).
 """
@@ -12,6 +12,7 @@ Uses matplotlib (PSF/BSD-compatible licence).
 from __future__ import annotations
 
 import math
+from typing import TYPE_CHECKING
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,6 +20,12 @@ import matplotlib.patches as mpatches
 from matplotlib.lines import Line2D
 
 from .placement import PlacementResult
+
+if TYPE_CHECKING:
+    try:
+        from shapely.geometry import Polygon as ShapelyPolygon
+    except ImportError:
+        ShapelyPolygon = None
 
 
 def render_layout(
@@ -31,6 +38,7 @@ def render_layout(
     placement: PlacementResult,
     output_path: str | None = None,
     title: str = "PV Site Layout",
+    boundary=None,
 ) -> plt.Figure:
     """
     Render the site layout and return the matplotlib Figure.
@@ -45,16 +53,22 @@ def render_layout(
     placement               : result of placement.place_equipment
     output_path             : if given, save the figure to this path (PNG)
     title                   : figure title
+    boundary                : optional shapely Polygon; if given, its outline
+                              is drawn instead of the bounding-box rectangle
 
     Returns the Figure object (caller can display or further customise it).
     """
     fig, ax = plt.subplots(figsize=(13, 9))
 
     # ── Site boundary ──────────────────────────────────────────────────────
-    ax.add_patch(mpatches.Rectangle(
-        (0, 0), site_width, site_height,
-        fill=False, edgecolor="black", linewidth=2,
-    ))
+    if boundary is not None:
+        xs, ys = boundary.exterior.xy
+        ax.plot(xs, ys, color="black", linewidth=2)
+    else:
+        ax.add_patch(mpatches.Rectangle(
+            (0, 0), site_width, site_height,
+            fill=False, edgecolor="black", linewidth=2,
+        ))
 
     # ── Panel row footprints ───────────────────────────────────────────────
     footprint_ns = module_length * math.cos(math.radians(tilt_deg))
@@ -102,7 +116,7 @@ def render_layout(
         plt.scatter([], [], marker="s", s=100, color="darkred",
                     label="Transformer"),
         mpatches.Patch(fill=False, edgecolor="black", linewidth=2,
-                       label="Site boundary"),
+                       label="Site boundary" if boundary is None else "Site polygon"),
     ]
     ax.legend(handles=legend_handles, loc="upper right", fontsize=9,
               framealpha=0.9)
