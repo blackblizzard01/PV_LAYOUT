@@ -3,7 +3,7 @@
 ## Resuming (read this first)
 
 Fresh session: read this file, run `git log --oneline -5` to confirm branch state,
-then `pytest plugins/pv-layout-design/tests/ -v` to confirm 211/211 pass (offline).
+then `pytest plugins/pv-layout-design/tests/ -v` to confirm 212/212 pass (offline).
 Continue from **Next steps** below.
 
 ### v0.3 design engine (RatedPower-style outputs): DONE
@@ -22,9 +22,8 @@ azimuth, MultiPolygon crashes, pvlib-0.16 PVGIS TMY unpacking, Perez NaN hours, 
 quantisation read as slope (Gaussian smoothing), stale DEM/TMY caches after a site moves,
 DC/AC block over-splitting, blocks forced per road fragment.
 
-Open decision for the user: legacy `losses.cable_loss` uses single-conductor I²R
-(DC underestimated ×2, 3-phase ×3); the new engine is correct; the legacy tests encode
-the old formula.
+Legacy `losses.cable_loss` / BoQ cable mass now count all conductors (2 DC, 3 three-phase),
+matching the design engine. Root `.gitignore` re-encoded as UTF-8; `.pyc` files untracked.
 
 ---
 
@@ -125,7 +124,7 @@ pytest plugins/pv-layout-design/tests/ -v
    reference (F1–F10), three usage examples, updated citations.
 4. ~~**Push to GitHub**~~: **DONE** (pushed `164975a`, `f0a8154`).
 5. ~~**F11 roads**~~: **DONE** in v0.3 (N-S internal roads + Manhattan cable routing).
-6. **Decide on legacy `losses.cable_loss` physics** (see the open decision above).
+6. ~~**Legacy `losses.cable_loss` physics**~~: **DONE** (all conductors counted).
 7. **Phase 6 (only if needed)**: Streamlit app wrapping `run_design` with a
    RatedPower-style sidebar; per-table irradiation heatmap in the 3D view.
 8. Optional refinements: MV ring/chain optimisation, ampacity derating, trackers,
@@ -143,4 +142,4 @@ pytest plugins/pv-layout-design/tests/ -v
 
 ## Regression gate
 
-Every commit: `pytest plugins/pv-layout-design/tests/ -v` must pass all 211 tests (offline, ~12 s).
+Every commit: `pytest plugins/pv-layout-design/tests/ -v` must pass all 212 tests (offline, ~12 s).
