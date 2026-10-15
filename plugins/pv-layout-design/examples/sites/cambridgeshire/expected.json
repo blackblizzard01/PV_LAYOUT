@@ -1,0 +1,33 @@
+{
+  "site": "Rampton, Cambridgeshire (UK)",
+  "retrieved": "2026-10-14",
+  "pvgis": {
+    "E_y_kwh_kwp": 1093.35,
+    "H_i_y_kwh_m2": 1245.31,
+    "system_loss_pct": 6.71,
+    "pvcalc_url": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=52.30186&lon=0.08574&peakpower=1&loss=6.71&angle=25.0&aspect=0&mountingplace=free&outputformat=json",
+    "ghi_longterm_kwh_m2": 1070.6,
+    "tmy_ghi_kwh_m2": 1077.2,
+    "tmy_over_longterm": 1.0061
+  },
+  "snapshot": {
+    "dc_kwp": 33323.4,
+    "ac_kw": 30300.0,
+    "n_tables": 561,
+    "n_inverters": 101,
+    "n_power_stations": 8,
+    "gcr": 0.2967,
+    "pitch_m": 15.489,
+    "tilt_deg": 25.0,
+    "azimuth_deg": 180.0,
+    "usable_ha": 66.72,
+    "tables_excluded_terrain": 0,
+    "tables_earthworks": 0,
+    "specific_yield_kwh_kwp": 1101.0,
+    "pr_poa": 0.8646
+  },
+  "tolerance": {
+    "snapshot_rel": 0.02,
+    "yield_vs_pvgis_rel": 0.04
+  }
+}

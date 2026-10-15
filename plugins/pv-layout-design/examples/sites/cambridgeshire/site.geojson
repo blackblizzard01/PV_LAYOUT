@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "AA-East field", "role": "available",
+                     "note": "Illustrative parcels following hedged arable fields near Rampton, Cambridgeshire (drawn against satellite imagery); not an actual project boundary."},
+      "geometry": {"type": "Polygon", "coordinates": [[
+        [0.08782, 52.30522], [0.09232, 52.30469], [0.09242, 52.30147], [0.09221, 52.29766],
+        [0.08771, 52.29766], [0.08578, 52.29812], [0.08146, 52.29887], [0.08343, 52.30187],
+        [0.08557, 52.30417], [0.08782, 52.30522]
+      ]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "AA-North field", "role": "available"},
+      "geometry": {"type": "Polygon", "coordinates": [[
+        [0.08086, 52.30666], [0.08750, 52.30535], [0.08557, 52.30421], [0.08343, 52.30187],
+        [0.07882, 52.30285], [0.08043, 52.30437], [0.08086, 52.30666]
+      ]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "AA-Centre field", "role": "available"},
+      "geometry": {"type": "Polygon", "coordinates": [[
+        [0.07722, 52.30279], [0.08311, 52.30180], [0.08225, 52.29970], [0.07657, 52.30082],
+        [0.07722, 52.30279]
+      ]]}
+    }
+  ]
+}

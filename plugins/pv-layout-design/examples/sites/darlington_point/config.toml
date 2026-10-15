@@ -1,0 +1,40 @@
+# Site 4 — Darlington Point, NSW, Australia (34.6°S): southern hemisphere.
+# Tests: north-facing azimuth (0°), June-solstice pitch, target-capacity mode
+#        (paddock fits ~55 MWp; trimmed to 45 MWp from the centre outward),
+#        1P tables with 2 strings,
+#        high DC/AC ratio with clipping, synthetic gentle terrain.
+
+[site]
+file = "site.geojson"
+name = "Darlington Point, NSW (AU)"
+perimeter_setback_m = 15
+
+[structure]
+modules_high = 1
+strings_per_table = 2
+tilt_deg = "auto"
+
+[layout]
+mode = "target"
+target_kwp = 45000
+
+[terrain]
+source = "synthetic"
+ns_slope_pct = 1.0
+ew_slope_pct = 0.5
+undulation_m = 0.3
+
+[electrical]
+inverter_type = "string"
+inverter_ac_kw = 350
+dc_ac_ratio = 1.35
+ps_kva = 4400
+mppt_min_v = 880
+mppt_max_v = 1300
+t_min_c = -3
+t_max_c = 45
+tx_no_load_kw = 3.6
+tx_load_loss_kw = 36
+
+[energy]
+source = "pvgis"

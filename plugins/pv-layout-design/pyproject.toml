@@ -4,19 +4,28 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pv-layout-design"
-version = "0.2.0"
-description = "PV site geometric and electrical design tool (Layer 1 base + Layer 2/3 improvements)"
+version = "0.3.0"
+description = "PV site layout design: real sites (KML/GeoJSON), terrain, electrical design, energy yield, PNG + interactive HTML outputs"
 requires-python = ">=3.11"
 dependencies = [
     "pvlib>=0.10",
     "numpy>=1.26",
+    "pandas>=2.0",
+    "scipy>=1.10",
     "scikit-learn>=1.4",
     "matplotlib>=3.8",
     "shapely>=2.0",
 ]
 
 [project.optional-dependencies]
+geo = ["pyproj>=3.6"]
+viz = ["folium>=0.15", "plotly>=5.18"]
+dem = ["rasterio>=1.3", "Pillow>=10"]
+all = ["pyproj>=3.6", "folium>=0.15", "plotly>=5.18", "rasterio>=1.3", "Pillow>=10"]
 dev = ["pytest>=8", "pytest-cov"]
+
+[project.scripts]
+pv-layout = "pv_layout.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

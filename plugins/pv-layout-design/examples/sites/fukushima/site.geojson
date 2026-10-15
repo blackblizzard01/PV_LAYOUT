@@ -1,0 +1,34 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "AA-Hillside", "role": "available",
+                     "note": "Illustrative parcel on forested hillside near Koriyama, Fukushima (drawn against satellite imagery, west of an existing hillside PV plant); not an actual project boundary."},
+      "geometry": {"type": "Polygon", "coordinates": [[
+        [140.23121, 37.40222], [140.23679, 37.40308], [140.24043, 37.40171],
+        [140.24054, 37.39932], [140.23914, 37.39778], [140.23743, 37.39846],
+        [140.23571, 37.39778], [140.23228, 37.39778], [140.23121, 37.39932],
+        [140.23121, 37.40222]
+      ]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "RA-Reservoir", "role": "restricted"},
+      "geometry": {"type": "Polygon", "coordinates": [[
+        [140.23218, 37.39744], [140.23378, 37.39778], [140.23550, 37.39778],
+        [140.23614, 37.39846], [140.23721, 37.39880], [140.23786, 37.39897],
+        [140.23893, 37.39778], [140.23893, 37.39556], [140.23614, 37.39539],
+        [140.23400, 37.39573], [140.23228, 37.39675], [140.23218, 37.39744]
+      ]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"name": "RA-Pond", "role": "restricted"},
+      "geometry": {"type": "Polygon", "coordinates": [[
+        [140.23700, 37.40316], [140.24000, 37.40325], [140.24000, 37.40222],
+        [140.23807, 37.40222], [140.23700, 37.40239], [140.23700, 37.40316]
+      ]]}
+    }
+  ]
+}

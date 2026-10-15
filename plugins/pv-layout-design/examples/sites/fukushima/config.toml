@@ -1,0 +1,47 @@
+# Site 3 — Forested hillside near Koriyama, Fukushima, Japan (37.4°N).
+# Tests: real SRTM terrain (Terrarium → GeoTIFF cache → sampling in EPSG:3857),
+#        per-structure slope classification (accepted / earthworks / excluded),
+#        cut & fill volumes, restricted water bodies, 6.6 kV MV (Japanese grid),
+#        fixed tilt, ±3 h shading criterion, small string inverters.
+
+[site]
+file = "site.geojson"
+name = "Koriyama hillside, Fukushima (JP)"
+perimeter_setback_m = 6
+restricted_setback_m = 15
+
+[structure]
+modules_high = 2
+strings_per_table = 2
+tilt_deg = 15
+hours_from_noon = 3
+
+[terrain]
+source = "terrarium"
+path = "dem.tif"
+zoom = 14
+cell_size_m = 5
+smooth_m = 25
+ns_install_pct = 10
+ns_earthworks_pct = 20
+ew_install_pct = 8
+ew_earthworks_pct = 15
+
+[electrical]
+inverter_type = "string"
+inverter_ac_kw = 100
+dc_ac_ratio = 1.30
+ps_kva = 2000
+mppt_min_v = 600
+mppt_max_v = 1300
+t_min_c = -10
+t_max_c = 35
+lv_ac_voltage_v = 600
+mv_voltage_v = 6600
+mv_cable_mm2 = 150
+tx_no_load_kw = 2.0
+tx_load_loss_kw = 20
+
+[energy]
+source = "pvgis"
+soiling_pct = 1.5

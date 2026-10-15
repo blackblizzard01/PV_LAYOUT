@@ -3,8 +3,28 @@
 ## Resuming (read this first)
 
 Fresh session: read this file, run `git log --oneline -5` to confirm branch state,
-then `pytest plugins/pv-layout-design/tests/ -v` to confirm 98/98 pass.
+then `pytest plugins/pv-layout-design/tests/ -v` to confirm 211/211 pass (offline).
 Continue from **Next steps** below.
+
+### v0.3 design engine (RatedPower-style outputs): DONE
+
+Approved plan: `~/.claude/plans/listen-lets-properly-plan-luminous-sunset.md`.
+New modules `geo.py site.py tables.py blocks.py design.py render/ __main__.py`; CLI
+`python -m pv_layout run <config.toml>` writes layout/slope/kpis PNG, map.html
+(satellite, layer toggles), view3d.html (3D terrain), summary.json, boq.csv.
+Five real-location examples in `examples/sites/` (bhadla, sanand [KML], fukushima,
+darlington_point, cambridgeshire) validated against PVGIS within ±2 % (weather-corrected);
+`tests/test_examples.py` enforces ±4 % and the geometric/electrical invariants.
+
+Bugs fixed on the way: 1-D row placement (inverters stacked, 9 m DC cable), terrain applied
+after placement, centre-line-only clipping, south-first trimming, southern-hemisphere
+azimuth, MultiPolygon crashes, pvlib-0.16 PVGIS TMY unpacking, Perez NaN hours, SRTM
+quantisation read as slope (Gaussian smoothing), stale DEM/TMY caches after a site moves,
+DC/AC block over-splitting, blocks forced per road fragment.
+
+Open decision for the user: legacy `losses.cable_loss` uses single-conductor I²R
+(DC underestimated ×2, 3-phase ×3); the new engine is correct; the legacy tests encode
+the old formula.
 
 ---
 
@@ -103,12 +123,13 @@ pytest plugins/pv-layout-design/tests/ -v
    `ax.plot(*boundary.exterior.xy)` instead of the bounding-box rectangle.
 3. ~~**Update README.md**~~ — **DONE** (commit `7ec1ffb`); full feature
    reference (F1–F10), three usage examples, updated citations.
-4. **Push to GitHub** — user must run manually:
-   ```
-   git push -u origin improvements
-   ```
-5. **F11 roads** (optional, low priority) — spine + perimeter roads; route cable
-   along roads instead of straight-line.
+4. ~~**Push to GitHub**~~: **DONE** (pushed `164975a`, `f0a8154`).
+5. ~~**F11 roads**~~: **DONE** in v0.3 (N-S internal roads + Manhattan cable routing).
+6. **Decide on legacy `losses.cable_loss` physics** (see the open decision above).
+7. **Phase 6 (only if needed)**: Streamlit app wrapping `run_design` with a
+   RatedPower-style sidebar; per-table irradiation heatmap in the 3D view.
+8. Optional refinements: MV ring/chain optimisation, ampacity derating, trackers,
+   terrain-following pitch.
 
 ---
 
@@ -122,4 +143,4 @@ pytest plugins/pv-layout-design/tests/ -v
 
 ## Regression gate
 
-Every commit: `pytest plugins/pv-layout-design/tests/ -v` — all 98 tests must pass.
+Every commit: `pytest plugins/pv-layout-design/tests/ -v` must pass all 211 tests (offline, ~12 s).

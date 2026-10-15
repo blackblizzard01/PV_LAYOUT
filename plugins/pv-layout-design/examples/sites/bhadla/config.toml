@@ -1,0 +1,35 @@
+# Site 1 — Bhadla, Rajasthan, India (27.5°N): flat desert, central inverters.
+# Tests: baseline geometry/GCR, multiple power stations, combiner boxes,
+#        real (flat) SRTM terrain via Terrarium tiles, PVGIS yield cross-check.
+
+[site]
+file = "site.geojson"
+name = "Bhadla, Rajasthan (IN)"
+perimeter_setback_m = 10
+
+[structure]
+modules_high = 2
+strings_per_table = 2
+tilt_deg = "auto"
+
+[terrain]
+source = "terrarium"
+path = "dem.tif"
+zoom = 13
+
+[electrical]
+inverter_type = "central"
+inverter_ac_kw = 2500
+dc_ac_ratio = 1.25
+ps_kva = 2750
+ps_footprint_m = [12.2, 2.5]
+mppt_min_v = 875
+mppt_max_v = 1325
+t_min_c = 2
+t_max_c = 48
+tx_no_load_kw = 2.6
+tx_load_loss_kw = 24
+
+[energy]
+source = "pvgis"
+tmy_file = "pvgis_tmy.csv"

@@ -1,0 +1,37 @@
+# Site 2 — Sanand outskirts, Gujarat, India (23.0°N): farmland, KML input.
+# Tests: KML parsing (Polygon / LineString / Point + buffer_m), restricted areas,
+#        two roads splitting the parcel into a MultiPolygon, GCR input instead of
+#        a shading criterion, small 2P tables, string inverters, user-placed
+#        substation, flat terrain path.
+
+[site]
+file = "site.kml"
+name = "Sanand outskirts, Gujarat (IN)"
+perimeter_setback_m = 8
+restricted_setback_m = 5
+substation_lonlat = [72.40156, 22.96708]
+
+[structure]
+modules_high = 2
+strings_per_table = 1
+tilt_deg = "auto"
+gcr = 0.40
+
+[terrain]
+source = "flat"
+
+[electrical]
+inverter_type = "string"
+inverter_ac_kw = 320
+dc_ac_ratio = 1.30
+ps_kva = 3300
+mppt_min_v = 860
+mppt_max_v = 1300
+t_min_c = 8
+t_max_c = 45
+lv_ac_voltage_v = 800
+tx_no_load_kw = 3.0
+tx_load_loss_kw = 28
+
+[energy]
+source = "pvgis"

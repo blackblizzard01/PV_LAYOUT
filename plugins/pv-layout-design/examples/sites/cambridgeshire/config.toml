@@ -1,0 +1,41 @@
+# Site 5 — Hedged fields near Rampton, Cambridgeshire, UK (52.3°N): high latitude.
+# Tests: three separate available areas (hedge gaps between them), internal N-S
+#        roads, 4L landscape tables, low winter sun → wide pitch from a ±2 h
+#        criterion, inter-row shading loss outside that window in the energy
+#        model, low irradiance yield, real (flat fenland) terrain.
+
+[site]
+file = "site.geojson"
+name = "Rampton, Cambridgeshire (UK)"
+perimeter_setback_m = 8
+road_spacing_m = 220
+road_width_m = 5
+
+[structure]
+modules_high = 4
+orientation = "landscape"
+strings_per_table = 4
+tilt_deg = 25
+hours_from_noon = 2
+
+[terrain]
+source = "terrarium"
+path = "dem.tif"
+zoom = 13
+
+[electrical]
+inverter_type = "string"
+inverter_ac_kw = 300
+dc_ac_ratio = 1.20
+ps_kva = 5000
+mppt_min_v = 860
+mppt_max_v = 1300
+t_min_c = -10
+t_max_c = 32
+mv_voltage_v = 33000
+tx_no_load_kw = 4.2
+tx_load_loss_kw = 40
+
+[energy]
+source = "pvgis"
+soiling_pct = 1.0

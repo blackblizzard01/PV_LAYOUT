@@ -1,28 +1,107 @@
 # pv-layout-design
 
-Standalone Python tool for PV site geometric and electrical design.
+PV site design tool producing RatedPower-style outputs. It takes real site
+boundaries (KML / GeoJSON), real terrain and real weather, and produces:
 
-Given a site boundary (rectangle or arbitrary polygon), a location (lat/lon),
-a target DC capacity, and hardware specs, it computes:
-
-- Panel row layout with inter-row shading constraint
-- Inverter and transformer placement (k-means facility location)
-- DC and AC cable losses (I²R per-segment)
-- Transformer losses (IEC two-term nameplate model)
-- Conductor cross-section sizing (IEC voltage-drop formula)
-- String sizing (Voc/Vmp temperature-corrected)
-- Bill of Quantities (cable mass, trench volume, control building)
-- Annual energy yield (pvlib Perez transposition + 10-term loss chain)
-- Terrain slope analysis and earthworks cut/fill estimate
-- A rendered site plan (matplotlib)
+- **layout.png**: site plan with available/restricted areas, setbacks, roads,
+  structures coloured by terrain status, inverter blocks, power stations,
+  cables, substation, north arrow, scale bar and key figures.
+- **slope.png**: N-S / E-W slope maps (<5 / 5–10 / 10–15 / >15 %) with contours.
+- **kpis.png**: energy loss waterfall from POA irradiation to specific yield.
+- **map.html**: interactive satellite map you can pan and zoom, with layer
+  toggles, per-structure popups, a measuring tool and lat/lon readout.
+- **view3d.html**: interactive 3D terrain with structures on their posts.
+  Drag to rotate, scroll to zoom, click the legend to toggle layers, and use
+  the buttons to set vertical exaggeration.
+- **summary.json** / **boq.csv**: KPIs, losses at STC, bill of quantities, energy.
 
 ## Quick start
 
 ```bash
 cd plugins/pv-layout-design
-pip install -e ".[dev]"
-python examples/run_example.py   # runs the Ahmedabad 1 MWp worked example
-pytest tests/ -v                 # run all 98 tests
+pip install -e ".[all,dev]"
+python -m pv_layout run examples/sites/bhadla/config.toml     # → examples/sites/bhadla/output/
+pytest tests/ -v                                               # 211 tests, offline
+```
+
+## Design pipeline
+
+```
+site (KML/GeoJSON) → usable area (setbacks, restricted areas, roads)
+  → tables (each structure fully inside the usable area, best row phase)
+  → terrain (per-table plane fit → accepted / earthworks / excluded; cut & fill)
+  → target trim (optional, nearest-to-centre)
+  → strings (temperature-corrected sizing) → inverter blocks (capacity bisection,
+    ≤ inverter kW × DC/AC, never across separate fields)
+  → power stations (tables under the footprint removed) → Manhattan cable routes
+  → losses at STC (DC 2·I²R, 3-phase 3·I²R, per-PS transformers)
+  → BoQ → hourly energy (Perez, Martin-Ruiz IAM, row shading, horizon,
+    Faiman + Huld, clipping, load-scaled I²R, transformer no-load/load)
+```
+
+| Module | Role |
+|---|---|
+| `geo.py` | KML/GeoJSON parsing (polygons, holes, buffered lines/points), UTM local frame |
+| `site.py` | available/restricted areas, setbacks, internal roads → usable area |
+| `tables.py` | structure dims (P/L, n-high), pitch from shading criterion or GCR, tiling, trim |
+| `terrain.py` | DEM sampling (synthetic, GeoTIFF, Terrarium SRTM tiles, OpenTopography), smoothing, per-table classification |
+| `blocks.py` | inverter blocks, combiner boxes (central), power stations, cable routes |
+| `design.py` | TOML config with strict key validation, pipeline, losses, BoQ, cached PVGIS TMY + horizon |
+| `render/` | `png.py`, `map_html.py` (folium), `view3d_html.py` (plotly) |
+
+### Config (TOML)
+
+Sections are `[site] [module] [structure] [layout] [terrain] [electrical] [energy] [output]`.
+Unknown keys are rejected with the list of valid keys. See `examples/sites/*/config.toml`.
+Feature roles in site files: name prefix `AA-` = available and `RA-` = restricted, or a
+`role` property. Lines and points need `buffer_m`.
+
+Data sources and caches (stored next to the config, re-downloaded automatically if the
+site moves):
+
+| Data | Source | Cache |
+|---|---|---|
+| Terrain | `terrarium` (AWS Terrain Tiles, SRTM-based, no key) or `opentopography` (needs `OPENTOPOGRAPHY_API_KEY`) or your own GeoTIFF | `dem.tif` |
+| Weather | PVGIS-5.2 TMY | `pvgis_tmy.csv` + `.json` |
+| Horizon | PVGIS horizon profile | `pvgis_horizon.csv` + `.json` |
+
+## Validation: five real-location examples
+
+The parcels are illustrative boundaries drawn against satellite imagery at real
+locations, not actual project boundaries.
+
+| Site | What it exercises | Yield vs PVGIS* |
+|---|---|---|
+| `bhadla`: Bhadla, Rajasthan IN (27.5°N), dune scrubland | central inverters + combiner boxes, real terrain, 10 power stations | +1.1 % |
+| `sanand`: Sanand, Gujarat IN (23.0°N), **KML** | roads (buffered lines) splitting the parcel, kiln/grove/farmhouse exclusions, GCR input, fixed substation | +1.0 % |
+| `fukushima`: Koriyama hillside JP (37.4°N) | steep real SRTM terrain: 791 tables excluded, 372 with earthworks, cut & fill, 6.6 kV MV | +1.8 % |
+| `darlington_point`: NSW AU (34.6°S) | southern hemisphere (north-facing, June solstice), target trim to 45 MWp, 1P tables | +0.2 % |
+| `cambridgeshire`: Rampton UK (52.3°N) | three separate fields, internal roads, 4L tables, low winter sun, row shading | +0.1 % |
+
+\* PVGIS PVcalc at the same tilt, azimuth and system loss, corrected for the TMY
+year's irradiation against the 2005–2020 mean. `tests/test_examples.py` enforces ±4 %
+plus geometric and electrical invariants: tables inside the usable area, clear of
+restricted areas and non-overlapping; string voltage limits; inverter DC/AC cap;
+power-station capacity; Manhattan routes. Refresh the references with
+`python examples/sites/build_references.py` (needs network).
+
+## Known limitations
+
+- Rows run east-west and face the equator; no trackers or E-W bifacial yet.
+- Inter-row shading uses an infinite-row beam model; terrain-induced row shading is
+  not modelled. RatedPower also treats the layout as flat.
+- MV is radial (each power station to the substation); no ring/chain optimisation.
+- Conductor sizing is by voltage drop only (no ampacity derating).
+- Legacy `losses.cable_loss` / `compute_all_losses` (Layer 1 API) use single-conductor
+  I²R, which underestimates DC ×2 and 3-phase ×3. The design engine uses the full-circuit
+  formula.
+
+---
+
+# Layer 1–3 API (rectangle / polygon functions)
+
+```bash
+python examples/run_example.py   # Ahmedabad 1 MWp worked example (Layer 1–3 functions)
 ```
 
 ## Package layout

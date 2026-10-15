@@ -38,7 +38,19 @@ from .terrain import (                                        # F10
     DEMGrid, SlopeResult, TerrainResult,
 )
 
+# ── Design engine (real sites, tables, terrain, electrical, renders) ─────────
+from .site import Site                                        # noqa: E402
+from .geo import GeoFrame, read_site                          # noqa: E402
+from .tables import StructureSpec, TableLayout, layout_tables  # noqa: E402
+from .terrain import SlopeLimits, TableTerrain, classify_tables  # noqa: E402
+from .blocks import ElectricalSpec, ElectricalLayout, build_electrical  # noqa: E402
+from .design import DesignConfig, DesignResult, run_design, save_summary  # noqa: E402
+
 __all__ = [
+    # Design engine
+    "Site", "GeoFrame", "read_site", "StructureSpec", "TableLayout", "layout_tables",
+    "SlopeLimits", "TableTerrain", "classify_tables", "ElectricalSpec", "ElectricalLayout",
+    "build_electrical", "DesignConfig", "DesignResult", "run_design", "save_summary",
     # Layer 1
     "place_panels", "compute_pitch", "compute_gcr",
     "ModuleSpec", "SiteSpec", "LayoutResult",

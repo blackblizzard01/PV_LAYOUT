@@ -1,0 +1,17 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "AA-Bhadla-1", "role": "available",
+                     "note": "Illustrative parcel drawn on open scrubland west of the Bhadla solar park (checked against satellite imagery); not an actual project boundary."},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [71.8962, 27.5120], [71.9028, 27.5116], [71.9034, 27.5158],
+          [71.9006, 27.5184], [71.8966, 27.5177], [71.8962, 27.5120]
+        ]]
+      }
+    }
+  ]
+}

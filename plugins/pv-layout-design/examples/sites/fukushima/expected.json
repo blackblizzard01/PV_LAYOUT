@@ -1,0 +1,33 @@
+{
+  "site": "Koriyama hillside, Fukushima (JP)",
+  "retrieved": "2026-10-14",
+  "pvgis": {
+    "E_y_kwh_kwp": 1307.85,
+    "H_i_y_kwh_m2": 1514.81,
+    "system_loss_pct": 6.99,
+    "pvcalc_url": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=37.40032&lon=140.23574&peakpower=1&loss=6.99&angle=15.0&aspect=0&mountingplace=free&outputformat=json",
+    "ghi_longterm_kwh_m2": 1369.9,
+    "tmy_ghi_kwh_m2": 1423.3,
+    "tmy_over_longterm": 1.039
+  },
+  "snapshot": {
+    "dc_kwp": 13721.4,
+    "ac_kw": 12700.0,
+    "n_tables": 462,
+    "n_inverters": 127,
+    "n_power_stations": 7,
+    "gcr": 0.529,
+    "pitch_m": 8.65,
+    "tilt_deg": 15.0,
+    "azimuth_deg": 180.0,
+    "usable_ha": 36.11,
+    "tables_excluded_terrain": 791,
+    "tables_earthworks": 372,
+    "specific_yield_kwh_kwp": 1383.6,
+    "pr_poa": 0.8629
+  },
+  "tolerance": {
+    "snapshot_rel": 0.02,
+    "yield_vs_pvgis_rel": 0.04
+  }
+}

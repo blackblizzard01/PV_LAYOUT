@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"name": "AA-Paddock", "role": "available",
+                     "note": "Illustrative parcel following a cleared paddock beside the Sturt Hwy near Darlington Point NSW (drawn against satellite imagery); not an actual project boundary."},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [146.06696, -34.61554], [146.07800, -34.61890], [146.07811, -34.62094],
+          [146.08058, -34.62173], [146.07983, -34.62767], [146.07929, -34.62776],
+          [146.06342, -34.62147], [146.06396, -34.62023], [146.06375, -34.61748],
+          [146.06450, -34.61686], [146.06696, -34.61554]
+        ]]
+      }
+    }
+  ]
+}

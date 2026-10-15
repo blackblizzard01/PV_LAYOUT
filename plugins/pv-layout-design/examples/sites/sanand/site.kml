@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Illustrative parcel on farmland south of Sanand, Gujarat (drawn against satellite
+     imagery; not an actual project boundary). Restricted features are real: a rural road
+     that splits the parcel, a brick kiln and an orchard grove. -->
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Sanand outskirts</name>
+    <Placemark>
+      <name>AA-Sanand-1</name>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>
+        72.39371,22.97221,0 72.39779,22.97221,0 72.39832,22.96753,0 72.40143,22.96753,0
+        72.40176,22.96285,0 72.39371,22.96285,0 72.39371,22.97221,0
+      </coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+    <Placemark>
+      <name>RA-Rural road</name>
+      <ExtendedData><Data name="buffer_m"><value>6</value></Data></ExtendedData>
+      <LineString><coordinates>
+        72.39800,22.97200,0 72.39832,22.96923,0 72.39886,22.96626,0 72.39946,22.96242,0
+      </coordinates></LineString>
+    </Placemark>
+    <Placemark>
+      <name>RA-Brick kiln</name>
+      <ExtendedData><Data name="buffer_m"><value>10</value></Data></ExtendedData>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>
+        72.39688,22.97147,0 72.39783,22.97147,0 72.39783,22.97030,0 72.39688,22.97030,0
+        72.39688,22.97147,0
+      </coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+    <Placemark>
+      <name>RA-Sanand-Moraiya Road</name>
+      <ExtendedData><Data name="buffer_m"><value>10</value></Data></ExtendedData>
+      <LineString><coordinates>
+        72.39362,22.96519,0 72.39555,22.96309,0 72.39716,22.96183,0
+      </coordinates></LineString>
+    </Placemark>
+    <Placemark>
+      <name>RA-Farmhouse</name>
+      <ExtendedData><Data name="buffer_m"><value>20</value></Data></ExtendedData>
+      <Point><coordinates>72.39570,22.96477,0</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>RA-Orchard grove</name>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>
+        72.39403,22.97221,0 72.39564,22.97221,0 72.39564,22.97051,0 72.39414,22.97051,0
+        72.39403,22.97221,0
+      </coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+  </Document>
+</kml>
