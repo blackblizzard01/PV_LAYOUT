@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .losses import CableSpec
+from .losses import CableSpec, n_conductors
 
 
 @dataclass
@@ -87,7 +87,8 @@ def bill_of_quantities(
     trench_depth_m  : LV trench depth.  Default 1.0 m (BoQ §3 LV rules).
     trench_width_m  : LV trench width.  Default 0.6 m (mid-range 0.4–0.8 m).
 
-    Cable mass estimated as: mass = A_mm2 × L_m × density_kg_per_m_per_mm2.
+    Cable mass estimated as: mass = n × A_mm2 × L_m × density_kg_per_m_per_mm2,
+    with n = 2 conductors for DC and 3 for 3-phase AC.
     Routing overhead (trenches vs straight-line) is NOT applied here;
     include a 15–30 % factor in downstream cost calculations.
 
@@ -98,8 +99,11 @@ def bill_of_quantities(
     ac_m = placement.total_ac_cable_m
     total_cable_m = dc_m + ac_m
 
-    dc_mass = dc_cable.area_mm2 * dc_m * _MASS_DENSITY.get(dc_cable.material.lower(), 8.9e-3)
-    ac_mass = ac_cable.area_mm2 * ac_m * _MASS_DENSITY.get(ac_cable.material.lower(), 8.9e-3)
+    # Route length × conductors per circuit (2 DC, 3 three-phase AC).
+    dc_mass = (n_conductors(False) * dc_cable.area_mm2 * dc_m
+               * _MASS_DENSITY.get(dc_cable.material.lower(), 8.9e-3))
+    ac_mass = (n_conductors(True) * ac_cable.area_mm2 * ac_m
+               * _MASS_DENSITY.get(ac_cable.material.lower(), 8.9e-3))
 
     trench_vol = total_cable_m * trench_depth_m * trench_width_m
 

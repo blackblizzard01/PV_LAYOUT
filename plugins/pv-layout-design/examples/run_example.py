@@ -114,9 +114,9 @@ per_block = []
 for i, (L, P) in enumerate(zip(placement.dc_cable_lengths_m, placement.block_kwp)):
     R = rho * L / A_m2
     I = P * 1000.0 / DC_VOLTAGE_V
-    per_block.append(I * I * R)
+    per_block.append(2 * I * I * R)   # + and − conductors
 total_dc_w = sum(per_block)
-print(f"    sum_i(I_i^2 * R_i) = {total_dc_w:.2f} W = {total_dc_w/1000:.4f} kW"
+print(f"    sum_i(2 * I_i^2 * R_i) = {total_dc_w:.2f} W = {total_dc_w/1000:.4f} kW"
       f"  (should match {losses.dc_cable_loss_kw:.4f} kW above)")
 print()
 

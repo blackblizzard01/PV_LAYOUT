@@ -92,9 +92,6 @@ power-station capacity; Manhattan routes. Refresh the references with
   not modelled. RatedPower also treats the layout as flat.
 - MV is radial (each power station to the substation); no ring/chain optimisation.
 - Conductor sizing is by voltage drop only (no ampacity derating).
-- Legacy `losses.cable_loss` / `compute_all_losses` (Layer 1 API) use single-conductor
-  I²R, which underestimates DC ×2 and 3-phase ×3. The design engine uses the full-circuit
-  formula.
 
 ---
 
@@ -139,7 +136,7 @@ tests/
 | Row layout | `place_panels(site, module, tilt_deg, target_kwp)` | Rectangular site, sun-angle pitch, k-modules per row |
 | GCR | `LayoutResult.gcr` | Computed from pitch; or supply `gcr=` to force pitch |
 | Equipment placement | `place_equipment(row_centroids, ...)` | k-means inverter + transformer locations |
-| Cable losses | `compute_all_losses(placement, ...)` | Per-segment I²R DC + AC + IEC 60076 transformer |
+| Cable losses | `compute_all_losses(placement, ...)` | Per-segment I²R over all conductors (2 DC, 3 three-phase) + IEC 60076 transformer |
 | Plot | `render_layout(site_width, site_height, ..., boundary=None)` | Pass shapely `boundary` to draw polygon outline |
 
 ### Layer 2 — Electrical sizing
@@ -151,7 +148,7 @@ tests/
 | **F5** Conductor sizing | `select_conductor_area(power_kw, voltage_v, length_m, material, max_vdrop_pct, three_phase, power_factor)` | IEC voltage-drop formula; returns smallest standard section ≥ S_min |
 | **F6** String sizing | `string_sizing(module_spec, inverter_spec, temp_min_c, temp_max_c)` | Cold/hot Voc/Vmp from temperature coefficients; returns N_min, N_max, N_recommended |
 | **F7** Multiple transformers | `place_equipment(..., n_transformers=2)` | Second k-means over inverter positions for transformer placement |
-| **F8** Bill of Quantities | `bill_of_quantities(n_modules, total_kwp, placement, dc_cable, ac_cable)` | Cable mass (kg Cu/Al), trench volume (m³), control building area (m²) |
+| **F8** Bill of Quantities | `bill_of_quantities(n_modules, total_kwp, placement, dc_cable, ac_cable)` | Cable mass (kg Cu/Al, all conductors), trench volume (m³), control building area (m²) |
 
 ### Layer 3 — Site + yield
 

@@ -6,6 +6,8 @@ Sources
 - Resistivity constants: IEC 60228:2004, Table 1.
   Cu ≈ 1.68×10⁻⁸ Ω·m, Al ≈ 2.82×10⁻⁸ Ω·m at 20 °C.
 - I²R formula: Chapman, *Electric Machinery Fundamentals*, 5th ed. (2011), §2.3.
+  Lengths are one-way route lengths; every current-carrying conductor
+  dissipates I²R, so DC (+/−) counts 2 conductors and 3-phase AC counts 3.
 - Transformer two-term loss model: IEC 60076-1:2011, §5.11.
   P_loss = P_no_load + P_load_rated × (S / S_rated)²
 """
@@ -25,6 +27,11 @@ RESISTIVITY: dict[str, float] = {
     "copper": 1.68e-8,
     "aluminum": 2.82e-8,
 }
+
+
+def n_conductors(three_phase: bool) -> int:
+    """Current-carrying conductors per circuit: 2 for DC (+/−), 3 for 3-phase AC."""
+    return 3 if three_phase else 2
 
 
 @dataclass(frozen=True)
@@ -65,15 +72,15 @@ def cable_loss(
     """
     I²R cable loss for a DC or AC segment.
 
-    R = ρ × L / A                              (Ω)
-    I = P / V                                  (DC / single-phase)
+    R = ρ × L / A                              (Ω, one conductor)
+    I = P / V                                  (DC)
       = P / (V × √3 × PF)                     (3-phase AC)
-    P_loss = I² × R
+    P_loss = n × I² × R                        (n = 2 DC, 3 three-phase)
 
     Parameters
     ----------
     cable        : conductor material and cross-section
-    total_length_m : aggregate cable length for this segment, metres
+    total_length_m : one-way route length of this segment, metres
     power_kw     : power flowing through this segment, kW
     voltage_v    : bus voltage, V (DC bus voltage or line-to-line AC voltage)
     three_phase  : True for 3-phase AC segments
@@ -97,7 +104,7 @@ def cable_loss(
     else:
         I = power_w / voltage_v
 
-    p_loss_w = I * I * R
+    p_loss_w = n_conductors(three_phase) * I * I * R
     loss_kw = p_loss_w / 1000.0
     loss_pct = 100.0 * p_loss_w / power_w
     return loss_kw, loss_pct
@@ -161,7 +168,7 @@ def _cable_loss_segments(
         I = powers_w / (voltage_v * math.sqrt(3.0) * power_factor)
     else:
         I = powers_w / voltage_v
-    return float((I * I * R).sum()) / 1000.0                # kW
+    return n_conductors(three_phase) * float((I * I * R).sum()) / 1000.0  # kW
 
 
 def compute_all_losses(

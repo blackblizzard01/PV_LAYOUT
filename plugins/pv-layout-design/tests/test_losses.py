@@ -65,21 +65,22 @@ def test_cable_loss_dc_hand_check():
     """
     Hand-verify DC cable_loss for a single well-defined segment.
 
-    Inputs:  L=100 m, copper 35 mm², P=100 kW, V=1000 V (DC).
-    R = ρ × L / A = 1.68e-8 × 100 / (35e-6) = 0.048 000 Ω
+    Inputs:  L=100 m route, copper 35 mm², P=100 kW, V=1000 V (DC).
+    R = ρ × L / A = 1.68e-8 × 100 / (35e-6) = 0.048 000 Ω  (per conductor)
     I = P / V = 100 000 / 1000 = 100 A
-    P_loss = I² × R = 10 000 × 0.048 000 = 480 W = 0.480 kW
-    loss % = 480 / 100 000 × 100 = 0.480 %
+    P_loss = 2 × I² × R = 2 × 10 000 × 0.048 = 960 W = 0.960 kW  (+ and − conductors)
+    loss % = 960 / 100 000 × 100 = 0.960 %
     """
     rho = RESISTIVITY["copper"]
     L, A_mm2, P_kw, V = 100.0, 35.0, 100.0, 1000.0
     R = rho * L / (A_mm2 * 1e-6)
     I = P_kw * 1000.0 / V
-    expected_kw = I * I * R / 1000.0
-    expected_pct = 100.0 * I * I * R / (P_kw * 1000.0)
+    expected_kw = 2 * I * I * R / 1000.0
+    expected_pct = 100.0 * 2 * I * I * R / (P_kw * 1000.0)
 
     loss_kw, loss_pct = cable_loss(CableSpec("copper", A_mm2), L, P_kw, V)
     assert loss_kw == pytest.approx(expected_kw, rel=1e-6)
+    assert loss_kw == pytest.approx(0.960, rel=1e-6)
     assert loss_pct == pytest.approx(expected_pct, rel=1e-6)
 
 
@@ -88,23 +89,37 @@ def test_cable_loss_ac_hand_check():
     Hand-verify 3-phase AC cable_loss.
 
     Inputs:  L=50 m, copper 35 mm², P=100 kW, V=400 V, PF=0.98.
-    R = 1.68e-8 × 50 / 35e-6 = 0.024 Ω
+    R = 1.68e-8 × 50 / 35e-6 = 0.024 Ω  (per conductor)
     I = 100 000 / (400 × √3 × 0.98) = 100 000 / 679.03 = 147.27 A
-    P_loss = 147.27² × 0.024 = 520.8 W = 0.5208 kW
+    P_loss = 3 × 147.27² × 0.024 = 1561.6 W = 1.5616 kW  (three phase conductors)
     """
     rho = RESISTIVITY["copper"]
     L, A_mm2, P_kw, V, PF = 50.0, 35.0, 100.0, 400.0, 0.98
     R = rho * L / (A_mm2 * 1e-6)
     I = P_kw * 1000.0 / (V * math.sqrt(3.0) * PF)
-    expected_kw = I * I * R / 1000.0
-    expected_pct = 100.0 * I * I * R / (P_kw * 1000.0)
+    expected_kw = 3 * I * I * R / 1000.0
+    expected_pct = 100.0 * 3 * I * I * R / (P_kw * 1000.0)
 
     loss_kw, loss_pct = cable_loss(
         CableSpec("copper", A_mm2), L, P_kw, V,
         three_phase=True, power_factor=PF,
     )
     assert loss_kw == pytest.approx(expected_kw, rel=1e-6)
+    assert loss_kw == pytest.approx(1.5616, rel=1e-3)
     assert loss_pct == pytest.approx(expected_pct, rel=1e-6)
+
+
+def test_three_phase_equals_dc_physics():
+    """
+    Same conductor, same delivered power: 3-phase loss = P²R/(V²PF²) and
+    DC loss = 2P²R/V², independent of how many conductors the code counts.
+    """
+    cable = CableSpec("copper", 35.0)
+    R = RESISTIVITY["copper"] * 100.0 / 35e-6
+    dc_kw, _ = cable_loss(cable, 100.0, 50.0, 800.0)
+    ac_kw, _ = cable_loss(cable, 100.0, 50.0, 800.0, three_phase=True, power_factor=1.0)
+    assert dc_kw * 1000 == pytest.approx(2 * (50e3 / 800) ** 2 * R, rel=1e-9)
+    assert ac_kw * 1000 == pytest.approx((50e3 / 800) ** 2 * R, rel=1e-9)
 
 
 # ── transformer_loss hand-check ────────────────────────────────────────────────
